@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
   ChevronDown,
@@ -24,6 +25,33 @@ const logos = [
   { src: 'images/13_on-running-logo-vector.png', alt: 'On Running' },
 ];
 
+const faqs = [
+  {
+    q: 'Quel est le délai de livraison ?',
+    a: '2 à 3 semaines pour tous nos produits avec livraison suivie.',
+  },
+  {
+    q: 'Livrez-vous en dehors de la France ?',
+    a: "Oui, nous livrons dans toute l'Europe avec des partenaires logistiques de confiance.",
+  },
+  {
+    q: 'Proposez-vous la location de structures ?',
+    a: 'Non, nous nous concentrons sur la vente de structures gonflables de haute qualité pour garantir une expérience client optimale et une personnalisation complète de chaque produit.',
+  },
+  {
+    q: 'Quelle est la garantie sur vos produits ?',
+    a: '5 ans de garantie sur toutes nos structures gonflables.',
+  },
+  {
+    q: "Comment se déroule l'installation ?",
+    a: 'Installation ultra-rapide en 2 minutes seulement ! Notre système de gonflage intuitif permet une mise en place simple et efficace, réalisable par une seule personne.',
+  },
+  {
+    q: 'Peut-on personnaliser entièrement la structure ?',
+    a: 'Absolument ! Nous offrons une personnalisation complète 360° avec impression HD de votre logo, couleurs corporate et design sur mesure.',
+  },
+];
+
 const StarRow = ({ size }) => (
   <>
     {Array.from({ length: 5 }).map((_, i) => (
@@ -33,6 +61,7 @@ const StarRow = ({ size }) => (
 );
 
 export default function Home() {
+  const [openFaq, setOpenFaq] = useState(null);
   return (
     <div className="min-h-screen bg-white">
       <main>
@@ -787,14 +816,9 @@ export default function Home() {
                 <p className="text-gray-500">Des réponses claires à vos questions</p>
               </Reveal>
               <RevealStagger className="space-y-3">
-                {[
-                  'Quel est le délai de livraison ?',
-                  'Livrez-vous en dehors de la France ?',
-                  'Proposez-vous la location de structures ?',
-                  'Quelle est la garantie sur vos produits ?',
-                  "Comment se déroule l'installation ?",
-                  'Peut-on personnaliser entièrement la structure ?',
-                ].map((q, i) => (
+                {faqs.map(({ q, a }, i) => {
+                  const isOpen = openFaq === i;
+                  return (
                   <motion.div
                     key={i}
                     variants={staggerChild}
@@ -807,21 +831,49 @@ export default function Home() {
                     }}
                   >
                     <button
+                      onClick={() => setOpenFaq(isOpen ? null : i)}
+                      aria-expanded={isOpen}
                       className="w-full flex items-center justify-between gap-4 text-left"
                       style={{ padding: '24px 0px' }}
                     >
                       <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'rgb(10, 10, 10)', lineHeight: 1.4 }}>
                         {q}
                       </h3>
-                      <div
+                      <motion.div
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
                         className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full"
                         style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}
                       >
                         <ChevronDown className="lucide lucide-chevron-down w-4 h-4" style={{ color: 'rgb(107, 114, 128)' }} />
-                      </div>
+                      </motion.div>
                     </button>
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          key="content"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                          style={{ overflow: 'hidden' }}
+                        >
+                          <p
+                            style={{
+                              fontSize: '15px',
+                              color: 'rgb(107, 114, 128)',
+                              lineHeight: 1.6,
+                              padding: '0px 0px 24px',
+                            }}
+                          >
+                            {a}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
-                ))}
+                  );
+                })}
               </RevealStagger>
             </div>
           </section>

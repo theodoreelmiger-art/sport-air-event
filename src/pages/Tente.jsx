@@ -1,9 +1,52 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, Check, Minus, Plus, ArrowRight, MessageCircle } from 'lucide-react';
 import { Reveal, RevealStagger, staggerChild } from '../lib/motion.jsx';
 
+const SIZES = [
+  { id: '3x3', label: '3x3m', price: 1180 },
+  { id: '4x4', label: '4x4m', price: 1490 },
+  { id: '5x5', label: '5x5m', price: 1790 },
+];
+
+const PAROIS = [
+  { id: 'simple', price: 170 },
+  { id: 'porte', price: 190 },
+  { id: 'petite-fenetre', price: 180 },
+  { id: 'grande-fenetre', price: 180 },
+  { id: 'double', price: 290 },
+];
+
+const OPTIONS = [
+  { id: 'auvent', price: 280 },
+  { id: 'connexion', price: 180 },
+];
+
+const ACCESSOIRES = [
+  { id: 'pompe', price: 60 },
+];
+
+const QUOTE_TARGET = '/Contact?product=Tente%20Spider';
+
 export default function Tente() {
+  const navigate = useNavigate();
+  const [selectedSize, setSelectedSize] = useState('4x4');
+  const [quantity, setQuantity] = useState(1);
+  const [parois, setParois] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [accessoires, setAccessoires] = useState([]);
+
+  const toggle = (list, setList, id) =>
+    setList(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
+
+  const sizePrice = SIZES.find((s) => s.id === selectedSize)?.price ?? 0;
+  const paroisPrice = PAROIS.filter((p) => parois.includes(p.id)).reduce((a, p) => a + p.price, 0);
+  const optionsPrice = OPTIONS.filter((o) => options.includes(o.id)).reduce((a, o) => a + o.price, 0);
+  const accessoiresPrice = ACCESSOIRES.filter((a) => accessoires.includes(a.id)).reduce((acc, a) => acc + a.price, 0);
+  const total = sizePrice * quantity + paroisPrice + optionsPrice + accessoiresPrice;
+  const totalFormatted = total.toLocaleString('en-US');
+
   return (
     <div className="min-h-screen bg-white">
       <main>
@@ -58,9 +101,14 @@ export default function Tente() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 md:gap-4">
                     <div className="">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => setSelectedSize('3x3')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${selectedSize === '3x3' ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${selectedSize === '3x3' ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                            {selectedSize === '3x3' && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">3x3m</div>
                             <div className="text-xs text-gray-500 leading-tight mt-0.5">300x300(H)x300cm</div>
@@ -70,11 +118,14 @@ export default function Tente() {
                       </div>
                     </div>
                     <div className="">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg">
+                      <div
+                        onClick={() => setSelectedSize('4x4')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${selectedSize === '4x4' ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-transparent pointer-events-none rounded-2xl"></div>
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-[#0066CC] bg-white">
-                            <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${selectedSize === '4x4' ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                            {selectedSize === '4x4' && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">4x4m</div>
@@ -82,11 +133,19 @@ export default function Tente() {
                             <div className="text-sm font-bold text-[#0066CC] mt-1">1490€</div>
                           </div>
                           <div className="flex items-center gap-1 bg-white rounded-xl border border-gray-200 p-0.5 flex-shrink-0">
-                            <button type="button" className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); setQuantity((q) => Math.max(1, q - 1)); }}
+                              className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                            >
                               <Minus className="lucide lucide-minus w-3 h-3" />
                             </button>
-                            <span className="w-6 text-center text-sm font-bold">1</span>
-                            <button type="button" className="w-7 h-7 rounded-lg bg-[#0066CC] hover:bg-blue-700 text-white flex items-center justify-center transition-colors">
+                            <span className="w-6 text-center text-sm font-bold">{quantity}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); setQuantity((q) => q + 1); }}
+                              className="w-7 h-7 rounded-lg bg-[#0066CC] hover:bg-blue-700 text-white flex items-center justify-center transition-colors"
+                            >
                               <Plus className="lucide lucide-plus w-3 h-3" />
                             </button>
                           </div>
@@ -94,9 +153,14 @@ export default function Tente() {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => setSelectedSize('5x5')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${selectedSize === '5x5' ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${selectedSize === '5x5' ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                            {selectedSize === '5x5' && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">5x5m</div>
                             <div className="text-xs text-gray-500 leading-tight mt-0.5">500x500(H)x500cm</div>
@@ -106,7 +170,12 @@ export default function Tente() {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <div className="relative overflow-hidden rounded-2xl p-4 md:p-6 bg-gradient-to-br from-[#0066CC] to-blue-700 shadow-xl cursor-pointer group" tabIndex={0}>
+                      <div
+                        onClick={() => navigate('/TenteSurMesure')}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/TenteSurMesure'); } }}
+                        className="relative overflow-hidden rounded-2xl p-4 md:p-6 bg-gradient-to-br from-[#0066CC] to-blue-700 shadow-xl cursor-pointer group"
+                        tabIndex={0}
+                      >
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0">
                           <div className="flex items-center gap-3 md:gap-4">
@@ -129,9 +198,14 @@ export default function Tente() {
                   <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Parois</h3>
                   <div className="grid grid-cols-2 gap-3 md:gap-4">
                     <div className="">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => toggle(parois, setParois, 'simple')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${parois.includes('simple') ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${parois.includes('simple') ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                            {parois.includes('simple') && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">Paroi simple</div>
                             <div className="text-sm font-bold text-[#0066CC] mt-1">170€</div>
@@ -140,9 +214,14 @@ export default function Tente() {
                       </div>
                     </div>
                     <div className="">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => toggle(parois, setParois, 'porte')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${parois.includes('porte') ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${parois.includes('porte') ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                            {parois.includes('porte') && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">Paroi avec porte (zipp central)</div>
                             <div className="text-sm font-bold text-[#0066CC] mt-1">190€</div>
@@ -151,9 +230,14 @@ export default function Tente() {
                       </div>
                     </div>
                     <div className="">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => toggle(parois, setParois, 'petite-fenetre')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${parois.includes('petite-fenetre') ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${parois.includes('petite-fenetre') ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                            {parois.includes('petite-fenetre') && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">Paroi avec petite fenêtre</div>
                             <div className="text-sm font-bold text-[#0066CC] mt-1">180€</div>
@@ -162,9 +246,14 @@ export default function Tente() {
                       </div>
                     </div>
                     <div className="">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => toggle(parois, setParois, 'grande-fenetre')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${parois.includes('grande-fenetre') ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${parois.includes('grande-fenetre') ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                            {parois.includes('grande-fenetre') && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">Paroi grande fenêtre</div>
                             <div className="text-sm font-bold text-[#0066CC] mt-1">180€</div>
@@ -173,9 +262,14 @@ export default function Tente() {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => toggle(parois, setParois, 'double')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${parois.includes('double') ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${parois.includes('double') ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                            {parois.includes('double') && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">Paroi double (impression recto - verso doublée)</div>
                             <div className="text-sm font-bold text-[#0066CC] mt-1">290€</div>
@@ -189,18 +283,28 @@ export default function Tente() {
                 <div>
                   <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Options supplémentaires</h3>
                   <div className="grid grid-cols-2 gap-3 md:gap-4">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                    <div
+                      onClick={() => toggle(options, setOptions, 'auvent')}
+                      className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${options.includes('auvent') ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                    >
                       <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${options.includes('auvent') ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                          {options.includes('auvent') && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm text-gray-900 leading-tight">Auvent</div>
                           <div className="text-sm font-bold text-[#0066CC] mt-1">280€</div>
                         </div>
                       </div>
                     </div>
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                    <div
+                      onClick={() => toggle(options, setOptions, 'connexion')}
+                      className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${options.includes('connexion') ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                    >
                       <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${options.includes('connexion') ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                          {options.includes('connexion') && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm text-gray-900 leading-tight">Connexion inter-tente</div>
                           <div className="text-sm font-bold text-[#0066CC] mt-1">180€</div>
@@ -213,9 +317,14 @@ export default function Tente() {
                 <div>
                   <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Accessoires</h3>
                   <div className="grid grid-cols-1 gap-4">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                    <div
+                      onClick={() => toggle(accessoires, setAccessoires, 'pompe')}
+                      className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${accessoires.includes('pompe') ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                    >
                       <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${accessoires.includes('pompe') ? 'border-[#0066CC] bg-white' : 'border-gray-300'}`}>
+                          {accessoires.includes('pompe') && <Check className="lucide lucide-check w-3 h-3 text-[#0066CC]" />}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm text-gray-900 leading-tight">Pompe 220 volts</div>
                           <div className="text-sm font-bold text-[#0066CC] mt-1">60€</div>
@@ -270,10 +379,10 @@ export default function Tente() {
                   <div className="relative p-5 md:p-6">
                     <div className="mb-4">
                       <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
-                      <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ 1,490</div>
+                      <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {totalFormatted}</div>
                     </div>
                     <Link
-                      to="/Contact"
+                      to={QUOTE_TARGET}
                       className="w-full bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:shadow-xl transition-all"
                       style={{ padding: '14px 24px', minHeight: '52px' }}
                     >
@@ -293,10 +402,10 @@ export default function Tente() {
             <div className="flex items-center justify-between gap-4 p-4">
               <div>
                 <div className="text-xs text-gray-500">Prix HT</div>
-                <div className="text-2xl font-bold text-[#0066CC]">€ 1,490</div>
+                <div className="text-2xl font-bold text-[#0066CC]">€ {totalFormatted}</div>
               </div>
               <Link
-                to="/Contact"
+                to={QUOTE_TARGET}
                 className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
                 style={{ padding: '12px 16px', minHeight: '48px' }}
               >

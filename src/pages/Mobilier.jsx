@@ -1,9 +1,29 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, Armchair, Table2, Wine, Check, ArrowRight } from 'lucide-react';
 import { Reveal } from '../lib/motion.jsx';
 
+const CONTACT_TARGET = '/Contact?product=Mobilier%20Gonflable';
+
+const MOBILIER_ITEMS = [
+  { name: 'Pouf gonflable imprimé', price: '180€', category: 'assises' },
+  { name: 'Chaise basse', price: '280€', category: 'assises' },
+  { name: 'Sofa 1 place', price: '290€', category: 'assises' },
+  { name: 'Sofa 2 places', price: '460€', category: 'assises' },
+];
+
 export default function Mobilier() {
+  const [category, setCategory] = useState('assises');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [pumpSelected, setPumpSelected] = useState(false);
+  const visibleItems = MOBILIER_ITEMS.filter((item) => item.category === category);
+
+  const parsePrice = (price) => parseInt(price.replace(/[^0-9]/g, ''), 10) || 0;
+  const total =
+    (selectedItem ? parsePrice(MOBILIER_ITEMS.find((i) => i.name === selectedItem)?.price || '0') : 0) +
+    (pumpSelected ? 60 : 0);
+
   return (
     <main>
       <div className="pt-24 md:pt-28 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50 min-h-screen">
@@ -59,34 +79,34 @@ export default function Mobilier() {
               <div>
                 <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Catégorie</h3>
                 <div className="grid grid-cols-3 gap-2 md:gap-4">
-                  <button type="button" className="relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all bg-[#0066CC] text-white shadow-2xl" tabIndex={0}>
+                  <button type="button" onClick={() => setCategory('assises')} aria-pressed={category === 'assises'} className={`relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all ${category === 'assises' ? 'bg-[#0066CC] text-white shadow-2xl' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] shadow-lg hover:shadow-xl'}`} tabIndex={0}>
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="relative flex flex-col items-center gap-1.5 md:gap-2">
-                      <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center bg-white/20 backdrop-blur-sm">
-                        <Armchair className="w-4 h-4 md:w-6 md:h-6 text-white" />
+                      <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center ${category === 'assises' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50'}`}>
+                        <Armchair className={`w-4 h-4 md:w-6 md:h-6 ${category === 'assises' ? 'text-white' : 'text-[#0066CC]'}`} />
                       </div>
                       <span className="font-bold text-xs md:text-sm">Assises</span>
-                      <div className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold bg-white/20 backdrop-blur-sm">4</div>
+                      <div className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${category === 'assises' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50 text-[#0066CC]'}`}>4</div>
                     </div>
                   </button>
-                  <button type="button" className="relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all bg-white text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] shadow-lg hover:shadow-xl" tabIndex={0}>
+                  <button type="button" onClick={() => setCategory('tables')} aria-pressed={category === 'tables'} className={`relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all ${category === 'tables' ? 'bg-[#0066CC] text-white shadow-2xl' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] shadow-lg hover:shadow-xl'}`} tabIndex={0}>
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="relative flex flex-col items-center gap-1.5 md:gap-2">
-                      <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center bg-blue-50">
-                        <Table2 className="w-4 h-4 md:w-6 md:h-6 text-[#0066CC]" />
+                      <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center ${category === 'tables' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50'}`}>
+                        <Table2 className={`w-4 h-4 md:w-6 md:h-6 ${category === 'tables' ? 'text-white' : 'text-[#0066CC]'}`} />
                       </div>
                       <span className="font-bold text-xs md:text-sm">Tables</span>
-                      <div className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold bg-blue-50 text-[#0066CC]">2</div>
+                      <div className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${category === 'tables' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50 text-[#0066CC]'}`}>2</div>
                     </div>
                   </button>
-                  <button type="button" className="relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all bg-white text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] shadow-lg hover:shadow-xl" tabIndex={0}>
+                  <button type="button" onClick={() => setCategory('bars')} aria-pressed={category === 'bars'} className={`relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all ${category === 'bars' ? 'bg-[#0066CC] text-white shadow-2xl' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] shadow-lg hover:shadow-xl'}`} tabIndex={0}>
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="relative flex flex-col items-center gap-1.5 md:gap-2">
-                      <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center bg-blue-50">
-                        <Wine className="w-4 h-4 md:w-6 md:h-6 text-[#0066CC]" />
+                      <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center ${category === 'bars' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50'}`}>
+                        <Wine className={`w-4 h-4 md:w-6 md:h-6 ${category === 'bars' ? 'text-white' : 'text-[#0066CC]'}`} />
                       </div>
                       <span className="font-bold text-xs md:text-sm">Bars</span>
-                      <div className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold bg-blue-50 text-[#0066CC]">1</div>
+                      <div className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${category === 'bars' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50 text-[#0066CC]'}`}>1</div>
                     </div>
                   </button>
                 </div>
@@ -96,42 +116,34 @@ export default function Mobilier() {
               <div>
                 <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Type de mobilier</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
-                    <div className="relative flex items-center gap-2">
-                      <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-sm text-gray-900 leading-tight">Pouf gonflable imprimé</div>
-                        <div className="text-sm font-bold text-[#0066CC] mt-1">180€</div>
+                  {visibleItems.map((item) => {
+                    const isSelected = selectedItem === item.name;
+                    return (
+                      <div
+                        key={item.name}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setSelectedItem(isSelected ? null : item.name)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setSelectedItem(isSelected ? null : item.name);
+                          }
+                        }}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${isSelected ? 'border-[#0066CC] bg-blue-50 shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                      >
+                        <div className="relative flex items-center gap-2">
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-[#0066CC] bg-[#0066CC]' : 'border-gray-300'}`}>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-sm text-gray-900 leading-tight">{item.name}</div>
+                            <div className="text-sm font-bold text-[#0066CC] mt-1">{item.price}</div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
-                    <div className="relative flex items-center gap-2">
-                      <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-sm text-gray-900 leading-tight">Chaise basse</div>
-                        <div className="text-sm font-bold text-[#0066CC] mt-1">280€</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
-                    <div className="relative flex items-center gap-2">
-                      <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-sm text-gray-900 leading-tight">Sofa 1 place</div>
-                        <div className="text-sm font-bold text-[#0066CC] mt-1">290€</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
-                    <div className="relative flex items-center gap-2">
-                      <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-sm text-gray-900 leading-tight">Sofa 2 places</div>
-                        <div className="text-sm font-bold text-[#0066CC] mt-1">460€</div>
-                      </div>
-                    </div>
-                  </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -140,9 +152,22 @@ export default function Mobilier() {
                 <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Accessoires</h3>
                 <div className="grid grid-cols-1 gap-4">
                   <div className="w-full">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setPumpSelected((v) => !v)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setPumpSelected((v) => !v);
+                        }
+                      }}
+                      className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${pumpSelected ? 'border-[#0066CC] bg-blue-50 shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                    >
                       <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${pumpSelected ? 'border-[#0066CC] bg-[#0066CC]' : 'border-gray-300'}`}>
+                          {pumpSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm text-gray-900 leading-tight">Pompe 220 volts</div>
                           <div className="text-sm font-bold text-[#0066CC] mt-1">60€</div>
@@ -185,10 +210,10 @@ export default function Mobilier() {
                 <div className="relative p-5 md:p-6">
                   <div className="mb-4">
                     <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
-                    <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ 0</div>
+                    <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {total}</div>
                   </div>
                   <Link
-                    to="/Contact"
+                    to={CONTACT_TARGET}
                     className="w-full bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:shadow-xl transition-all"
                     style={{ padding: '14px 24px', minHeight: '52px' }}
                   >
@@ -210,10 +235,10 @@ export default function Mobilier() {
           <div className="flex items-center justify-between gap-4 p-4">
             <div>
               <div className="text-xs text-gray-500">Prix HT</div>
-              <div className="text-2xl font-bold text-[#0066CC]">€ 0</div>
+              <div className="text-2xl font-bold text-[#0066CC]">€ {total}</div>
             </div>
             <Link
-              to="/Contact"
+              to={CONTACT_TARGET}
               className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
               style={{ padding: '12px 16px', minHeight: '48px' }}
             >

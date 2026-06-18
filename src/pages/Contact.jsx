@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   MessageCircle,
@@ -11,6 +13,7 @@ import {
   Mail,
   Phone,
   ArrowRight,
+  ArrowLeft,
   ChevronDown,
 } from 'lucide-react';
 import { Reveal, RevealStagger } from '../lib/motion.jsx';
@@ -43,13 +46,58 @@ const reviews = [
 ];
 
 const faqs = [
-  { emoji: '🚚', question: 'Quel est le délai de livraison ?' },
-  { emoji: '🌍', question: 'Livrez-vous en dehors de la Suisse ?' },
-  { emoji: '📋', question: 'Proposez-vous un service de location ?' },
-  { emoji: '🛡️', question: 'Quelle est la garantie sur vos produits ?' },
-  { emoji: '⚡', question: "L'installation est-elle facile ?" },
-  { emoji: '🎨', question: 'Puis-je personnaliser totalement ma structure ?' },
+  {
+    emoji: '🚚',
+    question: 'Quel est le délai de livraison ?',
+    answer:
+      'Entre 4 et 6 semaines pour une production standard, avec option express en 2-3 semaines.',
+  },
+  {
+    emoji: '🌍',
+    question: 'Livrez-vous en dehors de la Suisse ?',
+    answer:
+      "Oui, nous livrons dans toute l'Europe et à l'international avec nos partenaires logistiques de confiance.",
+  },
+  {
+    emoji: '📋',
+    question: 'Proposez-vous un service de location ?',
+    answer:
+      'Oui, nous proposons la location de structures pour les événements ponctuels. Contactez-nous pour un devis personnalisé.',
+  },
+  {
+    emoji: '🛡️',
+    question: 'Quelle est la garantie sur vos produits ?',
+    answer:
+      "2 ans sur la structure gonflable, 3 ans sur l'impression et la personnalisation graphique. Un service après-vente dédié est inclus.",
+  },
+  {
+    emoji: '⚡',
+    question: "L'installation est-elle facile ?",
+    answer:
+      "Absolument. Nos tentes Spider s'installent en 2 minutes par une seule personne. Chaque structure est livrée avec une notice détaillée et un support vidéo.",
+  },
+  {
+    emoji: '🎨',
+    question: 'Puis-je personnaliser totalement ma structure ?',
+    answer:
+      'Oui, impression 360° HD de votre logo, couleurs et visuels. Une maquette 3D gratuite est incluse avant production pour valider votre design.',
+  },
 ];
+
+const structureTypes = ['Tente Spider', 'Arches', 'Colonnes', 'Mobilier', 'Sur Mesure'];
+
+// Map a decoded ?product=… value onto one of the structureTypes options.
+function matchStructureType(product) {
+  if (!product) return '';
+  const p = product.toLowerCase();
+  if (p.includes('spider') || p.includes('tente')) return 'Tente Spider';
+  if (p.includes('arche')) return 'Arches';
+  if (p.includes('colonne')) return 'Colonnes';
+  if (p.includes('mobilier')) return 'Mobilier';
+  if (p.includes('mesure') || p.includes('dôme') || p.includes('dome') || p.includes('premium'))
+    return 'Sur Mesure';
+  return '';
+}
 
 const particles = Array.from({ length: 30 }, () => ({
   left: `${Math.random() * 100}%`,
@@ -57,6 +105,66 @@ const particles = Array.from({ length: 30 }, () => ({
 }));
 
 export default function Contact() {
+  const [searchParams] = useSearchParams();
+  const productParam = searchParams.get('product') || '';
+
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({
+    entreprise: '',
+    nom: '',
+    email: '',
+    telephone: '',
+    structure: matchStructureType(productParam),
+    dimensions: '',
+    message: '',
+  });
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [openFaq, setOpenFaq] = useState(null);
+
+  // Pre-select / pre-fill the project type from the URL query param.
+  useEffect(() => {
+    const matched = matchStructureType(productParam);
+    if (matched) {
+      setForm((f) => ({ ...f, structure: matched }));
+    }
+  }, [productParam]);
+
+  const updateField = (key) => (e) => {
+    const value = e.target.value;
+    setForm((f) => ({ ...f, [key]: value }));
+    setErrors((prev) => (prev[key] ? { ...prev, [key]: false } : prev));
+  };
+
+  const validateStep1 = () => {
+    const next = {};
+    if (!form.entreprise.trim()) next.entreprise = true;
+    if (!form.nom.trim()) next.nom = true;
+    if (!form.email.trim()) next.email = true;
+    if (!form.telephone.trim()) next.telephone = true;
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  const handleContinue = () => {
+    if (step === 1) {
+      if (!validateStep1()) return;
+      setStep(2);
+    } else if (step === 2) {
+      setStep(3);
+    }
+  };
+
+  const handleBack = () => {
+    setStep((s) => Math.max(1, s - 1));
+  };
+
+  const handleSubmit = () => {
+    setSubmitted(true);
+  };
+
+  const errorBorder = '#ef4444';
+
   return (
     <div className="pt-16 md:pt-20 bg-gradient-to-br from-white via-blue-50/30 to-white relative overflow-hidden min-h-screen">
       {particles.map((p, i) => (
@@ -151,7 +259,7 @@ export default function Contact() {
                 </p>
               </div>
 
-              <form className="relative">
+              <form className="relative" onSubmit={(e) => e.preventDefault()}>
                 <div className="bg-white rounded-3xl shadow-2xl border-2 border-gray-100 overflow-hidden">
                   <div className="relative bg-gradient-to-br from-[#0066CC] to-blue-600 p-6 md:p-10 overflow-hidden">
                     <div className="relative z-10 text-center">
@@ -160,85 +268,262 @@ export default function Contact() {
                     </div>
                     <div className="flex items-center justify-center gap-2 md:gap-4 mt-6 md:mt-8 relative z-10">
                       <div className="relative">
-                        <div className="w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all bg-white text-[#0066CC] shadow-xl">
+                        <div
+                          className={`w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all ${
+                            step >= 1 ? 'bg-white text-[#0066CC] shadow-xl' : 'bg-white/20 text-white/60'
+                          }`}
+                        >
                           <User className="lucide lucide-user w-4 h-4 md:w-6 md:h-6" />
                         </div>
                         <div className="text-[10px] md:text-xs mt-1 md:mt-2 text-center font-medium text-white">Informations</div>
                       </div>
-                      <div className="w-8 md:w-16 h-0.5 md:h-1 rounded-full transition-all bg-white/20" />
+                      <div
+                        className={`w-8 md:w-16 h-0.5 md:h-1 rounded-full transition-all ${
+                          step >= 2 ? 'bg-white' : 'bg-white/20'
+                        }`}
+                      />
                       <div className="relative">
-                        <div className="w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all bg-white/20 text-white/60">
+                        <div
+                          className={`w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all ${
+                            step >= 2 ? 'bg-white text-[#0066CC] shadow-xl' : 'bg-white/20 text-white/60'
+                          }`}
+                        >
                           <Package className="lucide lucide-package w-4 h-4 md:w-6 md:h-6" />
                         </div>
-                        <div className="text-[10px] md:text-xs mt-1 md:mt-2 text-center font-medium text-white/60">Projet</div>
+                        <div
+                          className={`text-[10px] md:text-xs mt-1 md:mt-2 text-center font-medium ${
+                            step >= 2 ? 'text-white' : 'text-white/60'
+                          }`}
+                        >
+                          Projet
+                        </div>
                       </div>
-                      <div className="w-8 md:w-16 h-0.5 md:h-1 rounded-full transition-all bg-white/20" />
+                      <div
+                        className={`w-8 md:w-16 h-0.5 md:h-1 rounded-full transition-all ${
+                          step >= 3 ? 'bg-white' : 'bg-white/20'
+                        }`}
+                      />
                       <div className="relative">
-                        <div className="w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all bg-white/20 text-white/60">
+                        <div
+                          className={`w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all ${
+                            step >= 3 ? 'bg-white text-[#0066CC] shadow-xl' : 'bg-white/20 text-white/60'
+                          }`}
+                        >
                           <Send className="lucide lucide-send w-4 h-4 md:w-6 md:h-6" />
                         </div>
-                        <div className="text-[10px] md:text-xs mt-1 md:mt-2 text-center font-medium text-white/60">Envoi</div>
+                        <div
+                          className={`text-[10px] md:text-xs mt-1 md:mt-2 text-center font-medium ${
+                            step >= 3 ? 'text-white' : 'text-white/60'
+                          }`}
+                        >
+                          Envoi
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <div className="p-4 md:p-10">
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    {step === 1 && (
+                      <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                          <div>
+                            <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Entreprise *</label>
+                            <div className="relative">
+                              <Building2 className="lucide lucide-building2 absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                              <input
+                                className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                                placeholder="Nom de votre entreprise"
+                                value={form.entreprise}
+                                onChange={updateField('entreprise')}
+                                style={errors.entreprise ? { borderColor: errorBorder } : undefined}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Nom complet *</label>
+                            <div className="relative">
+                              <User className="lucide lucide-user absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                              <input
+                                className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                                placeholder="Votre nom"
+                                value={form.nom}
+                                onChange={updateField('nom')}
+                                style={errors.nom ? { borderColor: errorBorder } : undefined}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Email *</label>
+                            <div className="relative">
+                              <Mail className="lucide lucide-mail absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                              <input
+                                type="email"
+                                className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                                placeholder="email@entreprise.com"
+                                value={form.email}
+                                onChange={updateField('email')}
+                                style={errors.email ? { borderColor: errorBorder } : undefined}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Téléphone *</label>
+                            <div className="relative">
+                              <Phone className="lucide lucide-phone absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                              <input
+                                className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                                placeholder="06 XX XX XX XX"
+                                value={form.telephone}
+                                onChange={updateField('telephone')}
+                                style={errors.telephone ? { borderColor: errorBorder } : undefined}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleContinue}
+                          className="w-full py-3 md:py-4 bg-[#0066CC] hover:bg-blue-700 text-white text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                        >
+                          Continuer
+                          <ArrowRight className="lucide lucide-arrow-right w-4 h-4 md:w-5 md:h-5" />
+                        </button>
+                      </div>
+                    )}
+
+                    {step === 2 && (
+                      <div className="space-y-6">
                         <div>
-                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Entreprise *</label>
+                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Type de structure</label>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+                            {structureTypes.map((type) => {
+                              const active = form.structure === type;
+                              return (
+                                <button
+                                  key={type}
+                                  type="button"
+                                  onClick={() => setForm((f) => ({ ...f, structure: type }))}
+                                  className={`py-2.5 md:py-3 px-3 rounded-xl border-2 text-sm md:text-base font-semibold transition-all ${
+                                    active
+                                      ? 'border-[#0066CC] bg-blue-50 text-[#0066CC]'
+                                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                                  }`}
+                                >
+                                  {type}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Dimensions / quantité</label>
                           <div className="relative">
-                            <Building2 className="lucide lucide-building2 absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                            <Package className="lucide lucide-package absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
                             <input
                               className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
-                              placeholder="Nom de votre entreprise"
-                              defaultValue=""
+                              placeholder="Ex : 3x3m, 2 unités…"
+                              value={form.dimensions}
+                              onChange={updateField('dimensions')}
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Nom complet *</label>
-                          <div className="relative">
-                            <User className="lucide lucide-user absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
-                            <input
-                              className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
-                              placeholder="Votre nom"
-                              defaultValue=""
-                            />
-                          </div>
+                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Votre message</label>
+                          <textarea
+                            rows={4}
+                            className="flex w-full border-input bg-transparent px-3 py-3 shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                            placeholder="Décrivez votre projet, vos besoins, vos délais…"
+                            value={form.message}
+                            onChange={updateField('message')}
+                          />
                         </div>
-                        <div>
-                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Email *</label>
-                          <div className="relative">
-                            <Mail className="lucide lucide-mail absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
-                            <input
-                              type="email"
-                              className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
-                              placeholder="email@entreprise.com"
-                              defaultValue=""
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Téléphone *</label>
-                          <div className="relative">
-                            <Phone className="lucide lucide-phone absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
-                            <input
-                              className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
-                              placeholder="06 XX XX XX XX"
-                              defaultValue=""
-                            />
-                          </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={handleBack}
+                            className="py-3 md:py-4 px-5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                          >
+                            <ArrowLeft className="lucide lucide-arrow-left w-4 h-4 md:w-5 md:h-5" />
+                            Retour
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleContinue}
+                            className="flex-1 py-3 md:py-4 bg-[#0066CC] hover:bg-blue-700 text-white text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                          >
+                            Continuer
+                            <ArrowRight className="lucide lucide-arrow-right w-4 h-4 md:w-5 md:h-5" />
+                          </button>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        className="w-full py-3 md:py-4 bg-[#0066CC] hover:bg-blue-700 text-white text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
-                      >
-                        Continuer
-                        <ArrowRight className="lucide lucide-arrow-right w-4 h-4 md:w-5 md:h-5" />
-                      </button>
-                    </div>
+                    )}
+
+                    {step === 3 && (
+                      <div className="space-y-6">
+                        {submitted ? (
+                          <div className="text-center py-6 md:py-10">
+                            <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                              <CircleCheck className="lucide lucide-circle-check w-7 h-7 md:w-8 md:h-8 text-green-600" />
+                            </div>
+                            <p className="text-base md:text-lg font-bold text-gray-900">
+                              Merci ! Votre demande a bien été envoyée. Nous vous répondons sous 24h.
+                            </p>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-4 md:p-6 space-y-2">
+                              <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2">Récapitulatif</h3>
+                              <div className="flex justify-between gap-4 text-sm md:text-base">
+                                <span className="text-gray-500">Entreprise</span>
+                                <span className="font-semibold text-gray-900 text-right">{form.entreprise}</span>
+                              </div>
+                              <div className="flex justify-between gap-4 text-sm md:text-base">
+                                <span className="text-gray-500">Nom complet</span>
+                                <span className="font-semibold text-gray-900 text-right">{form.nom}</span>
+                              </div>
+                              <div className="flex justify-between gap-4 text-sm md:text-base">
+                                <span className="text-gray-500">Email</span>
+                                <span className="font-semibold text-gray-900 text-right">{form.email}</span>
+                              </div>
+                              <div className="flex justify-between gap-4 text-sm md:text-base">
+                                <span className="text-gray-500">Téléphone</span>
+                                <span className="font-semibold text-gray-900 text-right">{form.telephone}</span>
+                              </div>
+                              {form.structure && (
+                                <div className="flex justify-between gap-4 text-sm md:text-base">
+                                  <span className="text-gray-500">Type de structure</span>
+                                  <span className="font-semibold text-gray-900 text-right">{form.structure}</span>
+                                </div>
+                              )}
+                              {form.dimensions && (
+                                <div className="flex justify-between gap-4 text-sm md:text-base">
+                                  <span className="text-gray-500">Dimensions / quantité</span>
+                                  <span className="font-semibold text-gray-900 text-right">{form.dimensions}</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <button
+                                type="button"
+                                onClick={handleBack}
+                                className="py-3 md:py-4 px-5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                              >
+                                <ArrowLeft className="lucide lucide-arrow-left w-4 h-4 md:w-5 md:h-5" />
+                                Retour
+                              </button>
+                              <button
+                                type="button"
+                                onClick={handleSubmit}
+                                className="flex-1 py-3 md:py-4 bg-[#0066CC] hover:bg-blue-700 text-white text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                              >
+                                Envoyer ma demande
+                                <Send className="lucide lucide-send w-4 h-4 md:w-5 md:h-5" />
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </form>
@@ -354,11 +639,25 @@ export default function Contact() {
                 delay={0.05 * i}
                 className="rounded-2xl border overflow-hidden transition-all border-gray-200 hover:border-gray-300"
               >
-                <button className="w-full flex items-center gap-4 px-5 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  aria-expanded={openFaq === i}
+                  className="w-full flex items-center gap-4 px-5 py-4 text-left bg-white hover:bg-gray-50 transition-colors"
+                >
                   <span className="text-xl flex-shrink-0">{faq.emoji}</span>
                   <span className="flex-1 font-semibold text-gray-900 text-sm md:text-base">{faq.question}</span>
-                  <ChevronDown className="lucide lucide-chevron-down w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200" />
+                  <ChevronDown
+                    className={`lucide lucide-chevron-down w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200 ${
+                      openFaq === i ? 'rotate-180' : ''
+                    }`}
+                  />
                 </button>
+                {openFaq === i && (
+                  <div className="px-5 pb-4 pl-14 text-sm md:text-base text-gray-600 leading-relaxed">
+                    {faq.answer}
+                  </div>
+                )}
               </Reveal>
             ))}
           </div>
@@ -367,6 +666,8 @@ export default function Contact() {
 
       {/* Floating chat button */}
       <motion.button
+        type="button"
+        onClick={() => window.open('https://wa.me/41774835190', '_blank', 'noopener,noreferrer')}
         className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#0066CC] to-[#0052A3] rounded-full shadow-2xl flex items-center justify-center text-white"
         tabIndex={0}
         whileHover={{ scale: 1.05 }}

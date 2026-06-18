@@ -200,7 +200,7 @@ export default function ColonnesSurMesure() {
                   </div>
                   <motion.div whileHover={{ scale: 1.02 }} className="flex-shrink-0">
                     <Link
-                      to="/Contact"
+                      to="/Contact?product=Colonnes%20Sur%20Mesure"
                       className="bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center gap-2 hover:shadow-xl transition-all"
                       style={{ padding: '12px 20px', minHeight: '48px' }}
                     >

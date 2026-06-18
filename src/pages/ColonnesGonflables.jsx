@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -11,7 +12,27 @@ import {
 } from 'lucide-react';
 import { Reveal, RevealStagger, staggerChild } from '../lib/motion.jsx';
 
+const HEIGHTS = [
+  { id: '2.5m', label: '2.5m', dims: '250x60(diamètre)cm', price: 590 },
+  { id: '3m', label: '3m', dims: '300x60(diamètre)cm', price: 670 },
+  { id: '4m', label: '4m', dims: '400x70(diamètre)cm', price: 750 },
+];
+
+const LED_PRICE = 95;
+const PUMP_PRICE = 60;
+const QUOTE_TARGET = '/Contact?product=Colonnes%20Gonflables';
+
 export default function ColonnesGonflables() {
+  const navigate = useNavigate();
+  const [selectedHeight, setSelectedHeight] = useState('3m');
+  const [quantity, setQuantity] = useState(1);
+  const [ledOn, setLedOn] = useState(false);
+  const [pumpOn, setPumpOn] = useState(false);
+
+  const heightData = HEIGHTS.find((h) => h.id === selectedHeight) || HEIGHTS[1];
+  const totalPrice =
+    heightData.price * quantity + (ledOn ? LED_PRICE : 0) + (pumpOn ? PUMP_PRICE : 0);
+
   return (
     <div className="overflow-x-hidden">
       <main>
@@ -86,9 +107,26 @@ export default function ColonnesGonflables() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 md:gap-4">
                     <div className="">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => setSelectedHeight('2.5m')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                          selectedHeight === '2.5m'
+                            ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                        }`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div
+                            className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                              selectedHeight === '2.5m'
+                                ? 'border-[#0066CC] bg-white'
+                                : 'border-gray-300'
+                            }`}
+                          >
+                            {selectedHeight === '2.5m' && (
+                              <Check className="w-3 h-3 text-[#0066CC]" />
+                            )}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">
                               2.5m
@@ -102,11 +140,26 @@ export default function ColonnesGonflables() {
                       </div>
                     </div>
                     <div className="">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg">
+                      <div
+                        onClick={() => setSelectedHeight('3m')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                          selectedHeight === '3m'
+                            ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                        }`}
+                      >
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-transparent pointer-events-none rounded-2xl"></div>
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-[#0066CC] bg-white">
-                            <Check className="w-3 h-3 text-[#0066CC]" />
+                          <div
+                            className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                              selectedHeight === '3m'
+                                ? 'border-[#0066CC] bg-white'
+                                : 'border-gray-300'
+                            }`}
+                          >
+                            {selectedHeight === '3m' && (
+                              <Check className="w-3 h-3 text-[#0066CC]" />
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">
@@ -120,13 +173,21 @@ export default function ColonnesGonflables() {
                           <div className="flex items-center gap-1 bg-white rounded-xl border border-gray-200 p-0.5 flex-shrink-0">
                             <button
                               type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setQuantity((q) => Math.max(1, q - 1));
+                              }}
                               className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
-                            <span className="w-6 text-center text-sm font-bold">1</span>
+                            <span className="w-6 text-center text-sm font-bold">{quantity}</span>
                             <button
                               type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setQuantity((q) => q + 1);
+                              }}
                               className="w-7 h-7 rounded-lg bg-[#0066CC] hover:bg-blue-700 text-white flex items-center justify-center transition-colors"
                             >
                               <Plus className="w-3 h-3" />
@@ -136,9 +197,26 @@ export default function ColonnesGonflables() {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                      <div
+                        onClick={() => setSelectedHeight('4m')}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                          selectedHeight === '4m'
+                            ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                        }`}
+                      >
                         <div className="relative flex items-center gap-2">
-                          <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                          <div
+                            className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                              selectedHeight === '4m'
+                                ? 'border-[#0066CC] bg-white'
+                                : 'border-gray-300'
+                            }`}
+                          >
+                            {selectedHeight === '4m' && (
+                              <Check className="w-3 h-3 text-[#0066CC]" />
+                            )}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm text-gray-900 leading-tight">
                               4m
@@ -153,6 +231,8 @@ export default function ColonnesGonflables() {
                     </div>
                     <div className="col-span-2">
                       <div
+                        onClick={() => navigate('/ColonnesSurMesure')}
+                        role="button"
                         className="relative overflow-hidden rounded-2xl p-4 md:p-6 bg-gradient-to-br from-[#0066CC] to-blue-700 shadow-xl cursor-pointer group"
                         tabIndex={0}
                       >
@@ -182,11 +262,22 @@ export default function ColonnesGonflables() {
                     Option éclairage
                   </h3>
                   <button
-                    className="w-full p-4 md:p-6 rounded-2xl border-2 transition-all shadow-md border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg"
+                    onClick={() => setLedOn((v) => !v)}
+                    className={`w-full p-4 md:p-6 rounded-2xl border-2 transition-all shadow-md ${
+                      ledOn
+                        ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
+                        : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                    }`}
                     tabIndex={0}
                   >
                     <div className="flex items-start gap-3 md:gap-4">
-                      <div className="w-5 h-5 md:w-6 md:h-6 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 md:mt-1 border-gray-300"></div>
+                      <div
+                        className={`w-5 h-5 md:w-6 md:h-6 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 md:mt-1 ${
+                          ledOn ? 'border-[#0066CC] bg-white' : 'border-gray-300'
+                        }`}
+                      >
+                        {ledOn && <Check className="w-3 h-3 md:w-4 md:h-4 text-[#0066CC]" />}
+                      </div>
                       <div className="flex-1 text-left">
                         <div className="font-bold text-gray-900 flex items-center gap-2 text-sm md:text-lg mb-1">
                           <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
@@ -205,9 +296,23 @@ export default function ColonnesGonflables() {
                 <div>
                   <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Accessoires</h3>
                   <div className="grid grid-cols-1 gap-4">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                    <div
+                      onClick={() => setPumpOn((v) => !v)}
+                      role="button"
+                      className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                        pumpOn
+                          ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
+                          : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                      }`}
+                    >
                       <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                        <div
+                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                            pumpOn ? 'border-[#0066CC] bg-white' : 'border-gray-300'
+                          }`}
+                        >
+                          {pumpOn && <Check className="w-3 h-3 text-[#0066CC]" />}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm text-gray-900 leading-tight">
                             Pompe 220 volts
@@ -264,10 +369,10 @@ export default function ColonnesGonflables() {
                   <div className="relative p-5 md:p-6">
                     <div className="mb-4">
                       <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
-                      <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ 670</div>
+                      <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {totalPrice}</div>
                     </div>
                     <Link
-                      to="/Contact"
+                      to={QUOTE_TARGET}
                       className="w-full bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:shadow-xl transition-all"
                       tabIndex={0}
                       style={{ padding: '14px 24px', minHeight: '52px' }}
@@ -292,10 +397,10 @@ export default function ColonnesGonflables() {
               <div className="flex items-center justify-between gap-4 p-4">
                 <div>
                   <div className="text-xs text-gray-500">Prix HT</div>
-                  <div className="text-2xl font-bold text-[#0066CC]">€ 670</div>
+                  <div className="text-2xl font-bold text-[#0066CC]">€ {totalPrice}</div>
                 </div>
                 <Link
-                  to="/Contact"
+                  to={QUOTE_TARGET}
                   className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
                   style={{ padding: '12px 16px', minHeight: '48px' }}
                 >

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -88,6 +89,9 @@ const specs = [
 ];
 
 export default function SpiderTent() {
+  const [selectedSize, setSelectedSize] = useState(
+    sizes.find((s) => s.popular)?.title ?? sizes[0].title
+  );
   return (
     <div className="pt-20 bg-gradient-to-br from-white via-blue-50/20 to-white">
       <section className="py-20 relative overflow-hidden">
@@ -133,7 +137,7 @@ export default function SpiderTent() {
                     <ArrowRight className="w-5 h-5" />
                   </motion.button>
                 </Link>
-                <Link to="/Contact?product=Tente Spider">
+                <Link to="/Contact?product=Tente%20Spider">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     className="px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-full"
@@ -195,7 +199,12 @@ export default function SpiderTent() {
                 key={size.title}
                 variants={staggerChild}
                 whileHover={{ y: -4 }}
-                className={`relative bg-white rounded-3xl shadow-xl border-3 cursor-pointer transition-all ${size.borderClass}`}
+                onClick={() => setSelectedSize(size.title)}
+                className={`relative bg-white rounded-3xl shadow-xl border-3 cursor-pointer transition-all ${
+                  selectedSize === size.title
+                    ? 'border-[#0066CC] ring-2 ring-[#0066CC]/40'
+                    : size.borderClass
+                }`}
               >
                 {size.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#0066CC] text-white text-sm font-bold rounded-full">
@@ -272,7 +281,7 @@ export default function SpiderTent() {
                   <ArrowRight className="w-5 h-5" />
                 </motion.button>
               </Link>
-              <Link to="/Contact?product=Tente Spider">
+              <Link to="/Contact?product=Tente%20Spider">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   className="px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-full"

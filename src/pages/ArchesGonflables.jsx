@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -9,7 +10,41 @@ import {
 } from 'lucide-react';
 import { Reveal } from '../lib/motion.jsx';
 
+const PRODUCT = 'Arches Gonflables';
+const CONTACT_TARGET = '/Contact?product=Arches%20Gonflables';
+
+const dimensions = [
+  { id: '5m', title: '5m', dims: '500x320(H)x60cm', price: 1490, span: '' },
+  { id: '6m', title: '6m', dims: '600x380(H)x60cm', price: 1590, span: '' },
+  { id: '7m', title: '7m', dims: '700x430(H)x80cm', price: 1790, span: '' },
+  { id: '8m', title: '8m', dims: '800x480(H)x90cm', price: 1990, span: '' },
+  { id: '10m', title: '10m', dims: '1000x580(H)x90cm', price: 2490, span: 'sm:col-span-2' },
+];
+
+const POMPE_PRICE = 60;
+
+function formatPrice(value) {
+  return value.toLocaleString('en-US');
+}
+
 export default function ArchesGonflables() {
+  const navigate = useNavigate();
+  const [selectedDimension, setSelectedDimension] = useState('6m');
+  const [quantity, setQuantity] = useState(1);
+  const [pompeSelected, setPompeSelected] = useState(false);
+
+  const selected = dimensions.find((d) => d.id === selectedDimension) ?? dimensions[1];
+  const totalPrice =
+    selected.price * quantity + (pompeSelected ? POMPE_PRICE : 0);
+
+  const handleSelectDimension = (id) => {
+    setSelectedDimension(id);
+    if (quantity < 1) setQuantity(1);
+  };
+
+  const decrement = () => setQuantity((q) => Math.max(1, q - 1));
+  const increment = () => setQuantity((q) => q + 1);
+
   return (
     <div className="overflow-x-hidden">
       <div className="pt-24 md:pt-28 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50 min-h-screen">
@@ -80,86 +115,82 @@ export default function ArchesGonflables() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
-                  <div className="">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
-                      <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-gray-900 leading-tight">5m</div>
-                          <div className="text-xs text-gray-500 leading-tight mt-0.5">500x320(H)x60cm</div>
-                          <div className="text-sm font-bold text-[#0066CC] mt-1">1490€</div>
+                  {dimensions.map((dim) => {
+                    const isSelected = selectedDimension === dim.id;
+                    return (
+                      <div key={dim.id} className={dim.span}>
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => handleSelectDimension(dim.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleSelectDimension(dim.id);
+                            }
+                          }}
+                          className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                            isSelected
+                              ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
+                              : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                          }`}
+                        >
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-transparent pointer-events-none rounded-2xl"></div>
+                          )}
+                          <div className="relative flex items-center gap-2">
+                            <div
+                              className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                                isSelected ? 'border-[#0066CC] bg-white' : 'border-gray-300'
+                              }`}
+                            >
+                              {isSelected && <Check className="w-3 h-3 text-[#0066CC]" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-sm text-gray-900 leading-tight">{dim.title}</div>
+                              <div className="text-xs text-gray-500 leading-tight mt-0.5">{dim.dims}</div>
+                              <div className="text-sm font-bold text-[#0066CC] mt-1">{dim.price}€</div>
+                            </div>
+                            {isSelected && (
+                              <div className="flex items-center gap-1 bg-white rounded-xl border border-gray-200 p-0.5 flex-shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    decrement();
+                                  }}
+                                  className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                                >
+                                  <Minus className="w-3 h-3" />
+                                </button>
+                                <span className="w-6 text-center text-sm font-bold">{quantity}</span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    increment();
+                                  }}
+                                  className="w-7 h-7 rounded-lg bg-[#0066CC] hover:bg-blue-700 text-white flex items-center justify-center transition-colors"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg">
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-transparent pointer-events-none rounded-2xl"></div>
-                      <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-[#0066CC] bg-white">
-                          <Check className="w-3 h-3 text-[#0066CC]" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-gray-900 leading-tight">6m</div>
-                          <div className="text-xs text-gray-500 leading-tight mt-0.5">600x380(H)x60cm</div>
-                          <div className="text-sm font-bold text-[#0066CC] mt-1">1590€</div>
-                        </div>
-                        <div className="flex items-center gap-1 bg-white rounded-xl border border-gray-200 p-0.5 flex-shrink-0">
-                          <button
-                            type="button"
-                            className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="w-6 text-center text-sm font-bold">1</span>
-                          <button
-                            type="button"
-                            className="w-7 h-7 rounded-lg bg-[#0066CC] hover:bg-blue-700 text-white flex items-center justify-center transition-colors"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
-                      <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-gray-900 leading-tight">7m</div>
-                          <div className="text-xs text-gray-500 leading-tight mt-0.5">700x430(H)x80cm</div>
-                          <div className="text-sm font-bold text-[#0066CC] mt-1">1790€</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
-                      <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-gray-900 leading-tight">8m</div>
-                          <div className="text-xs text-gray-500 leading-tight mt-0.5">800x480(H)x90cm</div>
-                          <div className="text-sm font-bold text-[#0066CC] mt-1">1990€</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
-                      <div className="relative flex items-center gap-2">
-                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-gray-900 leading-tight">10m</div>
-                          <div className="text-xs text-gray-500 leading-tight mt-0.5">1000x580(H)x90cm</div>
-                          <div className="text-sm font-bold text-[#0066CC] mt-1">2490€</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    );
+                  })}
                   <div className="col-span-1 sm:col-span-2">
                     <div
+                      role="button"
+                      onClick={() => navigate(CONTACT_TARGET)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          navigate(CONTACT_TARGET);
+                        }
+                      }}
                       className="relative overflow-hidden rounded-2xl p-4 md:p-6 bg-gradient-to-br from-[#0066CC] to-blue-700 shadow-xl cursor-pointer group"
                       tabIndex={0}
                     >
@@ -183,9 +214,30 @@ export default function ArchesGonflables() {
               <div>
                 <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Accessoires</h3>
                 <div className="grid grid-cols-1 gap-4">
-                  <div className="relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setPompeSelected((v) => !v)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setPompeSelected((v) => !v);
+                      }
+                    }}
+                    className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                      pompeSelected
+                        ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
+                        : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                    }`}
+                  >
                     <div className="relative flex items-center gap-2">
-                      <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 border-gray-300"></div>
+                      <div
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                          pompeSelected ? 'border-[#0066CC] bg-white' : 'border-gray-300'
+                        }`}
+                      >
+                        {pompeSelected && <Check className="w-3 h-3 text-[#0066CC]" />}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <div className="font-semibold text-sm text-gray-900 leading-tight">Pompe 220 volts</div>
                         <div className="text-sm font-bold text-[#0066CC] mt-1">60€</div>
@@ -230,10 +282,10 @@ export default function ArchesGonflables() {
                 <div className="relative p-5 md:p-6">
                   <div className="mb-4">
                     <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
-                    <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ 1,590</div>
+                    <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {formatPrice(totalPrice)}</div>
                   </div>
                   <Link
-                    to="/Contact"
+                    to={CONTACT_TARGET}
                     className="w-full bg-[#0066CC] text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
                     tabIndex={0}
                     style={{ padding: '14px 24px', minHeight: '52px' }}
@@ -255,10 +307,10 @@ export default function ArchesGonflables() {
             <div className="flex items-center justify-between gap-4 p-4">
               <div>
                 <div className="text-xs text-gray-500">Prix HT</div>
-                <div className="text-2xl font-bold text-[#0066CC]">€ 1,590</div>
+                <div className="text-2xl font-bold text-[#0066CC]">€ {formatPrice(totalPrice)}</div>
               </div>
               <Link
-                to="/Contact"
+                to={CONTACT_TARGET}
                 className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
                 style={{ padding: '12px 16px', minHeight: '48px' }}
               >

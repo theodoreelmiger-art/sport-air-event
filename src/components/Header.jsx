@@ -6,11 +6,13 @@ import { LOGO, PRODUCT_LINKS } from '../data/site.js';
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [prodOpen, setProdOpen] = useState(false);
+  const [deskProd, setDeskProd] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     setOpen(false);
     setProdOpen(false);
+    setDeskProd(false);
   }, [location.pathname]);
 
   const isActive = (p) => location.pathname === p;
@@ -58,9 +60,12 @@ export default function Header() {
           </Link>
 
           <div className="nav-item relative">
-            <button className="flex items-center gap-1 px-3 py-2 text-[13px] font-medium rounded-full transition-colors text-gray-700 hover:text-[#1a56db] hover:bg-gray-50">
+            <button
+              onClick={() => setDeskProd((v) => !v)}
+              className="flex items-center gap-1 px-3 py-2 text-[13px] font-medium rounded-full transition-colors text-gray-700 hover:text-[#1a56db] hover:bg-gray-50"
+            >
               Produits
-              <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+              <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform ${deskProd ? 'rotate-180' : ''}`} />
             </button>
             <div
               className="nav-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 py-2"
@@ -71,6 +76,7 @@ export default function Header() {
                 background: 'rgba(255, 255, 255, 0.95)',
                 border: '1px solid rgba(0, 0, 0, 0.06)',
                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 8px 32px',
+                ...(deskProd ? { opacity: 1, visibility: 'visible', transform: 'translateX(-50%) translateY(0)' } : {}),
               }}
             >
               {PRODUCT_LINKS.map((p) => (

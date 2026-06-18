@@ -19,6 +19,7 @@ import Process from './pages/Process.jsx';
 import Quality from './pages/Quality.jsx';
 import Cgv from './pages/Cgv.jsx';
 import GuideStructuresGonflables from './pages/GuideStructuresGonflables.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 export default function App() {
   return (
@@ -43,7 +44,7 @@ export default function App() {
         <Route path="/Quality" element={<Quality />} />
         <Route path="/cgv" element={<Cgv />} />
         <Route path="/guide-structures-gonflables" element={<GuideStructuresGonflables />} />
-        <Route path="*" element={<Navigate to="/Home" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
   );
