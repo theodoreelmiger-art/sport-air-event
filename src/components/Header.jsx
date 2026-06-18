@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, Globe, Menu, X } from 'lucide-react';
+import { ChevronDown, Globe, Menu, X, Check } from 'lucide-react';
 import { LOGO, PRODUCT_LINKS } from '../data/site.js';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [prodOpen, setProdOpen] = useState(false);
   const [deskProd, setDeskProd] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     setOpen(false);
     setProdOpen(false);
     setDeskProd(false);
+    setLangOpen(false);
   }, [location.pathname]);
 
   const isActive = (p) => location.pathname === p;
@@ -114,13 +116,38 @@ export default function Header() {
         </nav>
 
         <div className="hidden lg:flex items-center justify-end gap-2 flex-shrink-0">
-          <button
-            className="flex items-center gap-1.5 px-3 py-2 font-medium text-gray-600 hover:text-[#1a56db] rounded-full hover:bg-gray-50 transition-colors"
-            style={{ fontSize: 13 }}
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>FR</span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setLangOpen((v) => !v)}
+              className="flex items-center gap-1.5 px-3 py-2 font-medium text-gray-600 hover:text-[#1a56db] rounded-full hover:bg-gray-50 transition-colors"
+              style={{ fontSize: 13 }}
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>FR</span>
+              <ChevronDown className={`w-3 h-3 opacity-60 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {langOpen && (
+              <div
+                className="absolute top-full right-0 mt-2 w-40 py-1.5 text-left"
+                style={{
+                  borderRadius: 16,
+                  backdropFilter: 'blur(24px)',
+                  WebkitBackdropFilter: 'blur(24px)',
+                  background: 'rgba(255, 255, 255, 0.97)',
+                  border: '1px solid rgba(0, 0, 0, 0.06)',
+                  boxShadow: 'rgba(0, 0, 0, 0.12) 0px 8px 32px',
+                }}
+              >
+                <button
+                  onClick={() => setLangOpen(false)}
+                  className="w-full flex items-center justify-between px-4 py-2 text-sm text-[#1a56db] font-medium hover:bg-gray-50"
+                >
+                  <span>🇫🇷 Français</span>
+                  <Check className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+          </div>
           <Link
             className="cta-iridescent inline-flex items-center text-white font-semibold rounded-full transition-all hover:scale-[1.02]"
             to="/Contact"

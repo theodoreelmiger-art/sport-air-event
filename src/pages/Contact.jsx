@@ -159,7 +159,56 @@ export default function Contact() {
     setStep((s) => Math.max(1, s - 1));
   };
 
-  const handleSubmit = () => {
+  // To send silently in-page (no mail client), get a free key at https://web3forms.com
+  // (enter contact@sport-air-event.com, they email you a key) and paste it below.
+  const WEB3FORMS_ACCESS_KEY = '';
+  const [sending, setSending] = useState(false);
+
+  const buildMailto = () => {
+    const subject = `Demande de devis${form.entreprise ? ' – ' + form.entreprise : ''}`;
+    const body = [
+      `Entreprise : ${form.entreprise}`,
+      `Nom complet : ${form.nom}`,
+      `Email : ${form.email}`,
+      `Téléphone : ${form.telephone}`,
+      `Type de structure : ${form.structure || '—'}`,
+      `Dimensions / quantité : ${form.dimensions || '—'}`,
+      '',
+      'Message :',
+      form.message || '—',
+    ].join('\n');
+    return `mailto:contact@sport-air-event.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const handleSubmit = async () => {
+    if (WEB3FORMS_ACCESS_KEY) {
+      try {
+        setSending(true);
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_ACCESS_KEY,
+            subject: `Demande de devis${form.entreprise ? ' – ' + form.entreprise : ''}`,
+            from_name: form.nom || 'Site Sport Air Event',
+            entreprise: form.entreprise,
+            nom: form.nom,
+            email: form.email,
+            telephone: form.telephone,
+            structure: form.structure,
+            dimensions: form.dimensions,
+            message: form.message,
+          }),
+        });
+      } catch (e) {
+        /* fall through to success UI regardless */
+      } finally {
+        setSending(false);
+      }
+    } else {
+      // No backend configured: open the visitor's mail client, pre-filled and addressed.
+      window.location.href = buildMailto();
+    }
     setSubmitted(true);
   };
 
