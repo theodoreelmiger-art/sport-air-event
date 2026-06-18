@@ -1,0 +1,16 @@
+{
+  "name": "Sport Air Event",
+  "short_name": "Sport Air Event",
+  "description": "Structures gonflables événementielles premium. Conception Suisse.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a56db",
+  "icons": [
+    {
+      "src": "images/00_385b48bed_WhatsAppImage2026-01-16at132825.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

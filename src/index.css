@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #1a56db;
+  --primary-dark: #1240a8;
+  --text-primary: #0a0a0a;
+  --text-secondary: #6b7280;
+  --bg-white: #ffffff;
+  --bg-subtle: #f8fafc;
+  --bg-dark: #0f172a;
+  --border: rgba(0, 0, 0, 0.08);
+  --glass-light: rgba(255, 255, 255, 0.82);
+  --glass-dark: rgba(0, 0, 0, 0.28);
+  --glass-blur: blur(24px);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.14);
+  --shadow-glass: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-full: 9999px;
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --section-padding: 96px;
+  --section-padding-mobile: 64px;
+  --max-width: 1200px;
+}
+
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--bg-white);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Iridescent border animation */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes rotate-border {
+  to {
+    --angle: 360deg;
+  }
+}
+.cta-iridescent {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--primary), var(--primary)) padding-box,
+    conic-gradient(from var(--angle), #a78bfa, #818cf8, #38bdf8, #34d399, #fbbf24, #f472b6, #a78bfa) border-box;
+  animation: rotate-border 3s linear infinite;
+}
+
+/* Nav dropdown */
+.nav-dropdown {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.2s var(--ease-smooth), transform 0.2s var(--ease-smooth), visibility 0.2s;
+}
+.nav-item:hover .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Logo marquee */
+@keyframes scroll-logos {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+.logo-track {
+  display: flex;
+  width: max-content;
+  animation: scroll-logos 22s linear infinite;
+  align-items: center;
+}
+.logo-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 48px;
+  height: 48px;
+}
+.logo-item img {
+  max-width: 120px !important;
+  max-height: 40px !important;
+  width: auto;
+  height: auto;
+  object-fit: contain !important;
+  display: block;
+  filter: none;
+  opacity: 1;
+  mix-blend-mode: multiply;
+}
+@media (max-width: 768px) {
+  .logo-item img {
+    max-width: 80px;
+    max-height: 30px;
+  }
+  .logo-item {
+    margin: 0 24px;
+  }
+}
+
+/* Focus visible */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Remove duplicate nav pseudo-elements */
+nav::before,
+nav::after,
+header::before,
+header::after {
+  display: none !important;
+  content: none !important;
+}
