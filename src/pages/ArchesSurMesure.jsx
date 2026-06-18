@@ -1,9 +1,12 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Check, ArrowRight } from 'lucide-react';
 import { Reveal } from '../lib/motion.jsx';
+import DevisModal from '../components/DevisModal.jsx';
 
 export default function ArchesSurMesure() {
+  const [devisOpen, setDevisOpen] = useState(false);
+
   return (
     <div className="pt-24 md:pt-28 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
@@ -205,14 +208,14 @@ export default function ArchesSurMesure() {
                     <div className="text-2xl md:text-3xl font-bold text-[#0066CC]">Sur devis</div>
                   </div>
                   <motion.div whileHover={{ scale: 1.02 }} className="flex-shrink-0">
-                    <Link
-                      to="/Contact?product=Arches%20Sur%20Mesure"
+                    <button
+                      onClick={() => setDevisOpen(true)}
                       className="bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center gap-2 hover:shadow-xl transition-all"
                       style={{ padding: '12px 20px', minHeight: '48px' }}
                     >
                       Demander un devis
                       <ArrowRight className="w-5 h-5" />
-                    </Link>
+                    </button>
                   </motion.div>
                 </div>
               </div>
@@ -220,6 +223,16 @@ export default function ArchesSurMesure() {
           </div>
         </div>
       </div>
+
+      <DevisModal
+        open={devisOpen}
+        onClose={() => setDevisOpen(false)}
+        productName="Arche Sur Mesure"
+        groupLabel={null}
+        lines={[]}
+        extras={[]}
+        total={null}
+      />
     </div>
   );
 }

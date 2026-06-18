@@ -1,28 +1,45 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles, Armchair, Table2, Wine, Check, ArrowRight } from 'lucide-react';
+import { Sparkles, Armchair, Table2, Wine, Check, ArrowRight, Minus, Plus } from 'lucide-react';
 import { Reveal } from '../lib/motion.jsx';
-
-const CONTACT_TARGET = '/Contact?product=Mobilier%20Gonflable';
+import DevisModal from '../components/DevisModal.jsx';
 
 const MOBILIER_ITEMS = [
   { name: 'Pouf gonflable imprimé', price: '180€', category: 'assises' },
   { name: 'Chaise basse', price: '280€', category: 'assises' },
   { name: 'Sofa 1 place', price: '290€', category: 'assises' },
   { name: 'Sofa 2 places', price: '460€', category: 'assises' },
+  { name: 'Table basse', price: '370€', category: 'tables' },
+  { name: 'Table haute', price: '490€', category: 'tables' },
+  { name: 'Bar gonflable droit', price: '600€', category: 'bars' },
 ];
 
 export default function Mobilier() {
   const [category, setCategory] = useState('assises');
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [quantities, setQuantities] = useState({});
   const [pumpSelected, setPumpSelected] = useState(false);
+  const [devisOpen, setDevisOpen] = useState(false);
   const visibleItems = MOBILIER_ITEMS.filter((item) => item.category === category);
 
   const parsePrice = (price) => parseInt(price.replace(/[^0-9]/g, ''), 10) || 0;
-  const total =
-    (selectedItem ? parsePrice(MOBILIER_ITEMS.find((i) => i.name === selectedItem)?.price || '0') : 0) +
-    (pumpSelected ? 60 : 0);
+  const itemQty = (name) => quantities[name] || 0;
+  const setItemQty = (name, next) =>
+    setQuantities((q) => ({ ...q, [name]: Math.max(0, next) }));
+
+  const itemsTotal = MOBILIER_ITEMS.reduce(
+    (sum, item) => sum + parsePrice(item.price) * itemQty(item.name),
+    0
+  );
+  const total = itemsTotal + (pumpSelected ? 60 : 0);
+
+  const extras = [
+    ...MOBILIER_ITEMS.filter((item) => itemQty(item.name) > 0).map((item) => ({
+      label: item.name,
+      qty: itemQty(item.name),
+      unit: parsePrice(item.price),
+    })),
+    ...(pumpSelected ? [{ label: 'Pompe 220 volts', qty: 1, unit: 60 }] : []),
+  ];
 
   return (
     <main>
@@ -117,20 +134,12 @@ export default function Mobilier() {
                 <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Type de mobilier</h3>
                 <div className="grid grid-cols-2 gap-4">
                   {visibleItems.map((item) => {
-                    const isSelected = selectedItem === item.name;
+                    const qty = itemQty(item.name);
+                    const isSelected = qty > 0;
                     return (
                       <div
                         key={item.name}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => setSelectedItem(isSelected ? null : item.name)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            setSelectedItem(isSelected ? null : item.name);
-                          }
-                        }}
-                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${isSelected ? 'border-[#0066CC] bg-blue-50 shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
+                        className={`relative rounded-2xl border-2 transition-colors shadow-md p-4 ${isSelected ? 'border-[#0066CC] bg-blue-50 shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
                       >
                         <div className="relative flex items-center gap-2">
                           <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-[#0066CC] bg-[#0066CC]' : 'border-gray-300'}`}>
@@ -140,6 +149,26 @@ export default function Mobilier() {
                             <div className="font-semibold text-sm text-gray-900 leading-tight">{item.name}</div>
                             <div className="text-sm font-bold text-[#0066CC] mt-1">{item.price}</div>
                           </div>
+                        </div>
+                        <div className="relative flex items-center justify-end gap-2 mt-3">
+                          <button
+                            type="button"
+                            aria-label={`Retirer ${item.name}`}
+                            onClick={() => setItemQty(item.name, qty - 1)}
+                            disabled={qty === 0}
+                            className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-colors ${qty === 0 ? 'border-gray-200 text-gray-300 cursor-not-allowed' : 'border-gray-300 text-gray-700 hover:border-[#0066CC] hover:text-[#0066CC]'}`}
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="w-6 text-center font-bold text-sm text-gray-900">{qty}</span>
+                          <button
+                            type="button"
+                            aria-label={`Ajouter ${item.name}`}
+                            onClick={() => setItemQty(item.name, qty + 1)}
+                            className="w-8 h-8 rounded-lg border-2 border-gray-300 text-gray-700 flex items-center justify-center hover:border-[#0066CC] hover:text-[#0066CC] transition-colors"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
                     );
@@ -212,14 +241,15 @@ export default function Mobilier() {
                     <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
                     <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {total}</div>
                   </div>
-                  <Link
-                    to={CONTACT_TARGET}
+                  <button
+                    type="button"
+                    onClick={() => setDevisOpen(true)}
                     className="w-full bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:shadow-xl transition-all"
                     style={{ padding: '14px 24px', minHeight: '52px' }}
                   >
                     Demander un devis
                     <ArrowRight className="w-5 h-5" />
-                  </Link>
+                  </button>
                 </div>
               </div>
 
@@ -237,17 +267,28 @@ export default function Mobilier() {
               <div className="text-xs text-gray-500">Prix HT</div>
               <div className="text-2xl font-bold text-[#0066CC]">€ {total}</div>
             </div>
-            <Link
-              to={CONTACT_TARGET}
+            <button
+              type="button"
+              onClick={() => setDevisOpen(true)}
               className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
               style={{ padding: '12px 16px', minHeight: '48px' }}
             >
               Demander un devis
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+
+      <DevisModal
+        open={devisOpen}
+        onClose={() => setDevisOpen(false)}
+        productName="Mobilier Gonflable"
+        groupLabel={null}
+        lines={[]}
+        extras={extras}
+        total={total}
+      />
     </main>
   );
 }

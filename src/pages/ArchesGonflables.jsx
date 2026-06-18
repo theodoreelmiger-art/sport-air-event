@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -9,9 +8,9 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { Reveal } from '../lib/motion.jsx';
+import DevisModal from '../components/DevisModal.jsx';
 
 const PRODUCT = 'Arches Gonflables';
-const CONTACT_TARGET = '/Contact?product=Arches%20Gonflables';
 
 const dimensions = [
   { id: '5m', title: '5m', dims: '500x320(H)x60cm', price: 1490, span: '' },
@@ -28,14 +27,19 @@ function formatPrice(value) {
 }
 
 export default function ArchesGonflables() {
-  const navigate = useNavigate();
   const [selectedDimension, setSelectedDimension] = useState('6m');
   const [quantity, setQuantity] = useState(1);
   const [pompeSelected, setPompeSelected] = useState(false);
+  const [devisOpen, setDevisOpen] = useState(false);
 
   const selected = dimensions.find((d) => d.id === selectedDimension) ?? dimensions[1];
   const totalPrice =
     selected.price * quantity + (pompeSelected ? POMPE_PRICE : 0);
+
+  const devisLines = [{ label: selected.title, qty: quantity, unit: selected.price }];
+  const devisExtras = pompeSelected
+    ? [{ label: 'Pompe 220 volts', qty: 1, unit: POMPE_PRICE }]
+    : [];
 
   const handleSelectDimension = (id) => {
     setSelectedDimension(id);
@@ -184,11 +188,11 @@ export default function ArchesGonflables() {
                   <div className="col-span-1 sm:col-span-2">
                     <div
                       role="button"
-                      onClick={() => navigate(CONTACT_TARGET)}
+                      onClick={() => setDevisOpen(true)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          navigate(CONTACT_TARGET);
+                          setDevisOpen(true);
                         }
                       }}
                       className="relative overflow-hidden rounded-2xl p-4 md:p-6 bg-gradient-to-br from-[#0066CC] to-blue-700 shadow-xl cursor-pointer group"
@@ -284,15 +288,16 @@ export default function ArchesGonflables() {
                     <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
                     <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {formatPrice(totalPrice)}</div>
                   </div>
-                  <Link
-                    to={CONTACT_TARGET}
+                  <button
+                    type="button"
+                    onClick={() => setDevisOpen(true)}
                     className="w-full bg-[#0066CC] text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
                     tabIndex={0}
                     style={{ padding: '14px 24px', minHeight: '52px' }}
                   >
                     Demander un devis
                     <ArrowRight className="w-5 h-5" />
-                  </Link>
+                  </button>
                 </div>
               </div>
               <div className="h-20 md:hidden"></div>
@@ -309,14 +314,15 @@ export default function ArchesGonflables() {
                 <div className="text-xs text-gray-500">Prix HT</div>
                 <div className="text-2xl font-bold text-[#0066CC]">€ {formatPrice(totalPrice)}</div>
               </div>
-              <Link
-                to={CONTACT_TARGET}
+              <button
+                type="button"
+                onClick={() => setDevisOpen(true)}
                 className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
                 style={{ padding: '12px 16px', minHeight: '48px' }}
               >
                 Demander un devis
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -423,6 +429,15 @@ export default function ArchesGonflables() {
           </div>
         </section>
       </div>
+      <DevisModal
+        open={devisOpen}
+        onClose={() => setDevisOpen(false)}
+        productName="Arche Gonflable"
+        groupLabel="Tailles"
+        lines={devisLines}
+        extras={devisExtras}
+        total={totalPrice}
+      />
     </div>
   );
 }

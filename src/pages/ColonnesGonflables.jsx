@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -11,6 +11,7 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { Reveal, RevealStagger, staggerChild } from '../lib/motion.jsx';
+import DevisModal from '../components/DevisModal.jsx';
 
 const HEIGHTS = [
   { id: '2.5m', label: '2.5m', dims: '250x60(diamètre)cm', price: 590 },
@@ -20,7 +21,6 @@ const HEIGHTS = [
 
 const LED_PRICE = 95;
 const PUMP_PRICE = 60;
-const QUOTE_TARGET = '/Contact?product=Colonnes%20Gonflables';
 
 export default function ColonnesGonflables() {
   const navigate = useNavigate();
@@ -28,10 +28,17 @@ export default function ColonnesGonflables() {
   const [quantity, setQuantity] = useState(1);
   const [ledOn, setLedOn] = useState(false);
   const [pumpOn, setPumpOn] = useState(false);
+  const [devisOpen, setDevisOpen] = useState(false);
 
   const heightData = HEIGHTS.find((h) => h.id === selectedHeight) || HEIGHTS[1];
   const totalPrice =
     heightData.price * quantity + (ledOn ? LED_PRICE : 0) + (pumpOn ? PUMP_PRICE : 0);
+
+  const devisLines = [{ label: heightData.label, qty: quantity, unit: heightData.price }];
+  const devisExtras = [
+    ...(ledOn ? [{ label: 'Éclairage LED RGB intégré', qty: 1, unit: LED_PRICE }] : []),
+    ...(pumpOn ? [{ label: 'Pompe 220 volts', qty: 1, unit: PUMP_PRICE }] : []),
+  ];
 
   return (
     <div className="overflow-x-hidden">
@@ -371,15 +378,16 @@ export default function ColonnesGonflables() {
                       <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
                       <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {totalPrice}</div>
                     </div>
-                    <Link
-                      to={QUOTE_TARGET}
+                    <button
+                      type="button"
+                      onClick={() => setDevisOpen(true)}
                       className="w-full bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:shadow-xl transition-all"
                       tabIndex={0}
                       style={{ padding: '14px 24px', minHeight: '52px' }}
                     >
                       Demander un devis
                       <ArrowRight className="w-5 h-5" />
-                    </Link>
+                    </button>
                   </div>
                 </div>
                 <div className="h-20 md:hidden"></div>
@@ -399,14 +407,15 @@ export default function ColonnesGonflables() {
                   <div className="text-xs text-gray-500">Prix HT</div>
                   <div className="text-2xl font-bold text-[#0066CC]">€ {totalPrice}</div>
                 </div>
-                <Link
-                  to={QUOTE_TARGET}
+                <button
+                  type="button"
+                  onClick={() => setDevisOpen(true)}
                   className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
                   style={{ padding: '12px 16px', minHeight: '48px' }}
                 >
                   Demander un devis
                   <ArrowRight className="w-4 h-4" />
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -551,6 +560,15 @@ export default function ColonnesGonflables() {
         </div>
         <div className="absolute inset-0 rounded-full bg-[#0066CC] opacity-20"></div>
       </motion.a>
+      <DevisModal
+        open={devisOpen}
+        onClose={() => setDevisOpen(false)}
+        productName="Colonnes Gonflables"
+        groupLabel="Hauteurs"
+        lines={devisLines}
+        extras={devisExtras}
+        total={totalPrice}
+      />
     </div>
   );
 }

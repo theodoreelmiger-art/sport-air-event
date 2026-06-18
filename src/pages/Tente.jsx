@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, Check, Minus, Plus, ArrowRight, MessageCircle } from 'lucide-react';
 import { Reveal, RevealStagger, staggerChild } from '../lib/motion.jsx';
+import DevisModal from '../components/DevisModal.jsx';
 
 const SIZES = [
   { id: '3x3', label: '3x3m', price: 1180 },
@@ -11,23 +12,21 @@ const SIZES = [
 ];
 
 const PAROIS = [
-  { id: 'simple', price: 170 },
-  { id: 'porte', price: 190 },
-  { id: 'petite-fenetre', price: 180 },
-  { id: 'grande-fenetre', price: 180 },
-  { id: 'double', price: 290 },
+  { id: 'simple', label: 'Paroi simple', price: 170 },
+  { id: 'porte', label: 'Paroi avec porte (zipp central)', price: 190 },
+  { id: 'petite-fenetre', label: 'Paroi avec petite fenêtre', price: 180 },
+  { id: 'grande-fenetre', label: 'Paroi grande fenêtre', price: 180 },
+  { id: 'double', label: 'Paroi double (impression recto - verso doublée)', price: 290 },
 ];
 
 const OPTIONS = [
-  { id: 'auvent', price: 280 },
-  { id: 'connexion', price: 180 },
+  { id: 'auvent', label: 'Auvent', price: 280 },
+  { id: 'connexion', label: 'Connexion inter-tente', price: 180 },
 ];
 
 const ACCESSOIRES = [
-  { id: 'pompe', price: 60 },
+  { id: 'pompe', label: 'Pompe 220 volts', price: 60 },
 ];
-
-const QUOTE_TARGET = '/Contact?product=Tente%20Spider';
 
 export default function Tente() {
   const navigate = useNavigate();
@@ -36,16 +35,25 @@ export default function Tente() {
   const [parois, setParois] = useState([]);
   const [options, setOptions] = useState([]);
   const [accessoires, setAccessoires] = useState([]);
+  const [devisOpen, setDevisOpen] = useState(false);
 
   const toggle = (list, setList, id) =>
     setList(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
 
-  const sizePrice = SIZES.find((s) => s.id === selectedSize)?.price ?? 0;
+  const size = SIZES.find((s) => s.id === selectedSize);
+  const sizePrice = size?.price ?? 0;
   const paroisPrice = PAROIS.filter((p) => parois.includes(p.id)).reduce((a, p) => a + p.price, 0);
   const optionsPrice = OPTIONS.filter((o) => options.includes(o.id)).reduce((a, o) => a + o.price, 0);
   const accessoiresPrice = ACCESSOIRES.filter((a) => accessoires.includes(a.id)).reduce((acc, a) => acc + a.price, 0);
   const total = sizePrice * quantity + paroisPrice + optionsPrice + accessoiresPrice;
   const totalFormatted = total.toLocaleString('en-US');
+
+  const devisLines = size ? [{ label: size.label, qty: quantity, unit: size.price }] : [];
+  const devisExtras = [
+    ...PAROIS.filter((p) => parois.includes(p.id)).map((p) => ({ label: p.label, qty: 1, unit: p.price })),
+    ...OPTIONS.filter((o) => options.includes(o.id)).map((o) => ({ label: o.label, qty: 1, unit: o.price })),
+    ...ACCESSOIRES.filter((a) => accessoires.includes(a.id)).map((a) => ({ label: a.label, qty: 1, unit: a.price })),
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -381,14 +389,15 @@ export default function Tente() {
                       <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
                       <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {totalFormatted}</div>
                     </div>
-                    <Link
-                      to={QUOTE_TARGET}
+                    <button
+                      type="button"
+                      onClick={() => setDevisOpen(true)}
                       className="w-full bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:shadow-xl transition-all"
                       style={{ padding: '14px 24px', minHeight: '52px' }}
                     >
                       Demander un devis
                       <ArrowRight className="lucide lucide-arrow-right w-5 h-5" />
-                    </Link>
+                    </button>
                   </div>
                 </div>
                 <div className="h-20 md:hidden"></div>
@@ -404,14 +413,15 @@ export default function Tente() {
                 <div className="text-xs text-gray-500">Prix HT</div>
                 <div className="text-2xl font-bold text-[#0066CC]">€ {totalFormatted}</div>
               </div>
-              <Link
-                to={QUOTE_TARGET}
+              <button
+                type="button"
+                onClick={() => setDevisOpen(true)}
                 className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
                 style={{ padding: '12px 16px', minHeight: '48px' }}
               >
                 Demander un devis
                 <ArrowRight className="lucide lucide-arrow-right w-4 h-4" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -508,6 +518,16 @@ export default function Tente() {
         </div>
         <div className="absolute inset-0 rounded-full bg-[#0066CC] opacity-20" style={{ transform: 'scale(1.14581)' }}></div>
       </a>
+
+      <DevisModal
+        open={devisOpen}
+        onClose={() => setDevisOpen(false)}
+        productName="Tente Spider"
+        groupLabel="Tailles"
+        lines={devisLines}
+        extras={devisExtras}
+        total={total}
+      />
     </div>
   );
 }
