@@ -9,287 +9,211 @@ import {
   Package,
   Check,
   ArrowRight,
+  ArrowUpRight,
 } from 'lucide-react';
-import { Reveal } from '../lib/motion.jsx';
+import { motion, Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
+
+const specs = [
+  { icon: Shield, label: 'Matériaux', value: 'PVC 650g/m² anti-UV' },
+  { icon: Clock, label: 'Montage', value: 'Moins de 15 minutes' },
+  { icon: Users, label: 'Installation', value: '1 personne suffit' },
+  { icon: Maximize2, label: 'Tailles', value: 'De 3m à 20m' },
+];
+
+const products = [
+  {
+    n: '01',
+    img: 'images/19_f5298932f_Capturedecran2026-01-02a170657.png',
+    alt: 'Dôme Premium - Dômes gonflables SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+    icon: Wind,
+    category: 'Dômes gonflables',
+    title: 'Dôme Premium',
+    tagline: 'Visibilité 360° garantie',
+    features: [
+      'Montage 10 minutes',
+      'Surface personnalisable complète',
+      'Résistance vent 70 km/h',
+      'Diamètres 4m à 15m',
+    ],
+    to: '/Contact?product=D%C3%B4me%20Premium',
+  },
+  {
+    n: '02',
+    img: 'images/16_be94e4481_Capturedecran2026-01-02a170703.png',
+    alt: 'Tente Spider - Tentes professionnelles SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+    icon: Zap,
+    category: 'Tentes professionnelles',
+    title: 'Tente Spider',
+    tagline: 'Design architectural unique',
+    features: [
+      'Pieds courbes stabilisateurs',
+      'Montage ultra-rapide',
+      'Branding sur arches',
+      'Indoor & Outdoor',
+    ],
+    to: '/Contact?product=Tente%20Spider',
+  },
+  {
+    n: '03',
+    img: 'images/17_0aa557b4e_Capturedecran2026-01-02a170639.png',
+    alt: 'Structure Sur Mesure - Création exclusive SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+    icon: Package,
+    category: 'Création exclusive',
+    title: 'Structure Sur Mesure',
+    tagline: 'Votre vision, notre réalité',
+    features: [
+      'Design unique',
+      'Dimensions illimitées',
+      'Formes personnalisées',
+      'Maquette 3D incluse',
+    ],
+    to: '/Contact?product=Structure%20Sur%20Mesure',
+  },
+];
 
 export default function Products() {
   return (
-    <div className="pt-20 bg-[#F5F5F5]">
-      {/* Hero */}
-      <section className="relative py-32 overflow-hidden bg-gradient-to-br from-[#0066CC] to-[#0052A3]">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-          <Reveal className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Structures gonflables événementielles<br />
-              <span className="text-white/80">professionnelles suisses</span>
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Impact maximum. Installation minimum.
-            </p>
+    <div className="overflow-x-hidden bg-paper pt-20">
+      {/* ░░ HERO ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-24 md:py-32">
+          <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
+            <span className="h-px w-10 bg-white/40" />
+            <span className="kicker" style={{ color: '#7db4f0' }}>Catalogue · Swiss Quality</span>
+          </Reveal>
+          <h1
+            className="font-display text-white font-bold tracking-tightest"
+            style={{ fontSize: 'clamp(2.4rem,6.5vw,5.4rem)', lineHeight: 0.97, maxWidth: '18ch' }}
+          >
+            Structures gonflables événementielles{' '}
+            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>
+              professionnelles suisses
+            </span>
+          </h1>
+          <Reveal as="p" delay={0.18} y={18} className="lead mt-7 max-w-xl" style={{ color: 'rgba(255,255,255,0.78)' }}>
+            Impact maximum. Installation minimum.
           </Reveal>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <Reveal className="text-center p-6 bg-[#F5F5F5] rounded-2xl">
-              <div className="w-12 h-12 bg-[#0066CC]/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-6 h-6 text-[#0066CC]" />
-              </div>
-              <div className="text-sm text-gray-500 mb-1">Matériaux</div>
-              <div className="font-bold text-[#0A0A0A]">PVC 650g/m² anti-UV</div>
-            </Reveal>
-            <Reveal delay={0.1} className="text-center p-6 bg-[#F5F5F5] rounded-2xl">
-              <div className="w-12 h-12 bg-[#0066CC]/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-6 h-6 text-[#0066CC]" />
-              </div>
-              <div className="text-sm text-gray-500 mb-1">Montage</div>
-              <div className="font-bold text-[#0A0A0A]">Moins de 15 minutes</div>
-            </Reveal>
-            <Reveal delay={0.2} className="text-center p-6 bg-[#F5F5F5] rounded-2xl">
-              <div className="w-12 h-12 bg-[#0066CC]/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-6 h-6 text-[#0066CC]" />
-              </div>
-              <div className="text-sm text-gray-500 mb-1">Installation</div>
-              <div className="font-bold text-[#0A0A0A]">1 personne suffit</div>
-            </Reveal>
-            <Reveal delay={0.3} className="text-center p-6 bg-[#F5F5F5] rounded-2xl">
-              <div className="w-12 h-12 bg-[#0066CC]/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Maximize2 className="w-6 h-6 text-[#0066CC]" />
-              </div>
-              <div className="text-sm text-gray-500 mb-1">Tailles</div>
-              <div className="font-bold text-[#0A0A0A]">De 3m à 20m</div>
-            </Reveal>
-          </div>
+      {/* ░░ SPECS STRIP ░░ */}
+      <section className="bg-white border-b border-[var(--line)]">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-16 md:py-20">
+          <RevealStagger className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden">
+            {specs.map((s, i) => (
+              <motion.div variants={staggerChild} key={s.label} className="bg-white p-7 md:p-8">
+                <div className="flex items-center justify-between mb-8">
+                  <s.icon className="w-5 h-5 text-[var(--blue)]" />
+                  <span className="text-xs font-semibold text-ink/20 tabular-nums">0{i + 1}</span>
+                </div>
+                <div className="kicker mb-2" style={{ color: 'var(--muted)' }}>{s.label}</div>
+                <div className="font-display font-semibold text-[15px] text-ink">{s.value}</div>
+              </motion.div>
+            ))}
+          </RevealStagger>
         </div>
       </section>
 
-      {/* Products */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="space-y-32">
-            {/* Dôme Premium */}
-            <Reveal className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ">
-              <div className="relative ">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                  <img
-                    src="images/19_f5298932f_Capturedecran2026-01-02a170657.png"
-                    alt="Dôme Premium - Dômes gonflables SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions"
-                    className="w-full h-[500px] object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/60 to-transparent" />
-                  <div className="absolute bottom-8 left-8">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full">
-                      <Wind className="w-5 h-5 text-white" />
-                      <span className="text-white font-semibold">Dômes gonflables</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div className="inline-block px-4 py-1 bg-[#0066CC]/10 text-[#0066CC] text-sm font-semibold rounded-full mb-4">
-                  Dômes gonflables
-                </div>
-                <h2 className="text-4xl font-bold text-[#0A0A0A] mb-4">Dôme Premium</h2>
-                <p className="text-xl text-gray-600 mb-8">Visibilité 360° garantie</p>
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Montage 10 minutes</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Surface personnalisable complète</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Résistance vent 70 km/h</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Diamètres 4m à 15m</span>
-                  </div>
-                </div>
-                <div tabIndex={0}>
-                  <Link
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-[#0066CC] text-white font-semibold rounded-full hover:bg-[#0052A3] transition-all shadow-lg shadow-blue-500/25"
-                    to="/Contact?product=D%C3%B4me%20Premium"
-                  >
-                    Obtenir un devis
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </div>
-              </div>
-            </Reveal>
+      {/* ░░ PRODUCTS — alternating showcase ░░ */}
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="mb-16 md:mb-24">
+          <SectionHeader
+            kicker="Notre gamme"
+            index="01"
+            title={<>Trois structures.<br />Une exigence suisse.</>}
+            lead="Chaque structure est conçue, imprimée et finie sur mesure pour votre marque et vos événements."
+          />
+        </div>
 
-            {/* Tente Spider */}
-            <Reveal className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center lg:grid-flow-dense">
-              <div className="relative lg:col-start-2">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+        <div className="space-y-20 md:space-y-28">
+          {products.map((p, i) => (
+            <Reveal key={p.title} y={40} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+              <div className={`relative ${i % 2 ? 'md:order-2' : ''}`}>
+                <div className="relative rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line)]">
                   <img
-                    src="images/16_be94e4481_Capturedecran2026-01-02a170703.png"
-                    alt="Tente Spider - Tentes professionnelles SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions"
-                    className="w-full h-[500px] object-cover"
+                    src={p.img}
+                    alt={p.alt}
+                    loading="lazy"
+                    className="w-full h-[460px] md:h-[520px] object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/60 to-transparent" />
-                  <div className="absolute bottom-8 left-8">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full">
-                      <Zap className="w-5 h-5 text-white" />
-                      <span className="text-white font-semibold">Tentes professionnelles</span>
+                  <span className="absolute top-5 left-6 font-display text-[5rem] md:text-[7rem] font-bold leading-none text-white/15 select-none">{p.n}</span>
+                  <div className="absolute bottom-6 left-6">
+                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-ink text-white text-sm font-semibold">
+                      <p.icon className="w-4 h-4 text-[#5aa2f0]" />
+                      <span>{p.category}</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div>
-                <div className="inline-block px-4 py-1 bg-[#0066CC]/10 text-[#0066CC] text-sm font-semibold rounded-full mb-4">
-                  Tentes professionnelles
-                </div>
-                <h2 className="text-4xl font-bold text-[#0A0A0A] mb-4">Tente Spider</h2>
-                <p className="text-xl text-gray-600 mb-8">Design architectural unique</p>
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Pieds courbes stabilisateurs</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Montage ultra-rapide</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Branding sur arches</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Indoor &amp; Outdoor</span>
-                  </div>
-                </div>
-                <div tabIndex={0}>
-                  <Link
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-[#0066CC] text-white font-semibold rounded-full hover:bg-[#0052A3] transition-all shadow-lg shadow-blue-500/25"
-                    to="/Contact?product=Tente%20Spider"
-                  >
-                    Obtenir un devis
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </div>
-              </div>
-            </Reveal>
 
-            {/* Structure Sur Mesure */}
-            <Reveal className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ">
-              <div className="relative ">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                  <img
-                    src="images/17_0aa557b4e_Capturedecran2026-01-02a170639.png"
-                    alt="Structure Sur Mesure - Création exclusive SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions"
-                    className="w-full h-[500px] object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/60 to-transparent" />
-                  <div className="absolute bottom-8 left-8">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full">
-                      <Package className="w-5 h-5 text-white" />
-                      <span className="text-white font-semibold">Création exclusive</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div className="inline-block px-4 py-1 bg-[#0066CC]/10 text-[#0066CC] text-sm font-semibold rounded-full mb-4">
-                  Création exclusive
-                </div>
-                <h2 className="text-4xl font-bold text-[#0A0A0A] mb-4">Structure Sur Mesure</h2>
-                <p className="text-xl text-gray-600 mb-8">Votre vision, notre réalité</p>
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Design unique</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Dimensions illimitées</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Formes personnalisées</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Maquette 3D incluse</span>
-                  </div>
-                </div>
-                <div tabIndex={0}>
-                  <Link
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-[#0066CC] text-white font-semibold rounded-full hover:bg-[#0052A3] transition-all shadow-lg shadow-blue-500/25"
-                    to="/Contact?product=Structure%20Sur%20Mesure"
-                  >
-                    Obtenir un devis
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
+              <div className={`${i % 2 ? 'md:order-1' : ''}`}>
+                <div className="kicker mb-4">{p.category}</div>
+                <h2
+                  className="font-display font-bold text-ink tracking-tightest"
+                  style={{ fontSize: 'clamp(1.9rem,3.4vw,2.9rem)', lineHeight: 1.02 }}
+                >
+                  {p.title}
+                </h2>
+                <p className="lead mt-4 max-w-md">{p.tagline}</p>
+
+                <ul className="mt-8 space-y-3.5">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-center gap-3 text-ink/80">
+                      <span className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 border border-[var(--line)]">
+                        <Check className="w-3 h-3 text-[var(--blue)]" />
+                      </span>
+                      <span className="text-[15px]">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-9">
+                  <Magnetic>
+                    <Link
+                      to={p.to}
+                      className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
+                    >
+                      Obtenir un devis <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </Magnetic>
                 </div>
               </div>
             </Reveal>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 bg-[#0A0A0A] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0066CC]/5 rounded-full blur-3xl" />
-        <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10">
-          <Reveal as="h2" className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Prêt à donner vie à votre projet ?
-          </Reveal>
-          <Reveal as="p" delay={0.1} className="text-gray-400 text-lg mb-8">
-            Obtenez un devis personnalisé en quelques clics
-          </Reveal>
-          <Reveal delay={0.2} className="flex flex-col sm:flex-row gap-4 justify-center">
-            <div tabIndex={0}>
-              <Link
-                className="inline-flex items-center gap-3 px-8 py-4 bg-[#0066CC] text-white font-semibold rounded-full"
-                to="/Calculator"
-              >
-                Calculer mon devis
-                <ArrowRight className="w-5 h-5" />
-              </Link>
+      {/* ░░ CTA ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
+            <div className="lg:col-span-7">
+              <SectionHeader
+                light
+                kicker="Prêt à démarrer"
+                index="02"
+                title={<>Prêt à donner vie<br /><span className="serif-accent text-white/55">à votre projet ?</span></>}
+                lead="Obtenez un devis personnalisé en quelques clics"
+              />
             </div>
-            <div tabIndex={0}>
+            <Reveal as="div" delay={0.15} className="lg:col-span-5 flex flex-col sm:flex-row lg:justify-end gap-3 lg:pb-2">
+              <Magnetic>
+                <Link
+                  to="/Calculator"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-ink font-semibold rounded-full px-7 py-3.5 text-[15px] hover:bg-white/90 transition-colors"
+                >
+                  Calculer mon devis <ArrowRight className="w-4 h-4" />
+                </Link>
+              </Magnetic>
               <Link
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 text-white font-semibold rounded-full border border-white/20"
                 to="/Contact"
+                className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-white border border-white/30 hover:bg-white/10 transition-colors"
               >
-                Parler à un expert
+                Parler à un expert <ArrowUpRight className="w-4 h-4" />
               </Link>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
         </div>
       </section>
     </div>

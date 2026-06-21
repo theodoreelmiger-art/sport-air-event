@@ -1,223 +1,233 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Check, ArrowRight } from 'lucide-react';
-import { Reveal } from '../lib/motion.jsx';
+import { Check, ArrowRight } from 'lucide-react';
+import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 import DevisModal from '../components/DevisModal.jsx';
+
+const included = [
+  'Impression haute qualité de votre logo et design',
+  'Modélisation 3D gratuite',
+  'Option éclairage LED RGB intégré',
+  'Ventilateur électrique silencieux fourni',
+  'Base lestée pour stabilité maximale',
+  'Sac de transport professionnel',
+  'Garantie 2 ans structure + 3 ans impression',
+];
+
+const whyCustom = [
+  { title: 'Hauteur précise', desc: 'De 2 à 5m — idéale pour votre événement' },
+  { title: 'Branding total', desc: 'Logo visible de tous les côtés' },
+  { title: 'Éclairage LED', desc: 'RGB programmable pour impact maximal' },
+  { title: 'Fluidité', desc: 'Formes cylindriques, coniques ou géométriques' },
+];
+
+const steps = [
+  { title: 'Échange initial', desc: 'Parlez-nous de votre événement. Réponse rapide garantie.' },
+  { title: 'Conception 3D', desc: 'Visualisez votre colonne avant fabrication (inclus)' },
+  { title: 'Fabrication', desc: 'Construction et impression haute définition (6-8 semaines)' },
+  { title: 'Installation clé en main', desc: 'Support technique, garantie, et assistance comprise' },
+];
+
+const dimensions = [
+  'Dimensions et formes personnalisées selon vos besoins',
+  'Design 100% sur mesure',
+  'Maquette 3D incluse',
+  'Délai : 6-8 semaines',
+];
 
 export default function ColonnesSurMesure() {
   const [devisOpen, setDevisOpen] = useState(false);
 
   return (
-    <div className="pt-24 md:pt-28 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Sticky image column */}
-          <div className="lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] flex items-center justify-center">
-            <Reveal className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-cyan-400/10 rounded-[4rem] blur-3xl"></div>
-              <div
-                className="relative rounded-3xl p-6"
-                style={{ background: 'rgb(255, 255, 255)', borderRadius: '24px', boxShadow: 'rgba(0, 0, 0, 0.08) 0px 4px 24px' }}
-              >
-                <img
-                  src="images/04_c91d5f27b_ChatGPTImage17janv202613_28_14.png"
-                  alt="Colonne Sur Mesure Sport Air Event"
-                  className="w-full h-auto object-contain"
-                  style={{ maxHeight: '600px', mixBlendMode: 'multiply', background: 'transparent', clipPath: 'inset(0px 6px 0px 0px)' }}
-                />
-              </div>
-            </Reveal>
-          </div>
+    <div className="overflow-x-hidden bg-paper">
+      {/* ░░ HERO — editorial split ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-28 md:pt-36 pb-20 md:pb-28">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <div className="lg:col-span-6">
+              <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
+                <span className="h-px w-10 bg-white/40" />
+                <span className="kicker" style={{ color: '#7db4f0' }}>Création exclusive</span>
+              </Reveal>
 
-          {/* Content column */}
-          <div className="space-y-6 pb-24">
-            <Reveal>
-              <div className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-100 to-blue-50 rounded-full mb-6 border border-blue-200">
-                <Sparkles className="w-5 h-5 text-[#0066CC]" />
-                <span className="text-[#0066CC] font-bold">Création exclusive</span>
-              </div>
-              <h1 className="text-2xl md:text-4xl font-bold mb-3">Colonne Sur Mesure</h1>
-              <p className="text-base md:text-xl text-gray-700 font-semibold mb-3">Colonnes de 2 à 5 mètres de hauteur</p>
-              <p className="text-sm md:text-base text-gray-600 mb-3">Votre vision, notre expertise. Conception et fabrication sur mesure pour vos événements d&apos;exception.</p>
-              <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 py-1 md:px-3 md:py-1.5 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full shadow-lg">
-                <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                <p className="text-[10px] md:text-sm text-white font-bold">Impression totale comprise</p>
-              </div>
-            </Reveal>
+              <h1 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,6.5vw,5rem)', lineHeight: 0.96 }}>
+                Colonne{' '}
+                <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>Sur&nbsp;Mesure</span>
+              </h1>
 
-            <Reveal className="relative overflow-hidden bg-white rounded-xl shadow-lg border-2 border-blue-100">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-cyan-400/5 rounded-full blur-3xl"></div>
-              <div className="relative p-4 md:p-6">
-                <h3 className="text-base md:text-xl font-bold text-gray-900 mb-3">Dimensions personnalisées</h3>
-                <p className="text-gray-600 text-xs md:text-base mb-4">De 2 à 5 mètres de hauteur selon vos besoins</p>
-                <ul className="space-y-2 md:space-y-4">
-                  <li className="flex items-center gap-2 md:gap-3">
-                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-[#0066CC] rounded-full flex-shrink-0"></div>
-                    <span className="text-xs md:text-base text-gray-800">Dimensions et formes personnalisées selon vos besoins</span>
-                  </li>
-                  <li className="flex items-center gap-2 md:gap-3">
-                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-[#0066CC] rounded-full flex-shrink-0"></div>
-                    <span className="text-xs md:text-base text-gray-800">Design 100% sur mesure</span>
-                  </li>
-                  <li className="flex items-center gap-2 md:gap-3">
-                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-[#0066CC] rounded-full flex-shrink-0"></div>
-                    <span className="text-xs md:text-base text-gray-800">Maquette 3D incluse</span>
-                  </li>
-                  <li className="flex items-center gap-2 md:gap-3">
-                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-[#0066CC] rounded-full flex-shrink-0"></div>
-                    <span className="text-xs md:text-base text-gray-800">Délai : 6-8 semaines</span>
-                  </li>
-                </ul>
-              </div>
-            </Reveal>
+              <Reveal as="p" delay={0.12} className="lead mt-7 max-w-md" style={{ color: 'rgba(255,255,255,0.78)' }}>
+                Colonnes de 2 à 5 mètres de hauteur. Votre vision, notre expertise. Conception et fabrication sur mesure pour vos événements d&apos;exception.
+              </Reveal>
 
-            <Reveal className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-white rounded-xl p-4 shadow-md border border-blue-100">
-              <div className="relative">
-                <h4 className="text-sm md:text-base font-bold text-gray-900 mb-3">Inclus dans le prix de base :</h4>
-                <div className="grid grid-cols-1 gap-2 md:gap-3">
-                  <div className="flex items-start gap-2 md:gap-3">
-                    <Check className="w-4 h-4 md:w-5 md:h-5 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-gray-700">Impression haute qualité de votre logo et design</span>
-                  </div>
-                  <div className="flex items-start gap-2 md:gap-3">
-                    <Check className="w-4 h-4 md:w-5 md:h-5 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-gray-700">Modélisation 3D gratuite</span>
-                  </div>
-                  <div className="flex items-start gap-2 md:gap-3">
-                    <Check className="w-4 h-4 md:w-5 md:h-5 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-gray-700">Option éclairage LED RGB intégré</span>
-                  </div>
-                  <div className="flex items-start gap-2 md:gap-3">
-                    <Check className="w-4 h-4 md:w-5 md:h-5 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-gray-700">Ventilateur électrique silencieux fourni</span>
-                  </div>
-                  <div className="flex items-start gap-2 md:gap-3">
-                    <Check className="w-4 h-4 md:w-5 md:h-5 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-gray-700">Base lestée pour stabilité maximale</span>
-                  </div>
-                  <div className="flex items-start gap-2 md:gap-3">
-                    <Check className="w-4 h-4 md:w-5 md:h-5 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-gray-700">Sac de transport professionnel</span>
-                  </div>
-                  <div className="flex items-start gap-2 md:gap-3">
-                    <Check className="w-4 h-4 md:w-5 md:h-5 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-gray-700">Garantie 2 ans structure + 3 ans impression</span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
+              <Reveal as="div" delay={0.22} className="mt-8 inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/15 bg-white/[0.04]">
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#5aa2f0' }} />
+                <span className="text-[13px] font-medium text-white/80">Impression totale comprise</span>
+              </Reveal>
 
-            <Reveal className="relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 md:p-6 shadow-md border border-amber-200">
-              <h3 className="text-base md:text-xl font-bold text-gray-900 mb-4">Pourquoi personnaliser votre colonne ?</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div className="flex gap-3">
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 md:w-4 md:h-4 text-amber-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm">Hauteur précise</h4>
-                    <p className="text-xs text-gray-600">De 2 à 5m — idéale pour votre événement</p>
-                  </div>
+              <Reveal as="div" delay={0.3} className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                <Magnetic>
+                  <button
+                    type="button"
+                    onClick={() => setDevisOpen(true)}
+                    className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
+                  >
+                    Demander un devis <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Magnetic>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-white/50 text-sm">Prix HT</span>
+                  <span className="font-display text-xl font-bold text-white">Sur devis</span>
                 </div>
-                <div className="flex gap-3">
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 md:w-4 md:h-4 text-amber-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm">Branding total</h4>
-                    <p className="text-xs text-gray-600">Logo visible de tous les côtés</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 md:w-4 md:h-4 text-amber-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm">Éclairage LED</h4>
-                    <p className="text-xs text-gray-600">RGB programmable pour impact maximal</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 md:w-4 md:h-4 text-amber-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm">Fluidité</h4>
-                    <p className="text-xs text-gray-600">Formes cylindriques, coniques ou géométriques</p>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
 
-            <Reveal className="relative overflow-hidden bg-white rounded-xl p-4 md:p-6 shadow-lg border-2 border-blue-100">
-              <h3 className="text-base md:text-xl font-bold text-gray-900 mb-4">De l&apos;idée à la réalité</h3>
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#0066CC] text-white font-bold flex items-center justify-center text-sm">1</div>
-                    <div className="w-0.5 h-12 bg-blue-200 mt-2"></div>
-                  </div>
-                  <div className="pb-4">
-                    <h4 className="font-bold text-gray-900 text-sm">Échange initial</h4>
-                    <p className="text-xs text-gray-600 mt-0.5">Parlez-nous de votre événement. Réponse rapide garantie.</p>
-                  </div>
+            <div className="lg:col-span-6">
+              <Reveal y={40} className="relative">
+                <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-white flex items-center justify-center p-8 md:p-12" style={{ aspectRatio: '4 / 5' }}>
+                  <span className="absolute top-5 left-6 font-display text-[5rem] md:text-[7rem] font-bold leading-none text-ink/[0.05] select-none">SM</span>
+                  <img
+                    src="images/04_c91d5f27b_ChatGPTImage17janv202613_28_14.png"
+                    alt="Colonne Sur Mesure Sport Air Event"
+                    className="relative max-h-[80%] w-auto object-contain"
+                    style={{ mixBlendMode: 'multiply', clipPath: 'inset(0px 6px 0px 0px)' }}
+                  />
                 </div>
-                <div className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#0066CC] text-white font-bold flex items-center justify-center text-sm">2</div>
-                    <div className="w-0.5 h-12 bg-blue-200 mt-2"></div>
-                  </div>
-                  <div className="pb-4">
-                    <h4 className="font-bold text-gray-900 text-sm">Conception 3D</h4>
-                    <p className="text-xs text-gray-600 mt-0.5">Visualisez votre colonne avant fabrication (inclus)</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#0066CC] text-white font-bold flex items-center justify-center text-sm">3</div>
-                    <div className="w-0.5 h-12 bg-blue-200 mt-2"></div>
-                  </div>
-                  <div className="pb-4">
-                    <h4 className="font-bold text-gray-900 text-sm">Fabrication</h4>
-                    <p className="text-xs text-gray-600 mt-0.5">Construction et impression haute définition (6-8 semaines)</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#0066CC] text-white font-bold flex items-center justify-center text-sm">4</div>
-                  </div>
-                  <div className="pb-4">
-                    <h4 className="font-bold text-gray-900 text-sm">Installation clé en main</h4>
-                    <p className="text-xs text-gray-600 mt-0.5">Support technique, garantie, et assistance comprise</p>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            <div className="sticky bottom-4 mt-4 relative overflow-hidden bg-white rounded-xl shadow-2xl border-2 border-[#0066CC]">
-              <div className="relative p-6 md:p-8">
-                <div className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
-                    <div className="text-2xl md:text-3xl font-bold text-[#0066CC]">Sur devis</div>
-                  </div>
-                  <motion.div whileHover={{ scale: 1.02 }} className="flex-shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setDevisOpen(true)}
-                      className="bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center gap-2 hover:shadow-xl transition-all"
-                      style={{ padding: '12px 20px', minHeight: '48px' }}
-                    >
-                      Demander un devis
-                      <ArrowRight className="w-5 h-5" />
-                    </button>
-                  </motion.div>
-                </div>
-              </div>
+              </Reveal>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ░░ DIMENSIONS + INCLUS ░░ */}
+      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Dimensions */}
+          <div className="lg:col-span-5">
+            <SectionHeader
+              kicker="Configuration"
+              index="01"
+              title={<>Dimensions<br />personnalisées</>}
+              lead="De 2 à 5 mètres de hauteur selon vos besoins."
+            />
+            <RevealStagger className="mt-9 border-t border-[var(--line)]">
+              {dimensions.map((d, i) => (
+                <motion.div
+                  key={d}
+                  variants={staggerChild}
+                  className="flex items-center gap-4 py-4 border-b border-[var(--line)]"
+                >
+                  <span className="text-xs font-semibold tabular-nums text-ink/30">0{i + 1}</span>
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: 'var(--blue)' }} />
+                  <span className="text-[15px] text-ink/80">{d}</span>
+                </motion.div>
+              ))}
+            </RevealStagger>
+          </div>
+
+          {/* Inclus dans le prix de base */}
+          <div className="lg:col-span-7">
+            <Reveal className="rounded-[var(--radius-lg)] bg-white border border-[var(--line)] p-7 md:p-10">
+              <div className="kicker mb-5">Sans supplément</div>
+              <h3 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(1.5rem,2.4vw,2rem)', lineHeight: 1.05 }}>
+                Inclus dans le prix de base
+              </h3>
+              <RevealStagger className="mt-8 grid sm:grid-cols-2 gap-x-8 gap-y-1">
+                {included.map((item) => (
+                  <motion.div
+                    key={item}
+                    variants={staggerChild}
+                    className="flex items-start gap-3 py-3 border-b border-[var(--line)]"
+                  >
+                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'var(--blue)' }} />
+                    <span className="text-sm text-ink/75 leading-relaxed">{item}</span>
+                  </motion.div>
+                ))}
+              </RevealStagger>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ░░ POURQUOI PERSONNALISER (dark) ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+          <SectionHeader
+            light
+            kicker="Sur mesure"
+            index="02"
+            title={<>Pourquoi personnaliser<br /><span className="serif-accent text-white/55">votre colonne ?</span></>}
+          />
+          <RevealStagger className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
+            {whyCustom.map((f, i) => (
+              <motion.div variants={staggerChild} key={f.title} className="bg-ink p-6 md:p-8">
+                <div className="flex items-center justify-between mb-8">
+                  <Check className="w-5 h-5" style={{ color: '#5aa2f0' }} />
+                  <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
+                </div>
+                <div className="font-display font-semibold text-[15px] mb-1.5">{f.title}</div>
+                <div className="text-[13px] text-white/50 leading-relaxed">{f.desc}</div>
+              </motion.div>
+            ))}
+          </RevealStagger>
+        </div>
+      </section>
+
+      {/* ░░ DE L'IDÉE À LA RÉALITÉ ░░ */}
+      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <SectionHeader
+            kicker="Notre process"
+            index="03"
+            title={<>De l&apos;idée<br />à la réalité</>}
+            lead="Un accompagnement complet, de la première discussion à l'installation."
+          />
+          <RevealStagger className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden">
+            {steps.map((s, i) => (
+              <motion.div variants={staggerChild} key={s.title} className="bg-white p-7 md:p-8 min-h-[180px] flex flex-col">
+                <div className="flex items-center justify-between mb-8">
+                  <span className="font-display text-3xl font-bold text-ink/15 tabular-nums">{i + 1}</span>
+                  {i < steps.length - 1 && <span className="h-px w-8" style={{ background: 'var(--blue)' }} />}
+                </div>
+                <div className="font-display font-semibold text-ink text-[16px] mb-2">{s.title}</div>
+                <div className="text-[13px] text-[var(--muted)] leading-relaxed">{s.desc}</div>
+              </motion.div>
+            ))}
+          </RevealStagger>
+        </div>
+      </section>
+
+      {/* ░░ CTA ░░ */}
+      <section className="px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+        <div className="max-w-content mx-auto">
+          <Reveal className="rounded-[var(--radius-lg)] bg-paper-2 border border-[var(--line)] p-8 md:p-14 flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div className="max-w-xl">
+              <div className="kicker mb-4">Prêt à démarrer</div>
+              <h2 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(1.9rem,4vw,3rem)', lineHeight: 1.02 }}>
+                Donnons vie à votre colonne.
+              </h2>
+              <p className="lead mt-5 max-w-md">
+                Votre vision, notre expertise. Conception et fabrication sur mesure pour vos événements d&apos;exception.
+              </p>
+            </div>
+            <div className="flex flex-col items-start md:items-end gap-4 flex-shrink-0">
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-[var(--muted)]">Prix HT</span>
+                <span className="font-display text-2xl font-bold" style={{ color: 'var(--blue)' }}>Sur devis</span>
+              </div>
+              <Magnetic>
+                <button
+                  type="button"
+                  onClick={() => setDevisOpen(true)}
+                  className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
+                >
+                  Demander un devis <ArrowRight className="w-4 h-4" />
+                </button>
+              </Magnetic>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       <DevisModal
         open={devisOpen}

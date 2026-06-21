@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageCircle,
   CircleCheck,
   Star,
-  Sparkles,
   Send,
   User,
   Package,
@@ -16,7 +15,8 @@ import {
   ArrowLeft,
   ChevronDown,
 } from 'lucide-react';
-import { Reveal, RevealStagger } from '../lib/motion.jsx';
+import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 
 const reviews = [
   {
@@ -47,37 +47,31 @@ const reviews = [
 
 const faqs = [
   {
-    emoji: '🚚',
     question: 'Quel est le délai de livraison ?',
     answer:
       'Entre 4 et 6 semaines pour une production standard, avec option express en 2-3 semaines.',
   },
   {
-    emoji: '🌍',
     question: 'Livrez-vous en dehors de la Suisse ?',
     answer:
       "Oui, nous livrons dans toute l'Europe et à l'international avec nos partenaires logistiques de confiance.",
   },
   {
-    emoji: '📋',
     question: 'Proposez-vous un service de location ?',
     answer:
       'Oui, nous proposons la location de structures pour les événements ponctuels. Contactez-nous pour un devis personnalisé.',
   },
   {
-    emoji: '🛡️',
     question: 'Quelle est la garantie sur vos produits ?',
     answer:
       "2 ans sur la structure gonflable, 3 ans sur l'impression et la personnalisation graphique. Un service après-vente dédié est inclus.",
   },
   {
-    emoji: '⚡',
     question: "L'installation est-elle facile ?",
     answer:
       "Absolument. Nos tentes Spider s'installent en 2 minutes par une seule personne. Chaque structure est livrée avec une notice détaillée et un support vidéo.",
   },
   {
-    emoji: '🎨',
     question: 'Puis-je personnaliser totalement ma structure ?',
     answer:
       'Oui, impression 360° HD de votre logo, couleurs et visuels. Une maquette 3D gratuite est incluse avant production pour valider votre design.',
@@ -85,6 +79,18 @@ const faqs = [
 ];
 
 const structureTypes = ['Tente Spider', 'Arches', 'Colonnes', 'Mobilier', 'Sur Mesure'];
+
+const promises = [
+  { icon: CircleCheck, title: 'Réponse sous 24h', desc: 'Notre équipe vous contacte rapidement' },
+  { icon: Star, title: 'Devis gratuit', desc: 'Sans engagement' },
+  { icon: Package, title: 'Accompagnement', desc: 'De la conception à la livraison' },
+];
+
+const steps = [
+  { icon: User, label: 'Informations' },
+  { icon: Package, label: 'Projet' },
+  { icon: Send, label: 'Envoi' },
+];
 
 // Map a decoded ?product=… value onto one of the structureTypes options.
 function matchStructureType(product) {
@@ -99,10 +105,9 @@ function matchStructureType(product) {
   return '';
 }
 
-const particles = Array.from({ length: 30 }, () => ({
-  left: `${Math.random() * 100}%`,
-  top: `${Math.random() * 100}%`,
-}));
+// Shared input styling — flat, hairline border, blue focus ring (editorial system).
+const inputCls =
+  'w-full bg-white h-12 md:h-14 pl-11 md:pl-12 pr-4 text-sm md:text-base text-ink rounded-[14px] border border-[var(--line)] placeholder:text-[var(--muted)]/70 focus:border-[var(--blue)] focus-visible:outline-none transition-colors';
 
 export default function Contact() {
   const [searchParams] = useSearchParams();
@@ -215,172 +220,146 @@ export default function Contact() {
   const errorBorder = '#ef4444';
 
   return (
-    <div className="pt-16 md:pt-20 bg-gradient-to-br from-white via-blue-50/30 to-white relative overflow-hidden min-h-screen">
-      {particles.map((p, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-blue-400 rounded-full blur-sm"
-          style={{ left: p.left, top: p.top }}
-          animate={{ opacity: [0, 1, 0], scale: [0.3, 1, 0.3] }}
-          transition={{
-            duration: 4 + Math.random() * 4,
-            repeat: Infinity,
-            delay: Math.random() * 4,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
-
-      {/* Hero + form */}
-      <section className="relative py-12 md:py-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <Reveal className="text-center max-w-4xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-100 to-blue-50 border-2 border-blue-200 rounded-full mb-6">
-              <MessageCircle className="lucide lucide-message-circle w-5 h-5 text-[#0066CC]" />
-              <span className="text-[#0066CC] font-bold">Parlons de votre projet</span>
-            </div>
-            <h1 className="text-2xl sm:text-4xl md:text-7xl font-bold mb-4 md:mb-6">
-              <span className="bg-gradient-to-r from-[#0066CC] via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+    <div className="overflow-x-hidden bg-paper">
+      {/* ░░ HERO + FORM ░░ */}
+      <section className="bg-paper pt-28 md:pt-36 pb-20 md:pb-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          {/* Editorial intro */}
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 md:mb-20">
+            <div className="lg:col-span-7">
+              <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
+                <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
+                <span className="kicker">Parlons de votre projet</span>
+              </Reveal>
+              <h1
+                className="font-display font-bold text-ink tracking-tightest"
+                style={{ fontSize: 'clamp(2.6rem,6vw,5rem)', lineHeight: 0.96, maxWidth: '14ch' }}
+              >
                 Contactez-nous
-              </span>
-            </h1>
-            <p className="text-base md:text-2xl text-gray-600">
-              Demandez votre devis personnalisé gratuit
-            </p>
-          </Reveal>
+                <br />
+                <span className="serif-accent text-ink/45" style={{ fontWeight: 500 }}>
+                  pour votre devis
+                </span>
+              </h1>
+            </div>
+            <Reveal as="p" delay={0.1} className="lg:col-span-5 lead">
+              Demandez votre devis personnalisé gratuit. Notre équipe vous accompagne de la
+              conception à la livraison, avec une réponse garantie sous 24h.
+            </Reveal>
+          </div>
 
-          <RevealStagger className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6 mb-8 md:mb-16">
-            <motion.div
-              variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }}
-              className="relative p-4 md:p-6 bg-white rounded-xl md:rounded-3xl shadow-lg border-2 border-blue-100 hover:border-[#0066CC] transition-all overflow-hidden"
-            >
-              <div className="flex items-center gap-3 md:flex-col md:text-center">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#0066CC] to-blue-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                  <CircleCheck className="lucide lucide-circle-check w-5 h-5 md:w-6 md:h-6 text-white" />
+          {/* Promises — flat hairline grid */}
+          <RevealStagger className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden mb-14 md:mb-20">
+            {promises.map((p, i) => (
+              <motion.div variants={staggerChild} key={p.title} className="bg-white p-6 md:p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <p.icon className="w-5 h-5 text-[var(--blue)]" />
+                  <span className="text-xs font-semibold text-ink/25 tabular-nums">0{i + 1}</span>
                 </div>
-                <div>
-                  <h3 className="text-sm md:text-lg font-bold text-gray-900 mb-1">Réponse sous 24h</h3>
-                  <p className="text-xs md:text-sm text-gray-600">Notre équipe vous contacte rapidement</p>
-                </div>
-              </div>
-            </motion.div>
-            <motion.div
-              variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }}
-              className="relative p-4 md:p-6 bg-white rounded-xl md:rounded-3xl shadow-lg border-2 border-blue-100 hover:border-[#0066CC] transition-all overflow-hidden"
-            >
-              <div className="flex items-center gap-3 md:flex-col md:text-center">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#0066CC] to-blue-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                  <Star className="lucide lucide-star w-5 h-5 md:w-6 md:h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-sm md:text-lg font-bold text-gray-900 mb-1">Devis gratuit</h3>
-                  <p className="text-xs md:text-sm text-gray-600">Sans engagement</p>
-                </div>
-              </div>
-            </motion.div>
-            <motion.div
-              variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }}
-              className="relative p-4 md:p-6 bg-white rounded-xl md:rounded-3xl shadow-lg border-2 border-blue-100 hover:border-[#0066CC] transition-all overflow-hidden"
-            >
-              <div className="flex items-center gap-3 md:flex-col md:text-center">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#0066CC] to-blue-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                  <Sparkles className="lucide lucide-sparkles w-5 h-5 md:w-6 md:h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-sm md:text-lg font-bold text-gray-900 mb-1">Accompagnement</h3>
-                  <p className="text-xs md:text-sm text-gray-600">De la conception à la livraison</p>
-                </div>
-              </div>
-            </motion.div>
+                <h3 className="font-display font-semibold text-[15px] text-ink mb-1.5">{p.title}</h3>
+                <p className="text-[13px] text-[var(--muted)] leading-relaxed">{p.desc}</p>
+              </motion.div>
+            ))}
           </RevealStagger>
 
-          <Reveal className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-cyan-400/5 rounded-[3rem] blur-3xl" />
-            <div className="relative bg-white/80 backdrop-blur-lg rounded-2xl md:rounded-[2.5rem] shadow-2xl border-2 border-blue-100 p-4 md:p-12">
-              <div className="text-center mb-6 md:mb-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-100 rounded-full mb-3 md:mb-4">
-                  <Send className="lucide lucide-send w-3 h-3 md:w-4 md:h-4 text-[#0066CC]" />
-                  <span className="text-xs md:text-sm font-bold text-[#0066CC]">Formulaire de contact</span>
-                </div>
-                <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-2">Décrivez votre projet</h2>
-                <p className="text-sm md:text-base text-gray-600">
+          {/* Form card — flat editorial */}
+          <Reveal>
+            <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+              {/* Left rail */}
+              <div className="lg:col-span-4 lg:sticky lg:top-28">
+                <div className="kicker mb-4">Formulaire de contact</div>
+                <h2
+                  className="font-display font-bold text-ink tracking-tightest"
+                  style={{ fontSize: 'clamp(1.7rem,3vw,2.4rem)', lineHeight: 1.05 }}
+                >
+                  Décrivez votre projet
+                </h2>
+                <p className="lead mt-5">
                   Remplissez le formulaire ci-dessous et recevez une réponse sous 24h
                 </p>
+
+                <div className="mt-8 pt-8 border-t border-[var(--line)] space-y-5">
+                  <div>
+                    <p className="text-sm text-[var(--muted)] mb-2">Vous préférez nous écrire directement ?</p>
+                    <a
+                      href="mailto:contact@sport-air-event.com"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--blue)] hover:underline"
+                    >
+                      <Mail className="w-4 h-4" />
+                      contact@sport-air-event.com
+                    </a>
+                  </div>
+                  <div className="pt-5 border-t border-[var(--line)]">
+                    <p className="text-sm text-[var(--muted)] mb-3">Ou contactez-nous sur WhatsApp</p>
+                    <a
+                      href="https://wa.me/41774835190"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-ink border border-[var(--line)] hover:border-ink/15 transition-colors"
+                    >
+                      <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                      WhatsApp
+                    </a>
+                  </div>
+                </div>
               </div>
 
-              <form className="relative" onSubmit={(e) => e.preventDefault()}>
-                <div className="bg-white rounded-3xl shadow-2xl border-2 border-gray-100 overflow-hidden">
-                  <div className="relative bg-gradient-to-br from-[#0066CC] to-blue-600 p-6 md:p-10 overflow-hidden">
-                    <div className="relative z-10 text-center">
-                      <h2 className="text-xl md:text-4xl font-bold text-white mb-2">Demandez votre devis</h2>
-                      <p className="text-white/90 text-sm md:text-lg">Réponse garantie sous 24h</p>
+              {/* Form */}
+              <div className="lg:col-span-8">
+                <form className="rounded-[var(--radius-lg)] bg-white border border-[var(--line)] overflow-hidden" onSubmit={(e) => e.preventDefault()}>
+                  {/* Step header */}
+                  <div className="px-6 md:px-10 pt-7 md:pt-9 pb-8 border-b border-[var(--line)]">
+                    <div className="flex items-baseline justify-between mb-7">
+                      <h3 className="font-display text-lg md:text-xl font-bold text-ink">Demandez votre devis</h3>
+                      <span className="text-sm text-[var(--muted)]">Réponse sous 24h</span>
                     </div>
-                    <div className="flex items-center justify-center gap-2 md:gap-4 mt-6 md:mt-8 relative z-10">
-                      <div className="relative">
-                        <div
-                          className={`w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all ${
-                            step >= 1 ? 'bg-white text-[#0066CC] shadow-xl' : 'bg-white/20 text-white/60'
-                          }`}
-                        >
-                          <User className="lucide lucide-user w-4 h-4 md:w-6 md:h-6" />
-                        </div>
-                        <div className="text-[10px] md:text-xs mt-1 md:mt-2 text-center font-medium text-white">Informations</div>
-                      </div>
-                      <div
-                        className={`w-8 md:w-16 h-0.5 md:h-1 rounded-full transition-all ${
-                          step >= 2 ? 'bg-white' : 'bg-white/20'
-                        }`}
-                      />
-                      <div className="relative">
-                        <div
-                          className={`w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all ${
-                            step >= 2 ? 'bg-white text-[#0066CC] shadow-xl' : 'bg-white/20 text-white/60'
-                          }`}
-                        >
-                          <Package className="lucide lucide-package w-4 h-4 md:w-6 md:h-6" />
-                        </div>
-                        <div
-                          className={`text-[10px] md:text-xs mt-1 md:mt-2 text-center font-medium ${
-                            step >= 2 ? 'text-white' : 'text-white/60'
-                          }`}
-                        >
-                          Projet
-                        </div>
-                      </div>
-                      <div
-                        className={`w-8 md:w-16 h-0.5 md:h-1 rounded-full transition-all ${
-                          step >= 3 ? 'bg-white' : 'bg-white/20'
-                        }`}
-                      />
-                      <div className="relative">
-                        <div
-                          className={`w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold transition-all ${
-                            step >= 3 ? 'bg-white text-[#0066CC] shadow-xl' : 'bg-white/20 text-white/60'
-                          }`}
-                        >
-                          <Send className="lucide lucide-send w-4 h-4 md:w-6 md:h-6" />
-                        </div>
-                        <div
-                          className={`text-[10px] md:text-xs mt-1 md:mt-2 text-center font-medium ${
-                            step >= 3 ? 'text-white' : 'text-white/60'
-                          }`}
-                        >
-                          Envoi
-                        </div>
-                      </div>
+                    <div className="flex items-center gap-2 md:gap-4">
+                      {steps.map((s, i) => {
+                        const num = i + 1;
+                        const reached = step >= num;
+                        return (
+                          <div key={s.label} className="flex items-center gap-2 md:gap-4 flex-1 last:flex-none">
+                            <div className="flex flex-col items-center gap-2">
+                              <div
+                                className={`w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-colors ${
+                                  reached
+                                    ? 'bg-ink text-white'
+                                    : 'bg-paper text-[var(--muted)] border border-[var(--line)]'
+                                }`}
+                              >
+                                <s.icon className="w-4 h-4 md:w-5 md:h-5" />
+                              </div>
+                              <span
+                                className={`text-[10px] md:text-xs font-medium ${
+                                  reached ? 'text-ink' : 'text-[var(--muted)]'
+                                }`}
+                              >
+                                {s.label}
+                              </span>
+                            </div>
+                            {i < steps.length - 1 && (
+                              <div
+                                className={`flex-1 h-px transition-colors ${
+                                  step >= num + 1 ? 'bg-ink' : 'bg-[var(--line)]'
+                                }`}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  <div className="p-4 md:p-10">
+                  <div className="p-6 md:p-10">
                     {step === 1 && (
                       <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
                           <div>
-                            <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Entreprise *</label>
+                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Entreprise *</label>
                             <div className="relative">
-                              <Building2 className="lucide lucide-building2 absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                              <Building2 className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
                               <input
-                                className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                                className={inputCls}
                                 placeholder="Nom de votre entreprise"
                                 value={form.entreprise}
                                 onChange={updateField('entreprise')}
@@ -389,11 +368,11 @@ export default function Contact() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Nom complet *</label>
+                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Nom complet *</label>
                             <div className="relative">
-                              <User className="lucide lucide-user absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                              <User className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
                               <input
-                                className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                                className={inputCls}
                                 placeholder="Votre nom"
                                 value={form.nom}
                                 onChange={updateField('nom')}
@@ -402,12 +381,12 @@ export default function Contact() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Email *</label>
+                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Email *</label>
                             <div className="relative">
-                              <Mail className="lucide lucide-mail absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                              <Mail className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
                               <input
                                 type="email"
-                                className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                                className={inputCls}
                                 placeholder="email@entreprise.com"
                                 value={form.email}
                                 onChange={updateField('email')}
@@ -416,11 +395,11 @@ export default function Contact() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Téléphone *</label>
+                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Téléphone *</label>
                             <div className="relative">
-                              <Phone className="lucide lucide-phone absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                              <Phone className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
                               <input
-                                className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                                className={inputCls}
                                 placeholder="06 XX XX XX XX"
                                 value={form.telephone}
                                 onChange={updateField('telephone')}
@@ -429,22 +408,24 @@ export default function Contact() {
                             </div>
                           </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={handleContinue}
-                          className="w-full py-3 md:py-4 bg-[#0066CC] hover:bg-blue-700 text-white text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
-                        >
-                          Continuer
-                          <ArrowRight className="lucide lucide-arrow-right w-4 h-4 md:w-5 md:h-5" />
-                        </button>
+                        <Magnetic className="w-full">
+                          <button
+                            type="button"
+                            onClick={handleContinue}
+                            className="cta-iridescent w-full px-7 py-3.5 text-[15px] font-semibold inline-flex items-center justify-center gap-2"
+                          >
+                            Continuer
+                            <ArrowRight className="w-4 h-4" />
+                          </button>
+                        </Magnetic>
                       </div>
                     )}
 
                     {step === 2 && (
                       <div className="space-y-6">
                         <div>
-                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Type de structure</label>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+                          <label className="text-xs font-semibold mb-3 block text-ink/70 uppercase tracking-wide">Type de structure</label>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
                             {structureTypes.map((type) => {
                               const active = form.structure === type;
                               return (
@@ -452,10 +433,10 @@ export default function Contact() {
                                   key={type}
                                   type="button"
                                   onClick={() => setForm((f) => ({ ...f, structure: type }))}
-                                  className={`py-2.5 md:py-3 px-3 rounded-xl border-2 text-sm md:text-base font-semibold transition-all ${
+                                  className={`py-3 px-3 rounded-[14px] border text-sm md:text-base font-semibold transition-colors ${
                                     active
-                                      ? 'border-[#0066CC] bg-blue-50 text-[#0066CC]'
-                                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                                      ? 'border-ink bg-ink text-white'
+                                      : 'border-[var(--line)] bg-white text-ink hover:border-ink/20'
                                   }`}
                                 >
                                   {type}
@@ -465,11 +446,11 @@ export default function Contact() {
                           </div>
                         </div>
                         <div>
-                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Dimensions / quantité</label>
+                          <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Dimensions / quantité</label>
                           <div className="relative">
-                            <Package className="lucide lucide-package absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                            <Package className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
                             <input
-                              className="flex w-full border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 md:pl-12 h-11 md:h-14 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                              className={inputCls}
                               placeholder="Ex : 3x3m, 2 unités…"
                               value={form.dimensions}
                               onChange={updateField('dimensions')}
@@ -477,10 +458,10 @@ export default function Contact() {
                           </div>
                         </div>
                         <div>
-                          <label className="text-xs md:text-sm font-bold mb-2 block text-gray-700">Votre message</label>
+                          <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Votre message</label>
                           <textarea
                             rows={4}
-                            className="flex w-full border-input bg-transparent px-3 py-3 shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-sm md:text-base border-2 focus:border-[#0066CC] rounded-xl"
+                            className="w-full bg-white px-4 py-3 text-sm md:text-base text-ink rounded-[14px] border border-[var(--line)] placeholder:text-[var(--muted)]/70 focus:border-[var(--blue)] focus-visible:outline-none transition-colors"
                             placeholder="Décrivez votre projet, vos besoins, vos délais…"
                             value={form.message}
                             onChange={updateField('message')}
@@ -490,19 +471,21 @@ export default function Contact() {
                           <button
                             type="button"
                             onClick={handleBack}
-                            className="py-3 md:py-4 px-5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                            className="px-5 py-3.5 rounded-full text-[15px] font-semibold text-ink border border-[var(--line)] hover:border-ink/20 inline-flex items-center justify-center gap-2 transition-colors"
                           >
-                            <ArrowLeft className="lucide lucide-arrow-left w-4 h-4 md:w-5 md:h-5" />
+                            <ArrowLeft className="w-4 h-4" />
                             Retour
                           </button>
-                          <button
-                            type="button"
-                            onClick={handleContinue}
-                            className="flex-1 py-3 md:py-4 bg-[#0066CC] hover:bg-blue-700 text-white text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
-                          >
-                            Continuer
-                            <ArrowRight className="lucide lucide-arrow-right w-4 h-4 md:w-5 md:h-5" />
-                          </button>
+                          <Magnetic className="flex-1">
+                            <button
+                              type="button"
+                              onClick={handleContinue}
+                              className="cta-iridescent w-full px-7 py-3.5 text-[15px] font-semibold inline-flex items-center justify-center gap-2"
+                            >
+                              Continuer
+                              <ArrowRight className="w-4 h-4" />
+                            </button>
+                          </Magnetic>
                         </div>
                       </div>
                     )}
@@ -510,140 +493,110 @@ export default function Contact() {
                     {step === 3 && (
                       <div className="space-y-6">
                         {submitted ? (
-                          <div className="text-center py-6 md:py-10">
-                            <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                              <CircleCheck className="lucide lucide-circle-check w-7 h-7 md:w-8 md:h-8 text-green-600" />
+                          <div className="text-center py-8 md:py-12">
+                            <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-5 rounded-full flex items-center justify-center border border-[var(--line)] bg-paper">
+                              <CircleCheck className="w-7 h-7 md:w-8 md:h-8 text-[var(--blue)]" />
                             </div>
-                            <p className="text-base md:text-lg font-bold text-gray-900">
+                            <p className="font-display text-lg md:text-xl font-semibold text-ink max-w-md mx-auto">
                               Merci ! Votre demande a bien été envoyée. Nous vous répondons sous 24h.
                             </p>
                           </div>
                         ) : (
                           <>
-                            <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-4 md:p-6 space-y-2">
-                              <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2">Récapitulatif</h3>
-                              <div className="flex justify-between gap-4 text-sm md:text-base">
-                                <span className="text-gray-500">Entreprise</span>
-                                <span className="font-semibold text-gray-900 text-right">{form.entreprise}</span>
-                              </div>
-                              <div className="flex justify-between gap-4 text-sm md:text-base">
-                                <span className="text-gray-500">Nom complet</span>
-                                <span className="font-semibold text-gray-900 text-right">{form.nom}</span>
-                              </div>
-                              <div className="flex justify-between gap-4 text-sm md:text-base">
-                                <span className="text-gray-500">Email</span>
-                                <span className="font-semibold text-gray-900 text-right">{form.email}</span>
-                              </div>
-                              <div className="flex justify-between gap-4 text-sm md:text-base">
-                                <span className="text-gray-500">Téléphone</span>
-                                <span className="font-semibold text-gray-900 text-right">{form.telephone}</span>
-                              </div>
-                              {form.structure && (
-                                <div className="flex justify-between gap-4 text-sm md:text-base">
-                                  <span className="text-gray-500">Type de structure</span>
-                                  <span className="font-semibold text-gray-900 text-right">{form.structure}</span>
+                            <div className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-paper p-5 md:p-7">
+                              <h3 className="font-display text-base md:text-lg font-semibold text-ink mb-4">Récapitulatif</h3>
+                              <dl className="divide-y divide-[var(--line)]">
+                                <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                  <dt className="text-[var(--muted)]">Entreprise</dt>
+                                  <dd className="font-semibold text-ink text-right">{form.entreprise}</dd>
                                 </div>
-                              )}
-                              {form.dimensions && (
-                                <div className="flex justify-between gap-4 text-sm md:text-base">
-                                  <span className="text-gray-500">Dimensions / quantité</span>
-                                  <span className="font-semibold text-gray-900 text-right">{form.dimensions}</span>
+                                <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                  <dt className="text-[var(--muted)]">Nom complet</dt>
+                                  <dd className="font-semibold text-ink text-right">{form.nom}</dd>
                                 </div>
-                              )}
+                                <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                  <dt className="text-[var(--muted)]">Email</dt>
+                                  <dd className="font-semibold text-ink text-right">{form.email}</dd>
+                                </div>
+                                <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                  <dt className="text-[var(--muted)]">Téléphone</dt>
+                                  <dd className="font-semibold text-ink text-right">{form.telephone}</dd>
+                                </div>
+                                {form.structure && (
+                                  <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                    <dt className="text-[var(--muted)]">Type de structure</dt>
+                                    <dd className="font-semibold text-ink text-right">{form.structure}</dd>
+                                  </div>
+                                )}
+                                {form.dimensions && (
+                                  <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                    <dt className="text-[var(--muted)]">Dimensions / quantité</dt>
+                                    <dd className="font-semibold text-ink text-right">{form.dimensions}</dd>
+                                  </div>
+                                )}
+                              </dl>
                             </div>
                             <div className="flex items-center gap-3">
                               <button
                                 type="button"
                                 onClick={handleBack}
-                                className="py-3 md:py-4 px-5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                                className="px-5 py-3.5 rounded-full text-[15px] font-semibold text-ink border border-[var(--line)] hover:border-ink/20 inline-flex items-center justify-center gap-2 transition-colors"
                               >
-                                <ArrowLeft className="lucide lucide-arrow-left w-4 h-4 md:w-5 md:h-5" />
+                                <ArrowLeft className="w-4 h-4" />
                                 Retour
                               </button>
-                              <button
-                                type="button"
-                                onClick={handleSubmit}
-                                className="flex-1 py-3 md:py-4 bg-[#0066CC] hover:bg-blue-700 text-white text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
-                              >
-                                Envoyer ma demande
-                                <Send className="lucide lucide-send w-4 h-4 md:w-5 md:h-5" />
-                              </button>
+                              <Magnetic className="flex-1">
+                                <button
+                                  type="button"
+                                  onClick={handleSubmit}
+                                  disabled={sending}
+                                  className="cta-iridescent w-full px-7 py-3.5 text-[15px] font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-60"
+                                >
+                                  Envoyer ma demande
+                                  <Send className="w-4 h-4" />
+                                </button>
+                              </Magnetic>
                             </div>
                           </>
                         )}
                       </div>
                     )}
                   </div>
-                </div>
-              </form>
-
-              <div className="mt-8 text-center space-y-4">
-                <p className="text-gray-600 text-sm mb-2">Vous préférez nous écrire directement ?</p>
-                <a
-                  href="mailto:contact@sport-air-event.com"
-                  className="text-[#0066CC] font-bold hover:underline inline-flex items-center gap-2"
-                >
-                  <Mail className="lucide lucide-mail w-4 h-4" />
-                  contact@sport-air-event.com
-                </a>
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-gray-600 text-sm mb-3">Ou contactez-nous sur WhatsApp</p>
-                  <a
-                    href="https://wa.me/41774835190"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-full font-bold transition-all shadow-lg hover:shadow-xl"
-                  >
-                    <MessageCircle className="lucide lucide-message-circle w-5 h-5" />
-                    WhatsApp
-                  </a>
-                </div>
+                </form>
               </div>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Reviews */}
-      <section className="section-reviews" style={{ paddingTop: '96px', paddingBottom: '96px' }}>
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <Reveal className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-              </svg>
-              <span className="text-sm font-bold text-gray-700">Avis</span>
-            </div>
-            <div className="flex items-center justify-center gap-1 mb-2">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="lucide lucide-star w-5 h-5 fill-amber-400 text-amber-400" />
-              ))}
-              <span className="ml-2 text-xl font-bold text-gray-900">4.9</span>
-            </div>
-            <p className="text-sm text-gray-500">
-              Basé sur <strong className="text-gray-700">127</strong> avis
-            </p>
-          </Reveal>
+      {/* ░░ REVIEWS (dark) ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+            <SectionHeader light kicker="Témoignages" index="01" title={<>Ils nous font<br />confiance</>} />
+            <Reveal as="div" delay={0.1} className="flex items-center gap-4 md:pb-2">
+              <div className="flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                </svg>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <span className="font-display text-xl font-bold text-white ml-1">4.9</span>
+              </div>
+              <span className="text-sm text-white/55">Basé sur <strong className="text-white/80">127</strong> avis</span>
+            </Reveal>
+          </div>
 
-          <RevealStagger className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <RevealStagger className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {reviews.map((r) => (
-              <motion.div
-                key={r.initials}
-                variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }}
-                whileHover={{ y: -4 }}
-                className="flex flex-col p-6 rounded-2xl transition-all duration-300 cursor-default"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.75)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.6)',
-                  boxShadow: 'rgba(0, 0, 0, 0.08) 0px 8px 32px',
-                  borderRadius: '24px',
-                }}
-              >
-                <div className="flex items-center gap-3 mb-4">
+              <motion.div key={r.initials} variants={staggerChild} className="flex flex-col bg-ink p-7">
+                <div className="flex items-center gap-3 mb-5">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
                     style={{ background: r.gradient }}
@@ -651,19 +604,19 @@ export default function Contact() {
                     {r.initials}
                   </div>
                   <div>
-                    <div className="font-semibold text-sm text-gray-900">{r.name}</div>
-                    <div className="text-xs text-gray-500">{r.role}</div>
+                    <div className="font-semibold text-sm text-white">{r.name}</div>
+                    <div className="text-xs text-white/50">{r.role}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-0.5 mb-3">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="lucide lucide-star w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed flex-1">{r.text}</p>
-                <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-xs text-gray-400">{r.date}</span>
-                  <span className="text-xs text-gray-400">Publié sur Google</span>
+                <p className="text-sm text-white/65 leading-relaxed flex-1">{r.text}</p>
+                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
+                  <span className="text-xs text-white/40">{r.date}</span>
+                  <span className="text-xs text-white/40">Publié sur Google</span>
                 </div>
               </motion.div>
             ))}
@@ -671,45 +624,48 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal className="text-center mb-10">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-[#0066CC] rounded-full text-sm font-semibold mb-4">
-              <Sparkles className="lucide lucide-sparkles w-4 h-4" />
-              Questions fréquentes
-            </span>
-            <h2 className="text-2xl md:text-4xl font-bold text-gray-900">Tout ce que vous devez savoir</h2>
-          </Reveal>
-          <div className="space-y-3">
-            {faqs.map((faq, i) => (
-              <Reveal
-                key={faq.question}
-                delay={0.05 * i}
-                className="rounded-2xl border overflow-hidden transition-all border-gray-200 hover:border-gray-300"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  aria-expanded={openFaq === i}
-                  className="w-full flex items-center gap-4 px-5 py-4 text-left bg-white hover:bg-gray-50 transition-colors"
-                >
-                  <span className="text-xl flex-shrink-0">{faq.emoji}</span>
-                  <span className="flex-1 font-semibold text-gray-900 text-sm md:text-base">{faq.question}</span>
-                  <ChevronDown
-                    className={`lucide lucide-chevron-down w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200 ${
-                      openFaq === i ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {openFaq === i && (
-                  <div className="px-5 pb-4 pl-14 text-sm md:text-base text-gray-600 leading-relaxed">
-                    {faq.answer}
-                  </div>
-                )}
-              </Reveal>
-            ))}
-          </div>
+      {/* ░░ FAQ ░░ */}
+      <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
+        <div className="max-w-3xl mx-auto px-5 sm:px-8">
+          <SectionHeader align="center" kicker="Questions fréquentes" index="02" className="mb-12" title="Tout ce que vous devez savoir" />
+          <RevealStagger className="border-t border-[var(--line)]">
+            {faqs.map((faq, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <motion.div key={faq.question} variants={staggerChild} className="border-b border-[var(--line)]">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    className="w-full flex items-center justify-between gap-4 text-left py-6 group"
+                  >
+                    <h3 className="font-display text-[17px] md:text-lg font-semibold text-ink group-hover:text-[var(--blue)] transition-colors">{faq.question}</h3>
+                    <motion.div
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[var(--line)]"
+                    >
+                      <ChevronDown className="w-4 h-4 text-[var(--muted)]" />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="c"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ overflow: 'hidden' }}
+                      >
+                        <p className="text-[15px] text-[var(--muted)] leading-relaxed pb-6 max-w-2xl">{faq.answer}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </RevealStagger>
         </div>
       </section>
     </div>

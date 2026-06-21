@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Check,
   ArrowRight,
+  ArrowUpRight,
   Zap,
   Wind,
   Droplet,
@@ -11,7 +12,8 @@ import {
   Shield,
   Clock,
 } from 'lucide-react';
-import { Reveal, RevealStagger, staggerChild } from '../lib/motion.jsx';
+import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 
 const features = [
   {
@@ -55,7 +57,6 @@ const sizes = [
     poids: '45kg',
     prix: 'CHF 4,500',
     popular: false,
-    borderClass: 'border-gray-100',
   },
   {
     title: '4x4m',
@@ -65,7 +66,6 @@ const sizes = [
     poids: '60kg',
     prix: 'CHF 6,500',
     popular: true,
-    borderClass: 'border-[#0066CC]',
   },
   {
     title: '5x5m',
@@ -75,7 +75,6 @@ const sizes = [
     poids: '75kg',
     prix: 'CHF 8,500',
     popular: false,
-    borderClass: 'border-gray-100',
   },
 ];
 
@@ -93,206 +92,204 @@ export default function SpiderTent() {
     sizes.find((s) => s.popular)?.title ?? sizes[0].title
   );
   return (
-    <div className="pt-20 bg-gradient-to-br from-white via-blue-50/20 to-white">
-      <section className="py-20 relative overflow-hidden">
-        <div
-          className="absolute top-0 right-0 w-96 h-96 bg-[#0066CC]/10 rounded-full blur-3xl"
-          style={{ transform: 'scale(1.11424)' }}
-        ></div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <Reveal>
-              <div className="inline-block px-4 py-2 bg-[#0066CC]/10 text-[#0066CC] text-sm font-semibold rounded-full mb-6">
-                Tente professionnelle
-              </div>
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+    <div className="overflow-x-hidden bg-paper">
+      {/* ░░ HERO ░░ */}
+      <section className="pt-28 md:pt-36 pb-20 md:pb-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div>
+              <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
+                <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
+                <span className="kicker">Tente professionnelle</span>
+              </Reveal>
+
+              <Reveal as="h1" y={26} delay={0.05}
+                className="font-display font-bold text-ink tracking-tightest"
+                style={{ fontSize: 'clamp(2.6rem,6vw,5rem)', lineHeight: 0.96 }}>
                 Tente Spider<br />
-                <span className="text-[#0066CC]">X-Gloo Style</span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8">
+                <span className="serif-accent text-ink/55" style={{ fontWeight: 500 }}>X-Gloo Style</span>
+              </Reveal>
+
+              <Reveal as="p" delay={0.12} y={20} className="lead mt-7 max-w-lg">
                 Design architectural unique avec 4 pieds courbes gonflables. Parfaite pour salons, événements sportifs et stands promotionnels.
-              </p>
-              <div className="flex flex-wrap gap-4 mb-8">
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="w-5 h-5 text-green-600" />
-                  <span>Montage 10 minutes</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="w-5 h-5 text-green-600" />
-                  <span>Design moderne</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="w-5 h-5 text-green-600" />
-                  <span>Branding 360°</span>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <Link to="/Calculator">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    className="px-8 py-4 bg-[#0066CC] text-white font-bold rounded-full flex items-center gap-3 shadow-lg"
-                    tabIndex={0}
-                  >
-                    Calculer mon prix
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.button>
+              </Reveal>
+
+              <Reveal as="div" delay={0.18} className="mt-8 flex flex-wrap gap-x-7 gap-y-3">
+                {['Montage 10 minutes', 'Design moderne', 'Branding 360°'].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-sm text-ink/75">
+                    <Check className="w-4 h-4 text-[var(--blue)]" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </Reveal>
+
+              <Reveal as="div" delay={0.24} className="mt-9 flex flex-col sm:flex-row gap-3">
+                <Magnetic>
+                  <Link to="/Calculator" className="cta-iridescent inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
+                    Calculer mon prix <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </Magnetic>
+                <Link to="/Contact?product=Tente%20Spider" className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-ink border border-[var(--line)] hover:border-ink/30 transition-colors">
+                  Demander un devis
                 </Link>
-                <Link to="/Contact?product=Tente%20Spider">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    className="px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-full"
-                    tabIndex={0}
-                  >
-                    Demander un devis
-                  </motion.button>
-                </Link>
+              </Reveal>
+            </div>
+
+            <Reveal y={40} className="relative">
+              <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--paper-2)] border border-[var(--line)]">
+                <img
+                  src="images/16_be94e4481_Capturedecran2026-01-02a170703.png"
+                  alt="Tente Spider X-Gloo"
+                  className="w-full object-cover"
+                />
               </div>
-            </Reveal>
-            <Reveal className="relative">
-              <img
-                src="images/16_be94e4481_Capturedecran2026-01-02a170703.png"
-                alt="Tente Spider X-Gloo"
-                className="w-full rounded-3xl shadow-2xl"
-              />
-              <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-6">
-                <div className="text-sm text-gray-600 mb-1">À partir de</div>
-                <div className="text-3xl font-bold text-[#0066CC]">CHF 4,500</div>
+              <div className="absolute -bottom-6 -right-4 sm:-right-6 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] p-6">
+                <div className="text-xs text-[var(--muted)] uppercase tracking-[0.16em] font-semibold mb-1.5">À partir de</div>
+                <div className="font-display text-3xl font-bold text-ink">CHF 4,500</div>
               </div>
             </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <Reveal className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Caractéristiques principales</h2>
-            <p className="text-xl text-gray-600">Conçue pour l'efficacité et l'impact visuel</p>
-          </Reveal>
-          <RevealStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map(({ Icon, title, desc }) => (
-              <motion.div
-                key={title}
-                variants={staggerChild}
-                className="bg-gray-50 rounded-2xl p-6"
-              >
-                <div className="w-12 h-12 bg-[#0066CC] rounded-xl flex items-center justify-center mb-4">
-                  <Icon className="w-6 h-6 text-white" />
+      {/* ░░ FEATURES (dark) ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+          <SectionHeader light kicker="Caractéristiques principales" index="01"
+            title={<>Conçue pour l'efficacité<br /><span className="serif-accent text-white/55">et l'impact visuel.</span></>}
+            className="mb-14 md:mb-20" />
+
+          <RevealStagger className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
+            {features.map(({ Icon, title, desc }, i) => (
+              <motion.div variants={staggerChild} key={title} className="bg-ink p-6 md:p-8">
+                <div className="flex items-center justify-between mb-8">
+                  <Icon className="w-5 h-5 text-[#5aa2f0]" />
+                  <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
-                <p className="text-gray-600">{desc}</p>
+                <div className="font-display font-semibold text-[15px] mb-1.5">{title}</div>
+                <div className="text-[13px] text-white/50 leading-relaxed">{desc}</div>
               </motion.div>
             ))}
           </RevealStagger>
         </div>
       </section>
 
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <Reveal className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Tailles disponibles</h2>
-            <p className="text-xl text-gray-600">Choisissez la dimension adaptée à votre événement</p>
+      {/* ░░ SIZES ░░ */}
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-20">
+          <SectionHeader kicker="Tailles disponibles" index="02"
+            title={<>Choisissez la dimension<br />adaptée à votre événement</>} />
+          <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
+            Sélectionnez votre format
           </Reveal>
-          <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {sizes.map((size) => (
+        </div>
+
+        <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {sizes.map((size) => {
+            const isSelected = selectedSize === size.title;
+            return (
               <motion.div
                 key={size.title}
                 variants={staggerChild}
-                whileHover={{ y: -4 }}
                 onClick={() => setSelectedSize(size.title)}
-                className={`relative bg-white rounded-3xl shadow-xl border-3 cursor-pointer transition-all ${
-                  selectedSize === size.title
-                    ? 'border-[#0066CC] ring-2 ring-[#0066CC]/40'
-                    : size.borderClass
+                className={`relative flex flex-col rounded-[var(--radius-lg)] bg-white border cursor-pointer transition-colors ${
+                  isSelected
+                    ? 'border-[var(--blue)]'
+                    : size.popular
+                    ? 'border-ink/15'
+                    : 'border-[var(--line)] hover:border-ink/15'
                 }`}
               >
                 {size.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#0066CC] text-white text-sm font-bold rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-white text-xs font-semibold" style={{ background: 'var(--blue)' }}>
                     Plus populaire
                   </div>
                 )}
-                <div className="p-8">
-                  <div className="text-center mb-6">
-                    <div className="text-4xl font-bold text-gray-900 mb-2">{size.title}</div>
-                    <div className="text-gray-600">{size.people}</div>
+                <div className="flex flex-col flex-1 p-8">
+                  <div className="mb-6">
+                    <div className="font-display text-4xl font-bold text-ink mb-1.5">{size.title}</div>
+                    <div className="text-sm text-[var(--muted)]">{size.people}</div>
                   </div>
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Dimensions</span>
-                      <span className="font-semibold">{size.dimensions}</span>
+                      <span className="text-[var(--muted)]">Dimensions</span>
+                      <span className="font-semibold text-ink">{size.dimensions}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Hauteur</span>
-                      <span className="font-semibold">{size.hauteur}</span>
+                      <span className="text-[var(--muted)]">Hauteur</span>
+                      <span className="font-semibold text-ink">{size.hauteur}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Poids</span>
-                      <span className="font-semibold">{size.poids}</span>
+                      <span className="text-[var(--muted)]">Poids</span>
+                      <span className="font-semibold text-ink">{size.poids}</span>
                     </div>
                   </div>
-                  <div className="text-center pt-6 border-t border-gray-200">
-                    <div className="text-3xl font-bold text-[#0066CC] mb-4">{size.prix}</div>
-                    <Link to="/Calculator">
-                      <button className="w-full py-3 bg-[#0066CC] text-white font-bold rounded-full" tabIndex={0}>
+                  <div className="mt-auto pt-6 border-t border-[var(--line)]">
+                    <div className="font-display text-3xl font-bold text-ink mb-5">{size.prix}</div>
+                    <Link to="/Calculator" onClick={(e) => e.stopPropagation()} className="block">
+                      <button
+                        className={`w-full py-3 text-[15px] font-semibold rounded-full transition-colors ${
+                          isSelected
+                            ? 'bg-ink text-white hover:bg-[var(--blue)]'
+                            : 'bg-transparent text-ink border border-[var(--line)] hover:border-ink/30'
+                        }`}
+                        tabIndex={0}
+                      >
                         Configurer
                       </button>
                     </Link>
                   </div>
                 </div>
               </motion.div>
-            ))}
-          </RevealStagger>
-        </div>
+            );
+          })}
+        </RevealStagger>
       </section>
 
-      <section className="py-20 bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <Reveal className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Spécifications techniques</h2>
-          </Reveal>
-          <RevealStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* ░░ SPECS ░░ */}
+      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8">
+          <SectionHeader kicker="Fiche technique" index="03"
+            title="Spécifications techniques"
+            className="mb-14 md:mb-16" />
+
+          <RevealStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden">
             {specs.map((spec) => (
               <motion.div
                 key={spec.label}
                 variants={staggerChild}
-                className="bg-white/5 backdrop-blur-sm rounded-xl p-6"
+                className="bg-white p-7"
               >
-                <div className="text-white/60 text-sm mb-2">{spec.label}</div>
-                <div className="text-xl font-bold">{spec.value}</div>
+                <div className="kicker mb-3" style={{ color: 'var(--muted)' }}>{spec.label}</div>
+                <div className="font-display text-lg font-semibold text-ink">{spec.value}</div>
               </motion.div>
             ))}
           </RevealStagger>
         </div>
       </section>
 
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <Reveal>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Prêt à commander votre Tente Spider ?</h2>
-            <p className="text-xl text-gray-600 mb-8">Obtenez un devis personnalisé en quelques clics</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/Calculator">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  className="px-8 py-4 bg-[#0066CC] text-white font-bold rounded-full flex items-center gap-3"
-                  tabIndex={0}
-                >
-                  Calculer mon prix
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
+      {/* ░░ CTA ░░ */}
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <Reveal className="rounded-[var(--radius-lg)] bg-ink text-white px-6 sm:px-12 py-16 md:py-20 text-center">
+          <span className="kicker" style={{ color: '#7db4f0' }}>Prêt à démarrer</span>
+          <h2 className="font-display font-bold tracking-tightest mt-5" style={{ fontSize: 'clamp(2rem,4.6vw,3.4rem)', lineHeight: 1.02 }}>
+            Prêt à commander votre Tente Spider ?
+          </h2>
+          <p className="lead mt-5 mx-auto max-w-xl" style={{ color: 'rgba(255,255,255,0.72)' }}>
+            Obtenez un devis personnalisé en quelques clics
+          </p>
+          <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
+            <Magnetic>
+              <Link to="/Calculator" className="inline-flex items-center justify-center gap-2 bg-white text-ink font-semibold rounded-full px-7 py-3.5 text-[15px] hover:bg-white/90 transition-colors">
+                Calculer mon prix <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link to="/Contact?product=Tente%20Spider">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  className="px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-full"
-                  tabIndex={0}
-                >
-                  Contacter un expert
-                </motion.button>
-              </Link>
-            </div>
-          </Reveal>
-        </div>
+            </Magnetic>
+            <Link to="/Contact?product=Tente%20Spider" className="group inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-white border border-white/30 hover:bg-white/10 transition-colors">
+              Contacter un expert <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+          </div>
+        </Reveal>
       </section>
     </div>
   );

@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  Sparkles,
   Check,
   Minus,
   Plus,
   ArrowRight,
+  ArrowUpRight,
   Lightbulb,
   MessageCircle,
 } from 'lucide-react';
-import { Reveal, RevealStagger, staggerChild } from '../lib/motion.jsx';
+import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 import DevisModal from '../components/DevisModal.jsx';
 
 const HEIGHTS = [
@@ -21,6 +22,33 @@ const HEIGHTS = [
 
 const LED_PRICE = 95;
 const PUMP_PRICE = 60;
+
+const SPECS = [
+  ['Matériau', 'PVC 650g/m² haute résistance'],
+  ['Hauteurs disponibles', '2.5m – 3m – 4m'],
+  ['Impression', 'Sublimation HD 360° UV résistant'],
+  ['Éclairage', 'LED RGB intégré (option)'],
+  ['Temps de montage', '3-5 minutes par colonne'],
+  ['Base de lestage', 'Base lestée incluse'],
+  ['Usage', 'Intérieur et extérieur'],
+  ['Garantie', '2 ans structure + 3 ans impression'],
+];
+
+const USAGES = [
+  { n: '01', title: 'Balisage sportif', desc: 'Circuits, parcours, zones de balisage' },
+  { n: '02', title: 'Entrées & allées', desc: "Créer des couloirs d'honneur visuels" },
+  { n: '03', title: 'Salons & expo', desc: 'Signalétique de stand, délimitation' },
+  { n: '04', title: 'Soirées & événements', desc: 'Décoration lumineuse, ambiance unique' },
+];
+
+const INCLUDED = [
+  'Personnalisation complète avec votre logo',
+  'Modélisation 3D gratuite',
+  'Ventilateur électrique silencieux',
+  'Base lestée pour stabilité maximale',
+  'Sac de transport professionnel',
+  'Design 3D gratuit',
+];
 
 export default function ColonnesGonflables() {
   const navigate = useNavigate();
@@ -41,28 +69,24 @@ export default function ColonnesGonflables() {
   ];
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-paper">
       <main>
-        <div className="pt-24 md:pt-28 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50 min-h-screen">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-            <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
-              <div className="hidden lg:flex lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] items-center justify-center">
+        {/* ░░ CONFIGURATEUR ░░ */}
+        <section className="pt-28 md:pt-32 bg-paper">
+          <div className="max-w-content mx-auto px-5 sm:px-8 py-8 md:py-12">
+            <div className="grid lg:grid-cols-2 gap-10 md:gap-16">
+              {/* Visual column */}
+              <div className="hidden lg:flex lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)] items-center justify-center">
                 <Reveal className="relative w-full">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-cyan-400/10 rounded-[4rem] blur-3xl"></div>
-                  <div
-                    className="relative rounded-3xl p-6"
-                    style={{
-                      background: 'rgb(255, 255, 255)',
-                      borderRadius: '24px',
-                      boxShadow: 'rgba(0, 0, 0, 0.08) 0px 4px 24px',
-                    }}
-                  >
+                  <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--paper-2)] border border-[var(--line)] flex items-center justify-center p-10 md:p-14" style={{ aspectRatio: '4 / 5' }}>
+                    <span className="absolute top-6 left-7 font-display text-[6rem] md:text-[8rem] font-bold leading-none text-ink/[0.04] select-none">03</span>
+                    <span className="absolute top-7 right-7 z-10 kicker" style={{ color: 'var(--blue)' }}>Balisage élégant</span>
                     <img
                       src="images/04_c91d5f27b_ChatGPTImage17janv202613_28_14.png"
                       alt="Colonnes Gonflables Sport Air Event"
-                      className="w-full h-auto object-contain"
+                      className="relative w-full h-auto object-contain"
                       style={{
-                        maxHeight: '600px',
+                        maxHeight: '560px',
                         mixBlendMode: 'multiply',
                         background: 'transparent',
                         clipPath: 'inset(0px 6px 0px 0px)',
@@ -71,19 +95,15 @@ export default function ColonnesGonflables() {
                   </div>
                 </Reveal>
               </div>
+
+              {/* Mobile image */}
               <div className="lg:hidden">
-                <div
-                  className="rounded-2xl p-4"
-                  style={{
-                    background: 'rgb(255, 255, 255)',
-                    borderRadius: '24px',
-                    boxShadow: 'rgba(0, 0, 0, 0.08) 0px 4px 24px',
-                  }}
-                >
+                <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--paper-2)] border border-[var(--line)] flex items-center justify-center p-6">
+                  <span className="absolute top-4 left-5 font-display text-[4rem] font-bold leading-none text-ink/[0.04] select-none">03</span>
                   <img
                     src="images/04_c91d5f27b_ChatGPTImage17janv202613_28_14.png"
                     alt="Colonnes Gonflables Sport Air Event"
-                    className="w-full h-auto object-contain max-h-60"
+                    className="relative w-full h-auto object-contain max-h-60"
                     style={{
                       mixBlendMode: 'multiply',
                       background: 'transparent',
@@ -92,110 +112,112 @@ export default function ColonnesGonflables() {
                   />
                 </div>
               </div>
-              <div className="space-y-4 md:space-y-6 pb-2 md:pb-8">
+
+              {/* Configurator column */}
+              <div className="space-y-8 md:space-y-10 pb-2 md:pb-8">
                 <Reveal>
-                  <h1 className="text-xl md:text-4xl font-bold mb-1">Colonnes Gonflables</h1>
-                  <p className="text-xs md:text-base text-gray-600 mb-1">
-                    Balisage élégant pour vos événements
-                  </p>
-                  <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 py-1 md:px-3 md:py-1.5 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full shadow-lg">
-                    <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                    <p className="text-[10px] md:text-sm text-white font-bold">
-                      Impression totale comprise
-                    </p>
+                  <div className="kicker mb-4">Configurez votre produit</div>
+                  <h1 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2.1rem,4.6vw,3.4rem)', lineHeight: 1.0 }}>
+                    Colonnes Gonflables
+                  </h1>
+                  <p className="lead mt-4">Balisage élégant pour vos événements</p>
+                  <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--line)] bg-white">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
+                    <span className="text-[13px] font-semibold text-ink">Impression totale comprise</span>
                   </div>
                 </Reveal>
+
+                {/* Height selector */}
                 <div>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2 mb-2.5">
-                    <h3 className="text-base md:text-lg font-bold text-gray-900">Hauteur</h3>
-                    <div className="px-2 py-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white text-[10px] sm:text-xs font-bold rounded-full whitespace-nowrap">
-                      ⭐ 3m POPULAIRE
-                    </div>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-4">
+                    <h3 className="font-display text-lg font-semibold text-ink">Hauteur</h3>
+                    <span className="px-2.5 py-1 text-white text-[11px] font-semibold rounded-full whitespace-nowrap" style={{ background: 'var(--blue)' }}>
+                      3m POPULAIRE
+                    </span>
                   </div>
                   <div className="grid grid-cols-2 gap-3 md:gap-4">
-                    <div className="">
+                    <div>
                       <div
                         onClick={() => setSelectedHeight('2.5m')}
-                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                        className={`relative rounded-[var(--radius)] border transition-colors cursor-pointer p-4 ${
                           selectedHeight === '2.5m'
-                            ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
-                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                            ? 'border-ink bg-white'
+                            : 'border-[var(--line)] bg-white hover:border-ink/15'
                         }`}
                       >
-                        <div className="relative flex items-center gap-2">
+                        <div className="relative flex items-center gap-2.5">
                           <div
-                            className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                            className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
                               selectedHeight === '2.5m'
-                                ? 'border-[#0066CC] bg-white'
-                                : 'border-gray-300'
+                                ? 'border-[var(--blue)] bg-white'
+                                : 'border-[var(--line)]'
                             }`}
                           >
                             {selectedHeight === '2.5m' && (
-                              <Check className="w-3 h-3 text-[#0066CC]" />
+                              <Check className="w-3 h-3 text-[var(--blue)]" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-sm text-gray-900 leading-tight">
+                            <div className="font-display font-semibold text-sm text-ink leading-tight">
                               2.5m
                             </div>
-                            <div className="text-xs text-gray-500 leading-tight mt-0.5">
+                            <div className="text-xs text-[var(--muted)] leading-tight mt-0.5">
                               250x60(diamètre)cm
                             </div>
-                            <div className="text-sm font-bold text-[#0066CC] mt-1">590€</div>
+                            <div className="text-sm font-bold text-[var(--blue)] mt-1">590€</div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="">
+                    <div>
                       <div
                         onClick={() => setSelectedHeight('3m')}
-                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                        className={`relative rounded-[var(--radius)] border transition-colors cursor-pointer p-4 ${
                           selectedHeight === '3m'
-                            ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
-                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                            ? 'border-ink bg-white'
+                            : 'border-[var(--line)] bg-white hover:border-ink/15'
                         }`}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-transparent pointer-events-none rounded-2xl"></div>
-                        <div className="relative flex items-center gap-2">
+                        <div className="relative flex items-center gap-2.5">
                           <div
-                            className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                            className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
                               selectedHeight === '3m'
-                                ? 'border-[#0066CC] bg-white'
-                                : 'border-gray-300'
+                                ? 'border-[var(--blue)] bg-white'
+                                : 'border-[var(--line)]'
                             }`}
                           >
                             {selectedHeight === '3m' && (
-                              <Check className="w-3 h-3 text-[#0066CC]" />
+                              <Check className="w-3 h-3 text-[var(--blue)]" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-sm text-gray-900 leading-tight">
+                            <div className="font-display font-semibold text-sm text-ink leading-tight">
                               3m
                             </div>
-                            <div className="text-xs text-gray-500 leading-tight mt-0.5">
+                            <div className="text-xs text-[var(--muted)] leading-tight mt-0.5">
                               300x60(diamètre)cm
                             </div>
-                            <div className="text-sm font-bold text-[#0066CC] mt-1">670€</div>
+                            <div className="text-sm font-bold text-[var(--blue)] mt-1">670€</div>
                           </div>
-                          <div className="flex items-center gap-1 bg-white rounded-xl border border-gray-200 p-0.5 flex-shrink-0">
+                          <div className="flex items-center gap-1 bg-white rounded-[var(--radius)] border border-[var(--line)] p-0.5 flex-shrink-0">
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setQuantity((q) => Math.max(1, q - 1));
                               }}
-                              className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                              className="w-7 h-7 rounded-[10px] bg-[var(--paper-2)] hover:bg-[var(--line)] flex items-center justify-center transition-colors"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
-                            <span className="w-6 text-center text-sm font-bold">{quantity}</span>
+                            <span className="w-6 text-center text-sm font-bold tabular-nums">{quantity}</span>
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setQuantity((q) => q + 1);
                               }}
-                              className="w-7 h-7 rounded-lg bg-[#0066CC] hover:bg-blue-700 text-white flex items-center justify-center transition-colors"
+                              className="w-7 h-7 rounded-[10px] bg-ink hover:bg-[var(--blue)] text-white flex items-center justify-center transition-colors"
                             >
                               <Plus className="w-3 h-3" />
                             </button>
@@ -206,32 +228,32 @@ export default function ColonnesGonflables() {
                     <div className="col-span-2">
                       <div
                         onClick={() => setSelectedHeight('4m')}
-                        className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                        className={`relative rounded-[var(--radius)] border transition-colors cursor-pointer p-4 ${
                           selectedHeight === '4m'
-                            ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
-                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                            ? 'border-ink bg-white'
+                            : 'border-[var(--line)] bg-white hover:border-ink/15'
                         }`}
                       >
-                        <div className="relative flex items-center gap-2">
+                        <div className="relative flex items-center gap-2.5">
                           <div
-                            className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                            className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
                               selectedHeight === '4m'
-                                ? 'border-[#0066CC] bg-white'
-                                : 'border-gray-300'
+                                ? 'border-[var(--blue)] bg-white'
+                                : 'border-[var(--line)]'
                             }`}
                           >
                             {selectedHeight === '4m' && (
-                              <Check className="w-3 h-3 text-[#0066CC]" />
+                              <Check className="w-3 h-3 text-[var(--blue)]" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-sm text-gray-900 leading-tight">
+                            <div className="font-display font-semibold text-sm text-ink leading-tight">
                               4m
                             </div>
-                            <div className="text-xs text-gray-500 leading-tight mt-0.5">
+                            <div className="text-xs text-[var(--muted)] leading-tight mt-0.5">
                               400x70(diamètre)cm
                             </div>
-                            <div className="text-sm font-bold text-[#0066CC] mt-1">750€</div>
+                            <div className="text-sm font-bold text-[var(--blue)] mt-1">750€</div>
                           </div>
                         </div>
                       </div>
@@ -240,177 +262,159 @@ export default function ColonnesGonflables() {
                       <div
                         onClick={() => navigate('/ColonnesSurMesure')}
                         role="button"
-                        className="relative overflow-hidden rounded-2xl p-4 md:p-6 bg-gradient-to-br from-[#0066CC] to-blue-700 shadow-xl cursor-pointer group"
+                        className="group relative overflow-hidden rounded-[var(--radius-lg)] p-5 md:p-6 bg-ink text-white cursor-pointer"
                         tabIndex={0}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0">
-                          <div className="flex items-center gap-3 md:gap-4">
-                            <div className="w-10 h-10 md:w-14 md:h-14 bg-white/10 backdrop-blur-sm rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0">
-                              <Sparkles className="w-5 h-5 md:w-8 md:h-8 text-white" />
+                          <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 md:w-14 md:h-14 rounded-[var(--radius)] border border-white/15 flex items-center justify-center flex-shrink-0">
+                              <span className="font-display text-base md:text-lg font-bold text-white">04</span>
                             </div>
                             <div>
-                              <h4 className="text-lg md:text-2xl font-bold text-white mb-1">
+                              <h4 className="font-display text-lg md:text-2xl font-bold text-white mb-1">
                                 Sur Mesure
                               </h4>
-                              <p className="text-white/90 text-xs md:text-sm">
+                              <p className="text-white/60 text-xs md:text-sm">
                                 Dimensions personnalisées
                               </p>
                             </div>
                           </div>
-                          <ArrowRight className="w-6 h-6 md:w-8 md:h-8 text-white group-hover:translate-x-2 transition-transform md:flex-shrink-0" />
+                          <ArrowRight className="w-6 h-6 md:w-7 md:h-7 text-white group-hover:translate-x-2 transition-transform md:flex-shrink-0" />
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+
+                {/* LED option */}
                 <div>
-                  <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">
+                  <h3 className="font-display text-lg font-semibold text-ink mb-4">
                     Option éclairage
                   </h3>
                   <button
                     onClick={() => setLedOn((v) => !v)}
-                    className={`w-full p-4 md:p-6 rounded-2xl border-2 transition-all shadow-md ${
+                    className={`w-full p-5 md:p-6 rounded-[var(--radius-lg)] border transition-colors text-left ${
                       ledOn
-                        ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
-                        : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                        ? 'border-ink bg-white'
+                        : 'border-[var(--line)] bg-white hover:border-ink/15'
                     }`}
                     tabIndex={0}
                   >
                     <div className="flex items-start gap-3 md:gap-4">
                       <div
-                        className={`w-5 h-5 md:w-6 md:h-6 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 md:mt-1 ${
-                          ledOn ? 'border-[#0066CC] bg-white' : 'border-gray-300'
+                        className={`w-5 h-5 md:w-6 md:h-6 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                          ledOn ? 'border-[var(--blue)] bg-white' : 'border-[var(--line)]'
                         }`}
                       >
-                        {ledOn && <Check className="w-3 h-3 md:w-4 md:h-4 text-[#0066CC]" />}
+                        {ledOn && <Check className="w-3 h-3 md:w-4 md:h-4 text-[var(--blue)]" />}
                       </div>
                       <div className="flex-1 text-left">
-                        <div className="font-bold text-gray-900 flex items-center gap-2 text-sm md:text-lg mb-1">
-                          <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
+                        <div className="font-display font-semibold text-ink flex items-center gap-2 text-sm md:text-lg mb-1">
+                          <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-[var(--blue)]" />
                           Éclairage LED RGB intégré
                         </div>
-                        <div className="text-xs md:text-sm text-gray-600 mb-2">
+                        <div className="text-xs md:text-sm text-[var(--muted)] mb-2">
                           Illumination programmable multicolore
                         </div>
                         <div className="flex items-center justify-between mt-2">
-                          <div className="text-base md:text-xl font-bold text-[#0066CC]">+€ 95</div>
+                          <div className="text-base md:text-xl font-bold text-[var(--blue)]">+€ 95</div>
                         </div>
                       </div>
                     </div>
                   </button>
                 </div>
+
+                {/* Accessoires */}
                 <div>
-                  <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Accessoires</h3>
+                  <h3 className="font-display text-lg font-semibold text-ink mb-4">Accessoires</h3>
                   <div className="grid grid-cols-1 gap-4">
                     <div
                       onClick={() => setPumpOn((v) => !v)}
                       role="button"
-                      className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${
+                      className={`relative rounded-[var(--radius-lg)] border transition-colors cursor-pointer p-5 ${
                         pumpOn
-                          ? 'border-[#0066CC] bg-gradient-to-br from-blue-50 to-white shadow-lg'
-                          : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
+                          ? 'border-ink bg-white'
+                          : 'border-[var(--line)] bg-white hover:border-ink/15'
                       }`}
                     >
-                      <div className="relative flex items-center gap-2">
+                      <div className="relative flex items-center gap-3">
                         <div
-                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                            pumpOn ? 'border-[#0066CC] bg-white' : 'border-gray-300'
+                          className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
+                            pumpOn ? 'border-[var(--blue)] bg-white' : 'border-[var(--line)]'
                           }`}
                         >
-                          {pumpOn && <Check className="w-3 h-3 text-[#0066CC]" />}
+                          {pumpOn && <Check className="w-3 h-3 text-[var(--blue)]" />}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-gray-900 leading-tight">
+                          <div className="font-display font-semibold text-sm text-ink leading-tight">
                             Pompe 220 volts
                           </div>
-                          <div className="text-sm font-bold text-[#0066CC] mt-1">60€</div>
+                          <div className="text-sm font-bold text-[var(--blue)] mt-1">60€</div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-white rounded-2xl p-4 shadow-md border border-blue-100">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-transparent rounded-full blur-2xl"></div>
-                  <div className="relative">
-                    <h4 className="text-sm font-bold text-gray-900 mb-2.5">
-                      Inclus dans le prix de base :
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      <div className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                        <span className="text-xs text-gray-700">
-                          Personnalisation complète avec votre logo
-                        </span>
+
+                {/* Included */}
+                <div className="rounded-[var(--radius-lg)] bg-white border border-[var(--line)] p-5 md:p-6">
+                  <h4 className="font-display text-sm font-semibold text-ink mb-4">
+                    Inclus dans le prix de base :
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-2.5">
+                    {INCLUDED.map((item) => (
+                      <div key={item} className="flex items-start gap-2.5">
+                        <Check className="w-4 h-4 text-[var(--blue)] flex-shrink-0 mt-0.5" />
+                        <span className="text-[13px] text-ink/75">{item}</span>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                        <span className="text-xs text-gray-700">Modélisation 3D gratuite</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                        <span className="text-xs text-gray-700">
-                          Ventilateur électrique silencieux
-                        </span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                        <span className="text-xs text-gray-700">
-                          Base lestée pour stabilité maximale
-                        </span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                        <span className="text-xs text-gray-700">
-                          Sac de transport professionnel
-                        </span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                        <span className="text-xs text-gray-700">Design 3D gratuit</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
-                <div className="hidden md:block sticky bottom-6 mt-4 relative overflow-hidden bg-white rounded-3xl shadow-2xl border-2 border-[#0066CC]">
-                  <div className="relative p-5 md:p-6">
+
+                {/* Desktop sticky price */}
+                <div className="hidden md:block sticky bottom-6 mt-4 rounded-[var(--radius-lg)] bg-white border border-ink">
+                  <div className="p-5 md:p-6">
                     <div className="mb-4">
-                      <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
-                      <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {totalPrice}</div>
+                      <div className="kicker mb-1" style={{ color: 'var(--muted)' }}>Prix HT</div>
+                      <div className="font-display text-3xl md:text-4xl font-bold text-ink tabular-nums">€ {totalPrice}</div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setDevisOpen(true)}
-                      className="w-full bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:shadow-xl transition-all"
-                      tabIndex={0}
-                      style={{ padding: '14px 24px', minHeight: '52px' }}
-                    >
-                      Demander un devis
-                      <ArrowRight className="w-5 h-5" />
-                    </button>
+                    <Magnetic className="w-full">
+                      <button
+                        type="button"
+                        onClick={() => setDevisOpen(true)}
+                        className="cta-iridescent w-full inline-flex items-center justify-center gap-2 font-semibold text-[15px]"
+                        tabIndex={0}
+                        style={{ padding: '14px 24px', minHeight: '52px' }}
+                      >
+                        Demander un devis
+                        <ArrowRight className="w-5 h-5" />
+                      </button>
+                    </Magnetic>
                   </div>
                 </div>
                 <div className="h-20 md:hidden"></div>
               </div>
             </div>
           </div>
+
+          {/* Mobile sticky price */}
           <div
             className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden"
             style={{
               background:
-                'linear-gradient(to top, rgba(255, 255, 255, 0.98) 70%, transparent)',
+                'linear-gradient(to top, rgba(250, 249, 246, 0.98) 70%, transparent)',
             }}
           >
-            <div className="relative overflow-hidden bg-white rounded-2xl shadow-2xl border-2 border-[#0066CC]">
+            <div className="rounded-[var(--radius-lg)] bg-white border border-ink shadow-[0_8px_30px_rgba(11,13,18,0.12)]">
               <div className="flex items-center justify-between gap-4 p-4">
                 <div>
-                  <div className="text-xs text-gray-500">Prix HT</div>
-                  <div className="text-2xl font-bold text-[#0066CC]">€ {totalPrice}</div>
+                  <div className="kicker" style={{ color: 'var(--muted)' }}>Prix HT</div>
+                  <div className="font-display text-2xl font-bold text-ink tabular-nums">€ {totalPrice}</div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setDevisOpen(true)}
-                  className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
+                  className="cta-iridescent flex-1 inline-flex items-center justify-center gap-2 font-semibold text-sm"
                   style={{ padding: '12px 16px', minHeight: '48px' }}
                 >
                   Demander un devis
@@ -419,146 +423,82 @@ export default function ColonnesGonflables() {
               </div>
             </div>
           </div>
-          <section className="py-16 md:py-24 bg-white">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Reveal
-                as="h2"
-                className="text-2xl md:text-4xl font-extrabold text-gray-900 mb-8 text-center"
-                style={{ letterSpacing: '-0.03em' }}
-              >
-                Caractéristiques techniques
-              </Reveal>
-              <Reveal className="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
-                <table className="w-full text-sm">
-                  <tbody>
-                    <tr className="bg-gray-50">
-                      <td className="px-5 py-3.5 font-semibold text-gray-700 w-1/2">Matériau</td>
-                      <td className="px-5 py-3.5 text-gray-500">
-                        PVC 650g/m² haute résistance
-                      </td>
+        </section>
+
+        {/* ░░ SPECS (dark) ░░ */}
+        <section className="bg-ink text-white">
+          <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+            <SectionHeader
+              light
+              kicker="Fiche technique"
+              index="01"
+              title={<>Caractéristiques<br /><span className="serif-accent text-white/55">techniques</span></>}
+              className="mb-14"
+            />
+            <Reveal className="border-t border-white/10">
+              <table className="w-full text-sm">
+                <tbody>
+                  {SPECS.map(([label, value]) => (
+                    <tr key={label} className="border-b border-white/10">
+                      <td className="py-4 pr-4 font-display font-semibold text-white w-1/2 align-top">{label}</td>
+                      <td className="py-4 text-white/55 align-top">{value}</td>
                     </tr>
-                    <tr className="bg-white">
-                      <td className="px-5 py-3.5 font-semibold text-gray-700 w-1/2">
-                        Hauteurs disponibles
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-500">2.5m – 3m – 4m</td>
-                    </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-5 py-3.5 font-semibold text-gray-700 w-1/2">Impression</td>
-                      <td className="px-5 py-3.5 text-gray-500">
-                        Sublimation HD 360° UV résistant
-                      </td>
-                    </tr>
-                    <tr className="bg-white">
-                      <td className="px-5 py-3.5 font-semibold text-gray-700 w-1/2">Éclairage</td>
-                      <td className="px-5 py-3.5 text-gray-500">LED RGB intégré (option)</td>
-                    </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-5 py-3.5 font-semibold text-gray-700 w-1/2">
-                        Temps de montage
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-500">3-5 minutes par colonne</td>
-                    </tr>
-                    <tr className="bg-white">
-                      <td className="px-5 py-3.5 font-semibold text-gray-700 w-1/2">
-                        Base de lestage
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-500">Base lestée incluse</td>
-                    </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-5 py-3.5 font-semibold text-gray-700 w-1/2">Usage</td>
-                      <td className="px-5 py-3.5 text-gray-500">Intérieur et extérieur</td>
-                    </tr>
-                    <tr className="bg-white">
-                      <td className="px-5 py-3.5 font-semibold text-gray-700 w-1/2">Garantie</td>
-                      <td className="px-5 py-3.5 text-gray-500">
-                        2 ans structure + 3 ans impression
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                  ))}
+                </tbody>
+              </table>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ░░ USAGES ░░ */}
+        <section className="bg-paper">
+          <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
+              <SectionHeader
+                kicker="Cas d'usage"
+                index="02"
+                title={<>Parfaites pour<br />vos événements</>}
+              />
+              <Reveal as="div" delay={0.1} className="md:pb-2">
+                <Magnetic>
+                  <button
+                    type="button"
+                    onClick={() => setDevisOpen(true)}
+                    className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-ink/15 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors"
+                  >
+                    Demander un devis <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </button>
+                </Magnetic>
               </Reveal>
             </div>
-          </section>
-          <section className="py-16 md:py-24 bg-[#f8fafc]">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Reveal
-                as="h2"
-                className="text-2xl md:text-4xl font-extrabold text-gray-900 mb-10 text-center"
-                style={{ letterSpacing: '-0.03em' }}
-              >
-                Parfaites pour
-              </Reveal>
-              <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {USAGES.map((u) => (
                 <motion.div
+                  key={u.n}
                   variants={staggerChild}
-                  whileHover={{ y: -4 }}
-                  className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm"
+                  className="group flex items-start justify-between gap-4 p-6 md:p-7 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] hover:border-ink/15 transition-colors"
                 >
-                  <span className="text-3xl flex-shrink-0">🏁</span>
                   <div>
-                    <div className="font-bold text-gray-900 mb-1">Balisage sportif</div>
-                    <div className="text-sm text-gray-500">
-                      Circuits, parcours, zones de balisage
-                    </div>
+                    <div className="font-display text-lg font-semibold text-ink mb-1.5">{u.title}</div>
+                    <div className="text-sm text-[var(--muted)]">{u.desc}</div>
                   </div>
+                  <span className="font-display text-2xl font-bold text-ink/15 tabular-nums select-none">{u.n}</span>
                 </motion.div>
-                <motion.div
-                  variants={staggerChild}
-                  whileHover={{ y: -4 }}
-                  className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm"
-                >
-                  <span className="text-3xl flex-shrink-0">🎪</span>
-                  <div>
-                    <div className="font-bold text-gray-900 mb-1">Entrées &amp; allées</div>
-                    <div className="text-sm text-gray-500">
-                      Créer des couloirs d&apos;honneur visuels
-                    </div>
-                  </div>
-                </motion.div>
-                <motion.div
-                  variants={staggerChild}
-                  whileHover={{ y: -4 }}
-                  className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm"
-                >
-                  <span className="text-3xl flex-shrink-0">🏢</span>
-                  <div>
-                    <div className="font-bold text-gray-900 mb-1">Salons &amp; expo</div>
-                    <div className="text-sm text-gray-500">
-                      Signalétique de stand, délimitation
-                    </div>
-                  </div>
-                </motion.div>
-                <motion.div
-                  variants={staggerChild}
-                  whileHover={{ y: -4 }}
-                  className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm"
-                >
-                  <span className="text-3xl flex-shrink-0">🎉</span>
-                  <div>
-                    <div className="font-bold text-gray-900 mb-1">Soirées &amp; événements</div>
-                    <div className="text-sm text-gray-500">
-                      Décoration lumineuse, ambiance unique
-                    </div>
-                  </div>
-                </motion.div>
-              </RevealStagger>
-            </div>
-          </section>
-        </div>
+              ))}
+            </RevealStagger>
+          </div>
+        </section>
       </main>
+
       <motion.a
         href="https://wa.me/41774835190"
         target="_blank"
         rel="noopener noreferrer"
         whileHover={{ scale: 1.05 }}
-        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#0066CC] to-[#0052A3] rounded-full shadow-2xl flex items-center justify-center text-white"
+        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-ink rounded-full shadow-[0_12px_30px_rgba(11,13,18,0.28)] flex items-center justify-center text-white"
         tabIndex={0}
       >
-        <div>
-          <MessageCircle className="w-7 h-7" />
-        </div>
-        <div className="absolute inset-0 rounded-full bg-[#0066CC] opacity-20"></div>
+        <MessageCircle className="w-7 h-7" />
       </motion.a>
       <DevisModal
         open={devisOpen}

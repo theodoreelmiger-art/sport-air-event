@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Award, Leaf, Recycle, Factory, Shield, Clock, TrendingUp, Package, Zap, CircleCheckBig } from 'lucide-react';
-import { Reveal, RevealStagger } from '../lib/motion.jsx';
+import { Award, Leaf, Recycle, Factory, Shield, Clock, TrendingUp, Package, Zap, CircleCheckBig, ArrowRight } from 'lucide-react';
+import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 
 const durabilityItems = [
   {
@@ -55,142 +57,190 @@ const certifications = [
 
 export default function Quality() {
   return (
-    <div className="pt-20">
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#0A0A0A] to-[#1A1A1A]">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-[#0066CC]/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-green-500/10 rounded-full blur-3xl"></div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20 relative z-10">
-          <div className="text-center">
-            <Reveal className="inline-flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full mb-8">
-              <Award className="w-6 h-6 text-[#0066CC]" />
-              <span className="text-white font-semibold">Swiss Quality Certified</span>
-            </Reveal>
-            <Reveal as="h1" className="text-5xl md:text-7xl font-bold text-white mb-6">
-              Qualité &amp; Durabilité
-            </Reveal>
-            <Reveal as="p" className="text-2xl text-gray-300 max-w-3xl mx-auto">
-              L'excellence suisse au service de l'environnement
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-32 bg-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"></div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <Reveal>
-              <div className="relative">
-                <img
-                  src="images/20_photo-1473496169904-658ba7c44d8a.img"
-                  alt="Durabilité"
-                  className="rounded-3xl shadow-2xl"
-                />
-                <div className="absolute -bottom-8 -right-8 bg-green-600 text-white p-8 rounded-2xl shadow-2xl">
-                  <div className="text-5xl font-bold">90%</div>
-                  <div className="text-sm opacity-90 mt-2">matériaux recyclables</div>
-                </div>
-              </div>
-            </Reveal>
-            <Reveal>
-              <h2 className="text-4xl md:text-5xl font-bold text-[#0A0A0A] mb-8">Durabilité par conception</h2>
-              <div className="space-y-6">
-                {durabilityItems.map(({ Icon, title, text }, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ y: -4 }}
-                    className="flex gap-6 p-6 bg-[#F5F5F5] rounded-2xl"
-                  >
-                    <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-8 h-8 text-green-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-[#0A0A0A] mb-2">{title}</h3>
-                      <p className="text-gray-600">{text}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-32 bg-gradient-to-br from-[#0066CC] to-[#0052A3] relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10">
-          <div className="w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-          <Reveal className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Swiss Made Excellence</h2>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">La précision suisse dans chaque produit</p>
+    <div className="overflow-x-hidden bg-paper">
+      {/* ░░ HERO (dark) ░░ */}
+      <section className="relative bg-ink text-white overflow-hidden">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16" style={{ paddingTop: 'clamp(140px,18vw,200px)', paddingBottom: 'clamp(80px,12vw,140px)' }}>
+          <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
+            <span className="h-px w-10 bg-white/40" />
+            <span className="kicker" style={{ color: '#7db4f0' }}>Swiss Quality Certified</span>
           </Reveal>
-          <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {swissCards.map(({ Icon, title, text }, i) => (
-              <motion.div key={i} whileHover={{ y: -6 }} className="relative group">
-                <div className="absolute inset-0 bg-white/10 rounded-3xl blur-xl"></div>
-                <div className="relative p-10 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20">
-                  <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mb-6">
-                    <Icon className="w-10 h-10 text-[#0066CC]" />
+
+          <h1 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,7.5vw,6rem)', lineHeight: 0.95, maxWidth: '14ch' }}>
+            Qualité &amp; Durabilité{' '}
+            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>par exigence</span>
+          </h1>
+
+          <Reveal as="p" delay={0.2} y={18} className="lead mt-7 max-w-xl" style={{ color: 'rgba(255,255,255,0.78)' }}>
+            L'excellence suisse au service de l'environnement
+          </Reveal>
+
+          <Reveal as="div" delay={0.32} className="mt-12 md:mt-16 flex items-stretch gap-6 sm:gap-10">
+            {stats.slice(0, 3).map(({ value, label }, i) => (
+              <div key={i} className="flex items-stretch gap-6 sm:gap-10">
+                {i > 0 && <span className="w-px self-stretch bg-white/20" />}
+                <div>
+                  <div className="font-display text-white font-bold leading-none" style={{ fontSize: 'clamp(1.8rem,3.6vw,2.7rem)', letterSpacing: '-0.03em' }}>
+                    {value}
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{title}</h3>
-                  <p className="text-white/70 leading-relaxed">{text}</p>
+                  <div className="text-white/55 text-xs font-medium mt-1.5">{label}</div>
                 </div>
+              </div>
+            ))}
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ░░ DURABILITÉ — editorial split ░░ */}
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <Reveal y={40} className="relative order-2 lg:order-1">
+            <div className="relative rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line)]">
+              <img
+                src="images/20_photo-1473496169904-658ba7c44d8a.img"
+                alt="Durabilité"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-6 -right-3 sm:-right-6 bg-white border border-[var(--line)] rounded-[var(--radius)] px-7 py-6 shadow-sm">
+              <div className="font-display text-4xl md:text-5xl font-bold text-ink leading-none">90%</div>
+              <div className="text-sm text-[var(--muted)] mt-2">matériaux recyclables</div>
+            </div>
+          </Reveal>
+
+          <div className="order-1 lg:order-2">
+            <SectionHeader
+              kicker="Durabilité par conception"
+              index="01"
+              title={<>Durabilité<br />par conception</>}
+            />
+            <RevealStagger className="mt-10 space-y-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden">
+              {durabilityItems.map(({ Icon, title, text }, i) => (
+                <motion.div
+                  key={i}
+                  variants={staggerChild}
+                  className="flex gap-5 p-6 bg-white"
+                >
+                  <div className="w-12 h-12 rounded-[var(--radius)] bg-[var(--paper-2)] flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-6 h-6 text-[var(--blue)]" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg font-semibold text-ink mb-1.5">{title}</h3>
+                    <p className="text-[15px] text-[var(--muted)] leading-relaxed">{text}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </RevealStagger>
+          </div>
+        </div>
+      </section>
+
+      {/* ░░ SWISS MADE (dark) ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+          <SectionHeader
+            light
+            align="center"
+            kicker="Swiss Made"
+            index="02"
+            title={<>Swiss Made Excellence</>}
+            lead="La précision suisse dans chaque produit"
+            className="mb-16 md:mb-20"
+          />
+          <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
+            {swissCards.map(({ Icon, title, text }, i) => (
+              <motion.div variants={staggerChild} key={i} className="bg-ink p-8 md:p-10">
+                <div className="flex items-center justify-between mb-8">
+                  <Icon className="w-6 h-6 text-[#5aa2f0]" />
+                  <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
+                </div>
+                <h3 className="font-display text-xl font-semibold text-white mb-3">{title}</h3>
+                <p className="text-[15px] text-white/55 leading-relaxed">{text}</p>
               </motion.div>
             ))}
           </RevealStagger>
         </div>
       </section>
 
-      <section className="py-32 bg-[#F5F5F5]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <Reveal className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#0A0A0A] mb-6">Les chiffres parlent d'eux-mêmes</h2>
-          </Reveal>
-          <RevealStagger className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      {/* ░░ STATS ░░ */}
+      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8">
+          <SectionHeader
+            kicker="En chiffres"
+            index="03"
+            title={<>Les chiffres parlent<br />d'eux-mêmes</>}
+            className="mb-14 md:mb-16"
+          />
+          <RevealStagger className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden">
             {stats.map(({ Icon, value, label }, i) => (
               <motion.div
                 key={i}
-                whileHover={{ y: -6 }}
-                className="text-center p-8 bg-white rounded-3xl shadow-lg"
+                variants={staggerChild}
+                className="bg-white p-8 md:p-10"
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-[#0066CC] to-[#0052A3] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-8 h-8 text-white" />
+                <div className="flex items-center justify-between mb-8">
+                  <Icon className="w-6 h-6 text-[var(--blue)]" />
+                  <span className="text-xs font-semibold text-ink/25 tabular-nums">0{i + 1}</span>
                 </div>
-                <div className="text-5xl font-bold text-[#0066CC] mb-2">{value}</div>
-                <div className="text-gray-600 font-medium">{label}</div>
+                <div className="font-display text-4xl md:text-5xl font-bold text-ink leading-none mb-2.5">{value}</div>
+                <div className="text-[15px] text-[var(--muted)] font-medium">{label}</div>
               </motion.div>
             ))}
           </RevealStagger>
         </div>
       </section>
 
-      <section className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <Reveal>
-              <h2 className="text-4xl font-bold text-[#0A0A0A] mb-8">Certifications &amp; Conformités</h2>
-              <div className="space-y-4">
-                {certifications.map((text, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ x: 4 }}
-                    className="flex items-center gap-4 p-5 bg-[#F5F5F5] rounded-2xl"
-                  >
-                    <div>
-                      <CircleCheckBig className="w-6 h-6 text-[#0066CC]" />
-                    </div>
-                    <span className="text-lg text-gray-700">{text}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </Reveal>
-            <Reveal>
+      {/* ░░ CERTIFICATIONS — editorial split ░░ */}
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div>
+            <SectionHeader
+              kicker="Conformités"
+              index="04"
+              title={<>Certifications<br />&amp; Conformités</>}
+            />
+            <RevealStagger className="mt-10 border-t border-[var(--line)]">
+              {certifications.map((text, i) => (
+                <motion.div
+                  key={i}
+                  variants={staggerChild}
+                  className="flex items-center gap-4 py-5 border-b border-[var(--line)] group"
+                >
+                  <span className="text-xs font-semibold text-ink/30 tabular-nums w-6">0{i + 1}</span>
+                  <CircleCheckBig className="w-5 h-5 text-[var(--blue)] flex-shrink-0" />
+                  <span className="text-[15px] md:text-base text-ink/80 group-hover:text-ink transition-colors">{text}</span>
+                </motion.div>
+              ))}
+            </RevealStagger>
+          </div>
+          <Reveal y={40} className="order-first lg:order-last">
+            <div className="rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line)]">
               <img
                 src="images/21_photo-1581092918056-0c4c3acd3789.img"
                 alt="Qualité"
-                className="rounded-3xl shadow-2xl"
+                className="w-full h-full object-cover"
               />
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ░░ CTA (dark) ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+            <SectionHeader
+              light
+              kicker="Prêt à démarrer"
+              index="—"
+              title={<>L'exigence suisse,<br /><span className="serif-accent text-white/55">au service de vos événements.</span></>}
+            />
+            <Reveal as="div" delay={0.1} className="md:pb-2">
+              <Magnetic>
+                <Link to="/Contact" className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
+                  Demander un devis <ArrowRight className="w-4 h-4" />
+                </Link>
+              </Magnetic>
             </Reveal>
           </div>
         </div>

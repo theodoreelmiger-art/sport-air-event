@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Armchair, Table2, Wine, Check, ArrowRight, Minus, Plus } from 'lucide-react';
-import { Reveal } from '../lib/motion.jsx';
+import { Armchair, Table2, Wine, Check, ArrowRight, Minus, Plus } from 'lucide-react';
+import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 import DevisModal from '../components/DevisModal.jsx';
 
 const MOBILIER_ITEMS = [
@@ -13,6 +14,14 @@ const MOBILIER_ITEMS = [
   { name: 'Table haute', price: '490€', category: 'tables' },
   { name: 'Bar gonflable droit', price: '600€', category: 'bars' },
 ];
+
+const CATEGORIES = [
+  { id: 'assises', label: 'Assises', icon: Armchair, count: 4 },
+  { id: 'tables', label: 'Tables', icon: Table2, count: 2 },
+  { id: 'bars', label: 'Bars', icon: Wine, count: 1 },
+];
+
+const CUSTOM_POINTS = ['Impression HD', 'Matériaux premium', 'Montage rapide', 'Design 3D gratuit'];
 
 export default function Mobilier() {
   const [category, setCategory] = useState('assises');
@@ -42,235 +51,232 @@ export default function Mobilier() {
   ];
 
   return (
-    <main>
-      <div className="pt-24 md:pt-28 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50 min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-          <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
-            {/* Sticky image column (desktop) */}
-            <div className="hidden lg:flex lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] items-center justify-center mb-8 lg:mb-0">
-              <Reveal className="relative w-full max-w-md">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-cyan-400/10 rounded-[2rem] md:rounded-[4rem] blur-3xl"></div>
-                <div
-                  className="relative rounded-3xl p-6 flex items-center justify-center"
-                  style={{ minHeight: '360px', background: 'rgb(255, 255, 255)', borderRadius: '24px', boxShadow: 'rgba(0, 0, 0, 0.08) 0px 4px 24px' }}
-                >
-                  <img
-                    src="images/18_1fc91b287_ChatGPTImage17janv202616_40_27.png"
-                    alt="Mobilier Gonflable Sport Air Event"
-                    className="w-full h-auto object-contain"
-                    style={{ maxHeight: '320px', mixBlendMode: 'multiply', background: 'transparent', clipPath: 'inset(0px 6px 0px 0px)' }}
-                  />
-                </div>
+    <main className="overflow-x-hidden bg-paper">
+      {/* ░░ HERO ░░ */}
+      <section className="bg-ink text-white pt-32 md:pt-40 pb-16 md:pb-20">
+        <div className="max-w-content mx-auto px-5 sm:px-8">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
+            <div className="lg:col-span-7">
+              <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
+                <span className="text-xs font-semibold tabular-nums text-white/40">—</span>
+                <span className="h-px w-8" style={{ background: 'rgba(255,255,255,0.3)' }} />
+                <span className="kicker" style={{ color: '#7db4f0' }}>Mobilier événementiel</span>
+              </Reveal>
+              <h1 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.4rem,6vw,4.6rem)', lineHeight: 0.98 }}>
+                Mobilier Gonflable{' '}
+                <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>sur mesure</span>
+              </h1>
+              <Reveal as="p" delay={0.1} className="lead mt-6 max-w-lg" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                Complétez vos structures avec notre mobilier personnalisé.
+              </Reveal>
+              <Reveal as="div" delay={0.16} className="mt-7 inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/15">
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#7db4f0' }} />
+                <span className="text-[13px] font-medium text-white/85">Impression totale comprise</span>
               </Reveal>
             </div>
-
-            {/* Image (mobile) */}
-            <div className="lg:hidden">
-              <div className="rounded-2xl p-4" style={{ background: 'rgb(255, 255, 255)', borderRadius: '24px', boxShadow: 'rgba(0, 0, 0, 0.08) 0px 4px 24px' }}>
+            <Reveal y={40} className="lg:col-span-5">
+              <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-white flex items-center justify-center p-8 md:p-10" style={{ aspectRatio: '4 / 3' }}>
                 <img
                   src="images/18_1fc91b287_ChatGPTImage17janv202616_40_27.png"
                   alt="Mobilier Gonflable Sport Air Event"
-                  className="w-full h-auto object-contain max-h-52"
-                  style={{ mixBlendMode: 'multiply', background: 'transparent', clipPath: 'inset(0px 6px 0px 0px)' }}
+                  className="relative max-h-[88%] w-auto object-contain"
+                  style={{ mixBlendMode: 'multiply', clipPath: 'inset(0px 6px 0px 0px)' }}
                 />
               </div>
-            </div>
-
-            {/* Content column */}
-            <div className="space-y-4 md:space-y-6 pb-2 md:pb-8">
-              <Reveal>
-                <div className="inline-block mb-4 md:mb-6">
-                  <div className="px-6 py-3 bg-[#0066CC] rounded-full">
-                    <span className="text-white font-bold">Mobilier Événementiel</span>
-                  </div>
-                </div>
-                <h1 className="text-xl md:text-4xl font-bold mb-1">Mobilier Gonflable</h1>
-                <p className="text-xs md:text-base text-gray-600 mb-1">Complétez vos structures avec notre mobilier personnalisé</p>
-                <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 py-1 md:px-3 md:py-1.5 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full shadow-lg">
-                  <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                  <p className="text-[10px] md:text-sm text-white font-bold">Impression totale comprise</p>
-                </div>
-              </Reveal>
-
-              {/* Catégorie */}
-              <div>
-                <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Catégorie</h3>
-                <div className="grid grid-cols-3 gap-2 md:gap-4">
-                  <button type="button" onClick={() => setCategory('assises')} aria-pressed={category === 'assises'} className={`relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all ${category === 'assises' ? 'bg-[#0066CC] text-white shadow-2xl' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] shadow-lg hover:shadow-xl'}`} tabIndex={0}>
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="relative flex flex-col items-center gap-1.5 md:gap-2">
-                      <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center ${category === 'assises' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50'}`}>
-                        <Armchair className={`w-4 h-4 md:w-6 md:h-6 ${category === 'assises' ? 'text-white' : 'text-[#0066CC]'}`} />
-                      </div>
-                      <span className="font-bold text-xs md:text-sm">Assises</span>
-                      <div className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${category === 'assises' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50 text-[#0066CC]'}`}>4</div>
-                    </div>
-                  </button>
-                  <button type="button" onClick={() => setCategory('tables')} aria-pressed={category === 'tables'} className={`relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all ${category === 'tables' ? 'bg-[#0066CC] text-white shadow-2xl' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] shadow-lg hover:shadow-xl'}`} tabIndex={0}>
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="relative flex flex-col items-center gap-1.5 md:gap-2">
-                      <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center ${category === 'tables' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50'}`}>
-                        <Table2 className={`w-4 h-4 md:w-6 md:h-6 ${category === 'tables' ? 'text-white' : 'text-[#0066CC]'}`} />
-                      </div>
-                      <span className="font-bold text-xs md:text-sm">Tables</span>
-                      <div className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${category === 'tables' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50 text-[#0066CC]'}`}>2</div>
-                    </div>
-                  </button>
-                  <button type="button" onClick={() => setCategory('bars')} aria-pressed={category === 'bars'} className={`relative overflow-hidden rounded-xl md:rounded-2xl p-3 md:p-5 transition-all ${category === 'bars' ? 'bg-[#0066CC] text-white shadow-2xl' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] shadow-lg hover:shadow-xl'}`} tabIndex={0}>
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="relative flex flex-col items-center gap-1.5 md:gap-2">
-                      <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center ${category === 'bars' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50'}`}>
-                        <Wine className={`w-4 h-4 md:w-6 md:h-6 ${category === 'bars' ? 'text-white' : 'text-[#0066CC]'}`} />
-                      </div>
-                      <span className="font-bold text-xs md:text-sm">Bars</span>
-                      <div className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${category === 'bars' ? 'bg-white/20 backdrop-blur-sm' : 'bg-blue-50 text-[#0066CC]'}`}>1</div>
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              {/* Type de mobilier */}
-              <div>
-                <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Type de mobilier</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {visibleItems.map((item) => {
-                    const qty = itemQty(item.name);
-                    const isSelected = qty > 0;
-                    return (
-                      <div
-                        key={item.name}
-                        className={`relative rounded-2xl border-2 transition-colors shadow-md p-4 ${isSelected ? 'border-[#0066CC] bg-blue-50 shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
-                      >
-                        <div className="relative flex items-center gap-2">
-                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-[#0066CC] bg-[#0066CC]' : 'border-gray-300'}`}>
-                            {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-sm text-gray-900 leading-tight">{item.name}</div>
-                            <div className="text-sm font-bold text-[#0066CC] mt-1">{item.price}</div>
-                          </div>
-                        </div>
-                        <div className="relative flex items-center justify-end gap-2 mt-3">
-                          <button
-                            type="button"
-                            aria-label={`Retirer ${item.name}`}
-                            onClick={() => setItemQty(item.name, qty - 1)}
-                            disabled={qty === 0}
-                            className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-colors ${qty === 0 ? 'border-gray-200 text-gray-300 cursor-not-allowed' : 'border-gray-300 text-gray-700 hover:border-[#0066CC] hover:text-[#0066CC]'}`}
-                          >
-                            <Minus className="w-4 h-4" />
-                          </button>
-                          <span className="w-6 text-center font-bold text-sm text-gray-900">{qty}</span>
-                          <button
-                            type="button"
-                            aria-label={`Ajouter ${item.name}`}
-                            onClick={() => setItemQty(item.name, qty + 1)}
-                            className="w-8 h-8 rounded-lg border-2 border-gray-300 text-gray-700 flex items-center justify-center hover:border-[#0066CC] hover:text-[#0066CC] transition-colors"
-                          >
-                            <Plus className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Accessoires */}
-              <div>
-                <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2.5">Accessoires</h3>
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="w-full">
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => setPumpSelected((v) => !v)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          setPumpSelected((v) => !v);
-                        }
-                      }}
-                      className={`relative rounded-2xl border-2 transition-colors shadow-md cursor-pointer p-4 ${pumpSelected ? 'border-[#0066CC] bg-blue-50 shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'}`}
-                    >
-                      <div className="relative flex items-center gap-2">
-                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${pumpSelected ? 'border-[#0066CC] bg-[#0066CC]' : 'border-gray-300'}`}>
-                          {pumpSelected && <Check className="w-3.5 h-3.5 text-white" />}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm text-gray-900 leading-tight">Pompe 220 volts</div>
-                          <div className="text-sm font-bold text-[#0066CC] mt-1">60€</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Personnalisation complète */}
-              <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-white rounded-2xl p-4 shadow-md border border-blue-100">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-transparent rounded-full blur-2xl"></div>
-                <div className="relative">
-                  <h4 className="text-sm font-bold text-gray-900 mb-2.5">Personnalisation complète</h4>
-                  <p className="text-xs text-gray-600 mb-2.5">Chaque élément de mobilier peut être entièrement personnalisé avec vos couleurs et votre logo</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                      <span className="text-xs text-gray-700">Impression HD</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                      <span className="text-xs text-gray-700">Matériaux premium</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                      <span className="text-xs text-gray-700">Montage rapide</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-[#0066CC] flex-shrink-0 mt-0.5" />
-                      <span className="text-xs text-gray-700">Design 3D gratuit</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Prix HT card (desktop) */}
-              <div className="hidden md:block sticky bottom-6 mt-4 relative overflow-hidden bg-white rounded-3xl shadow-2xl border-2 border-[#0066CC]">
-                <div className="relative p-5 md:p-6">
-                  <div className="mb-4">
-                    <div className="text-sm text-gray-600 mb-0.5">Prix HT</div>
-                    <div className="text-3xl md:text-4xl font-bold text-[#0066CC]">€ {total}</div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setDevisOpen(true)}
-                    className="w-full bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:shadow-xl transition-all"
-                    style={{ padding: '14px 24px', minHeight: '52px' }}
-                  >
-                    Demander un devis
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="h-20 md:hidden"></div>
-            </div>
+            </Reveal>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ░░ CONFIGURATEUR ░░ */}
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          {/* Sticky visual column (desktop) */}
+          <div className="hidden lg:block lg:col-span-5 lg:sticky lg:top-28">
+            <Reveal>
+              <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--paper-2)] border border-[var(--line)] flex items-center justify-center p-10 md:p-14" style={{ aspectRatio: '4 / 5' }}>
+                <span className="absolute top-5 left-6 font-display text-[6rem] font-bold leading-none text-ink/[0.05] select-none">01</span>
+                <img
+                  src="images/18_1fc91b287_ChatGPTImage17janv202616_40_27.png"
+                  alt="Mobilier Gonflable Sport Air Event"
+                  className="relative max-h-[82%] w-auto object-contain"
+                  style={{ mixBlendMode: 'multiply', clipPath: 'inset(0px 6px 0px 0px)' }}
+                />
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Configurator column */}
+          <div className="lg:col-span-7">
+            <SectionHeader kicker="Composez votre sélection" index="02"
+              title={<>Configurez votre<br />mobilier</>}
+              lead="Choisissez vos pièces, ajustez les quantités et obtenez votre prix instantanément." />
+
+            {/* Catégorie */}
+            <div className="mt-12">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="text-xs font-semibold tabular-nums text-ink/30">A</span>
+                <h3 className="font-display text-lg font-semibold text-ink">Catégorie</h3>
+              </div>
+              <div className="grid grid-cols-3 gap-3 md:gap-4">
+                {CATEGORIES.map((c) => {
+                  const Icon = c.icon;
+                  const active = category === c.id;
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => setCategory(c.id)}
+                      aria-pressed={active}
+                      tabIndex={0}
+                      className={`group rounded-[var(--radius)] p-4 md:p-6 text-left transition-colors ${active ? 'bg-ink text-white border border-ink' : 'bg-white text-ink border border-[var(--line)] hover:border-ink/15'}`}
+                    >
+                      <div className="flex items-center justify-between mb-6 md:mb-8">
+                        <Icon className={`w-5 h-5 ${active ? 'text-[#7db4f0]' : 'text-[var(--blue)]'}`} />
+                        <span className={`text-xs font-semibold tabular-nums ${active ? 'text-white/40' : 'text-ink/30'}`}>0{c.count}</span>
+                      </div>
+                      <span className={`font-display font-semibold text-[15px] ${active ? 'text-white' : 'text-ink'}`}>{c.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Type de mobilier */}
+            <div className="mt-12">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="text-xs font-semibold tabular-nums text-ink/30">B</span>
+                <h3 className="font-display text-lg font-semibold text-ink">Type de mobilier</h3>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {visibleItems.map((item) => {
+                  const qty = itemQty(item.name);
+                  const isSelected = qty > 0;
+                  return (
+                    <div
+                      key={item.name}
+                      className={`rounded-[var(--radius-lg)] p-5 transition-colors ${isSelected ? 'bg-white border border-[var(--blue)]' : 'bg-white border border-[var(--line)] hover:border-ink/15'}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${isSelected ? 'border-[var(--blue)] bg-[var(--blue)]' : 'border-[var(--line)]'}`}>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-display font-semibold text-[15px] text-ink leading-snug">{item.name}</div>
+                          <div className="text-sm font-semibold text-[var(--blue)] mt-1 tabular-nums">{item.price}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-end gap-2 mt-4">
+                        <button
+                          type="button"
+                          aria-label={`Retirer ${item.name}`}
+                          onClick={() => setItemQty(item.name, qty - 1)}
+                          disabled={qty === 0}
+                          className={`w-9 h-9 rounded-full border flex items-center justify-center transition-colors ${qty === 0 ? 'border-[var(--line)] text-ink/20 cursor-not-allowed' : 'border-[var(--line)] text-ink hover:border-[var(--blue)] hover:text-[var(--blue)]'}`}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="w-7 text-center font-display font-bold text-[15px] text-ink tabular-nums">{qty}</span>
+                        <button
+                          type="button"
+                          aria-label={`Ajouter ${item.name}`}
+                          onClick={() => setItemQty(item.name, qty + 1)}
+                          className="w-9 h-9 rounded-full border border-[var(--line)] text-ink flex items-center justify-center hover:border-[var(--blue)] hover:text-[var(--blue)] transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Accessoires */}
+            <div className="mt-12">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="text-xs font-semibold tabular-nums text-ink/30">C</span>
+                <h3 className="font-display text-lg font-semibold text-ink">Accessoires</h3>
+              </div>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setPumpSelected((v) => !v)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setPumpSelected((v) => !v);
+                  }
+                }}
+                className={`rounded-[var(--radius-lg)] p-5 cursor-pointer transition-colors ${pumpSelected ? 'bg-white border border-[var(--blue)]' : 'bg-white border border-[var(--line)] hover:border-ink/15'}`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${pumpSelected ? 'border-[var(--blue)] bg-[var(--blue)]' : 'border-[var(--line)]'}`}>
+                    {pumpSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-display font-semibold text-[15px] text-ink leading-snug">Pompe 220 volts</div>
+                    <div className="text-sm font-semibold text-[var(--blue)] mt-1 tabular-nums">60€</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Personnalisation complète */}
+            <div className="mt-12 rounded-[var(--radius-lg)] bg-[var(--paper-2)] border border-[var(--line)] p-6 md:p-8">
+              <div className="kicker mb-3">Personnalisation complète</div>
+              <p className="text-[15px] text-ink/70 leading-relaxed mb-6 max-w-md">
+                Chaque élément de mobilier peut être entièrement personnalisé avec vos couleurs et votre logo
+              </p>
+              <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                {CUSTOM_POINTS.map((point) => (
+                  <motion.div variants={staggerChild} key={point} className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-[var(--blue)] flex-shrink-0" />
+                    <span className="text-sm text-ink/75">{point}</span>
+                  </motion.div>
+                ))}
+              </RevealStagger>
+            </div>
+
+            {/* Prix HT card (desktop) */}
+            <div className="hidden md:block sticky bottom-6 mt-8">
+              <div className="rounded-[var(--radius-lg)] bg-ink text-white p-6 md:p-7">
+                <div className="flex items-center justify-between gap-6">
+                  <div>
+                    <div className="kicker mb-1" style={{ color: '#7db4f0' }}>Prix HT</div>
+                    <div className="font-display text-4xl font-bold text-white tabular-nums">€ {total}</div>
+                  </div>
+                  <Magnetic>
+                    <button
+                      type="button"
+                      onClick={() => setDevisOpen(true)}
+                      className="cta-iridescent inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
+                    >
+                      Demander un devis
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </Magnetic>
+                </div>
+              </div>
+            </div>
+
+            <div className="h-24 md:hidden"></div>
+          </div>
+        </div>
+      </section>
 
       {/* Sticky price bar (mobile) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden" style={{ background: 'linear-gradient(to top, rgba(255, 255, 255, 0.98) 70%, transparent)' }}>
-        <div className="relative overflow-hidden bg-white rounded-2xl shadow-2xl border-2 border-[#0066CC]">
+      <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden" style={{ background: 'linear-gradient(to top, var(--paper) 70%, transparent)' }}>
+        <div className="rounded-[var(--radius-lg)] bg-ink text-white border border-ink">
           <div className="flex items-center justify-between gap-4 p-4">
             <div>
-              <div className="text-xs text-gray-500">Prix HT</div>
-              <div className="text-2xl font-bold text-[#0066CC]">€ {total}</div>
+              <div className="text-[11px] uppercase tracking-[0.16em] font-semibold text-white/45">Prix HT</div>
+              <div className="font-display text-2xl font-bold text-white tabular-nums">€ {total}</div>
             </div>
             <button
               type="button"
               onClick={() => setDevisOpen(true)}
-              className="flex-1 bg-gradient-to-r from-[#0066CC] to-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
+              className="flex-1 cta-iridescent inline-flex items-center justify-center gap-2 text-sm font-semibold"
               style={{ padding: '12px 16px', minHeight: '48px' }}
             >
               Demander un devis

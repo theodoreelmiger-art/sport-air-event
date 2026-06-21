@@ -1,20 +1,12 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  Shield,
-  Wind,
-  Sparkles,
-  TrendingUp,
-  Star,
-  Check,
-  ArrowRight,
-  Award,
-} from 'lucide-react';
-import { Reveal } from '../lib/motion.jsx';
+import { ArrowRight, ArrowUpRight, Check } from 'lucide-react';
+import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 
 const products = [
   {
-    icon: Wind,
+    n: '01',
     badge: 'Bestseller',
     label: 'Visibilité maximale à 360°',
     title: 'Dôme Premium',
@@ -36,7 +28,7 @@ const products = [
     reverse: false,
   },
   {
-    icon: Sparkles,
+    n: '02',
     badge: 'Innovation',
     label: 'Architecture unique et moderne',
     title: 'Tente Spider',
@@ -58,7 +50,7 @@ const products = [
     reverse: true,
   },
   {
-    icon: TrendingUp,
+    n: '03',
     badge: 'Exclusif',
     label: 'Votre vision unique réalisée',
     title: 'Sur Mesure',
@@ -83,124 +75,136 @@ const products = [
 
 export default function ModernProducts() {
   return (
-    <div className="pt-16 md:pt-20 min-h-screen bg-white relative overflow-hidden">
-      {/* Hero */}
-      <section className="py-10 md:py-32 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <Reveal>
-            <div className="inline-flex items-center gap-2 mb-3 md:mb-6">
-              <div className="w-12 h-12 md:w-20 md:h-20 bg-[#0066CC] rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl">
-                <Shield className="w-7 h-7 md:w-10 md:h-10 text-white" />
+    <div className="overflow-x-hidden bg-paper">
+      {/* ░░ HERO ░░ */}
+      <section className="bg-paper pt-32 md:pt-40 pb-16 md:pb-24">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
+            <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
+            <span className="kicker">Catalogue · Fabrication Suisse</span>
+          </Reveal>
+
+          <h1 className="font-display text-ink font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,7vw,5.8rem)', lineHeight: 0.96, maxWidth: '15ch' }}>
+            Nos produits{' '}
+            <span className="serif-accent text-ink/45" style={{ fontWeight: 500 }}>gonflables professionnels</span>
+          </h1>
+
+          <Reveal as="p" delay={0.12} y={18} className="lead mt-7 max-w-xl">
+            Solutions gonflables professionnelles • Fabrication Suisse
+          </Reveal>
+
+          <Reveal as="div" delay={0.2} className="mt-12 md:mt-16 flex flex-wrap items-stretch gap-6 sm:gap-10">
+            {products.map((p, i) => (
+              <div key={p.title} className="flex items-stretch gap-6 sm:gap-10">
+                {i > 0 && <span className="w-px self-stretch bg-[var(--line)]" />}
+                <div>
+                  <div className="text-xs font-semibold tabular-nums text-ink/30 mb-2">{p.n}</div>
+                  <div className="font-display font-semibold text-ink leading-tight" style={{ fontSize: 'clamp(1rem,1.6vw,1.25rem)' }}>{p.title}</div>
+                </div>
               </div>
-            </div>
-            <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold mb-3 md:mb-6">
-              <span className="bg-gradient-to-r from-[#0066CC] to-blue-600 bg-clip-text text-transparent">Nos produits</span>
-            </h1>
-            <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">Solutions gonflables professionnelles • Fabrication Suisse</p>
+            ))}
           </Reveal>
         </div>
       </section>
 
-      {/* Products */}
-      <section className="pb-8 md:py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-10 md:space-y-32">
-            {products.map((product) => {
-              const Icon = product.icon;
-              return (
-                <Reveal
-                  key={product.title}
-                  className={`grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-16 items-center ${product.reverse ? 'lg:grid-flow-dense' : ''}`}
-                >
-                  <div className={`relative ${product.reverse ? 'lg:col-start-2' : ''}`}>
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                      className="relative h-48 sm:h-64 md:h-[500px] rounded-2xl md:rounded-3xl bg-gradient-to-br from-blue-50 to-white overflow-hidden flex items-center justify-center border-2 border-gray-100"
-                      style={{ boxShadow: 'rgba(0, 0, 0, 0.08) 0px 10px 40px' }}
-                    >
-                      <div className="absolute w-24 h-24 md:w-40 md:h-40 rounded-full border-2 border-[#0066CC]" style={{ transform: 'scale(1.8063)' }}></div>
-                      <div className="absolute w-24 h-24 md:w-40 md:h-40 rounded-full border-2 border-[#0066CC]" style={{ transform: 'scale(1.47474)' }}></div>
-                      <div className="absolute w-24 h-24 md:w-40 md:h-40 rounded-full border-2 border-[#0066CC]" style={{ transform: 'scale(1.03844)' }}></div>
-                      <div className="absolute w-24 h-24 md:w-40 md:h-40 rounded-full border-2 border-[#0066CC]" style={{ transform: 'scale(1.11253)' }}></div>
-                      <div className="absolute w-24 h-24 md:w-40 md:h-40 rounded-full border-2 border-[#0066CC]" style={{ transform: 'scale(1.40206)' }}></div>
-                      <div className="relative z-10 w-20 h-20 sm:w-28 sm:h-28 md:w-48 md:h-48 bg-[#0066CC] rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl">
-                        <Icon className="w-14 h-14 md:w-24 md:h-24 text-white" />
-                      </div>
-                      <div className="absolute top-4 right-4 md:top-6 md:right-6 px-3 py-1.5 md:px-5 md:py-3 bg-gradient-to-r from-[#0066CC] to-blue-600 rounded-full shadow-xl">
-                        <span className="text-white font-bold flex items-center gap-1.5 text-xs md:text-base">
-                          <Star className="w-3 h-3 md:w-4 md:h-4 fill-white" />
-                          {product.badge}
-                        </span>
-                      </div>
-                    </motion.div>
-                  </div>
-                  <div>
-                    <div>
-                      <div className="inline-block px-4 py-2 md:px-6 md:py-3 rounded-full mb-4 md:mb-6 bg-[#0066CC]">
-                        <span className="font-bold text-white text-sm md:text-base">{product.label}</span>
-                      </div>
-                      <h2 className="text-2xl sm:text-3xl md:text-6xl font-bold text-[#0A0A0A] mb-3 md:mb-8">{product.title}</h2>
-                      <div className="grid grid-cols-3 gap-2 md:gap-4 mb-5 md:mb-8">
-                        {product.specs.map((spec) => (
-                          <div key={spec.k} className="p-3 md:p-4 bg-blue-50 rounded-xl md:rounded-2xl border border-blue-100">
-                            <div className="text-[10px] md:text-xs text-gray-500 mb-0.5">{spec.k}</div>
-                            <div className="font-bold text-[#0066CC] text-xs md:text-base">{spec.v}</div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="space-y-2 md:space-y-3 mb-5 md:mb-8">
-                        {product.features.map((feature) => (
-                          <div key={feature} className="flex items-center gap-3 md:gap-4">
-                            <div className="w-7 h-7 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-[#0066CC]/10 flex items-center justify-center flex-shrink-0">
-                              <Check className="w-4 h-4 md:w-5 md:h-5 text-[#0066CC]" />
-                            </div>
-                            <span className="text-sm md:text-lg text-gray-700">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="text-2xl md:text-4xl font-bold mb-5 md:mb-8 text-[#0066CC]">{product.price}</div>
-                      <Link className="block sm:inline-block" to={product.href}>
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="w-full sm:w-auto px-8 py-4 bg-[#0066CC] hover:bg-blue-700 text-white font-bold rounded-full flex items-center justify-center gap-3 transition-all"
-                          tabIndex={0}
-                        >
-                          Demander un devis
-                          <ArrowRight className="w-5 h-5" />
-                        </motion.button>
-                      </Link>
+      {/* ░░ PRODUCTS — alternating showcase ░░ */}
+      <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 md:mb-24">
+            <SectionHeader kicker="Nos solutions" index="01" title={<>Trois structures.<br />Une exigence commune.</>} />
+            <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
+              Chaque produit en version <span className="text-ink font-medium">100% personnalisable</span>
+            </Reveal>
+          </div>
+
+          <div className="space-y-20 md:space-y-28">
+            {products.map((product, i) => (
+              <Reveal key={product.title} y={40} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+                <div className={`relative ${product.reverse ? 'md:order-2' : ''}`}>
+                  <motion.div
+                    whileHover={{ scale: 1.015 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative rounded-[var(--radius-lg)] bg-[var(--paper-2)] border border-[var(--line)] overflow-hidden flex flex-col justify-between p-8 md:p-12"
+                    style={{ aspectRatio: '4 / 3' }}
+                  >
+                    <span className="absolute -bottom-4 right-4 font-display font-bold leading-none text-ink/[0.05] select-none" style={{ fontSize: 'clamp(7rem,16vw,13rem)' }}>{product.n}</span>
+                    <div className="relative z-10 flex items-center justify-between">
+                      <span className="kicker">{product.title}</span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-white text-xs font-semibold" style={{ background: 'var(--blue)' }}>
+                        {product.badge}
+                      </span>
                     </div>
+                    <div className="relative z-10">
+                      <div className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2rem,4vw,3.4rem)', lineHeight: 1.0 }}>{product.title}</div>
+                      <div className="mt-3 text-sm text-ink/60 max-w-[22ch]">{product.label}</div>
+                    </div>
+                  </motion.div>
+                </div>
+
+                <div className={`${product.reverse ? 'md:order-1' : ''}`}>
+                  <div className="kicker mb-4">{product.label}</div>
+                  <h2 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(1.8rem,3.2vw,2.8rem)', lineHeight: 1.02 }}>{product.title}</h2>
+
+                  <RevealStagger className="grid grid-cols-3 gap-px mt-7 bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius)] overflow-hidden">
+                    {product.specs.map((spec) => (
+                      <motion.div variants={staggerChild} key={spec.k} className="bg-white p-3.5 md:p-4">
+                        <div className="text-[11px] uppercase tracking-wider text-[var(--muted)] mb-1">{spec.k}</div>
+                        <div className="font-display font-semibold text-ink text-sm md:text-[15px]">{spec.v}</div>
+                      </motion.div>
+                    ))}
+                  </RevealStagger>
+
+                  <ul className="mt-7 grid sm:grid-cols-2 gap-x-6 gap-y-3">
+                    {product.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-3 text-sm text-ink/75">
+                        <span className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--blue-soft)' }}>
+                          <Check className="w-3 h-3" style={{ color: 'var(--blue)' }} />
+                        </span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-9 flex flex-wrap items-center gap-7">
+                    <span className="font-display text-2xl font-bold text-ink">{product.price}</span>
+                    <Magnetic>
+                      <Link
+                        to={product.href}
+                        className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-ink/15 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors"
+                      >
+                        Demander un devis
+                        <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </Link>
+                    </Magnetic>
                   </div>
-                </Reveal>
-              );
-            })}
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-12 md:py-32 bg-gradient-to-br from-[#0066CC] to-blue-600 relative overflow-hidden">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <Reveal>
-            <div className="inline-flex items-center gap-3 mb-6 md:mb-8">
-              <Award className="w-10 h-10 md:w-12 md:h-12 text-white" />
+      {/* ░░ CTA (dark) ░░ */}
+      <section className="bg-ink text-white">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
+            <div className="lg:col-span-8">
+              <SectionHeader
+                light
+                kicker="Un conseil sur mesure"
+                index="—"
+                title={<>Besoin d&apos;aide<br /><span className="serif-accent text-white/55">pour choisir ?</span></>}
+              />
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 md:mb-8">Besoin d&apos;aide pour choisir ?</h2>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link className="w-full sm:w-auto" to="/Contact">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-8 py-4 bg-white text-[#0066CC] font-bold rounded-full shadow-2xl"
-                  tabIndex={0}
-                >
-                  Parler à un expert
-                </motion.button>
-              </Link>
-            </div>
-          </Reveal>
+            <Reveal as="div" delay={0.12} className="lg:col-span-4 flex lg:justify-end">
+              <Magnetic>
+                <Link to="/Contact" className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
+                  Parler à un expert <ArrowRight className="w-4 h-4" />
+                </Link>
+              </Magnetic>
+            </Reveal>
+          </div>
         </div>
       </section>
     </div>
