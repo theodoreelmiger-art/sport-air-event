@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Check,
   ArrowRight,
@@ -106,6 +106,107 @@ const specs = [
   { icon: Maximize, label: 'Usage', value: 'Intérieur et extérieur' },
 ];
 
+// V71 — Liste scindée : rail de labels à gauche + grand panneau valeur à droite,
+// synchronisés. La valeur réelle de la spec active s'affiche en grand.
+function SpecSplitList() {
+  const [active, setActive] = useState(specs.findIndex((s) => s.feature) ?? 0);
+  const current = specs[active] ?? specs[0];
+  const ActiveIcon = current.icon;
+
+  return (
+    <div
+      className="grid gap-2.5 md:gap-3.5"
+      style={{ gridTemplateColumns: 'minmax(150px, 0.85fr) 1.15fr' }}
+    >
+      {/* Left rail — selectable label list */}
+      <div className="self-start overflow-hidden rounded-[18px] border border-[var(--line)] bg-white">
+        {specs.map((s, i) => {
+          const on = i === active;
+          const RIcon = s.icon;
+          return (
+            <button
+              key={s.label}
+              type="button"
+              onClick={() => setActive(i)}
+              data-cursor
+              className="relative flex w-full cursor-pointer items-center gap-2.5 px-3 py-3 md:px-4 md:py-3.5 text-left transition-colors duration-200"
+              style={{
+                borderTop: i === 0 ? 'none' : '1px solid var(--line)',
+                background: on ? 'var(--blue-mist)' : 'transparent',
+              }}
+            >
+              {on && (
+                <motion.span
+                  layoutId="spider-spec-rail"
+                  className="absolute left-0 rounded-full"
+                  style={{ top: 6, bottom: 6, width: 3, background: 'var(--blue)' }}
+                />
+              )}
+              <span
+                className="inline-flex shrink-0 items-center justify-center rounded-lg transition-colors duration-200"
+                style={{
+                  width: 28,
+                  height: 28,
+                  background: on ? 'var(--blue)' : 'var(--blue-soft)',
+                  color: on ? '#fff' : 'var(--blue)',
+                }}
+              >
+                <RIcon className="w-[15px] h-[15px]" strokeWidth={2.4} />
+              </span>
+              <span
+                className="leading-tight"
+                style={{
+                  fontSize: '0.8rem',
+                  fontWeight: on ? 700 : 600,
+                  color: on ? 'var(--blue-deep)' : 'var(--ink-2)',
+                }}
+              >
+                {s.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Right — big detail panel for the active spec */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={active}
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -8 }}
+          transition={{ duration: 0.26 }}
+          className="rounded-[18px] border border-[var(--line)] p-5 md:p-8"
+          style={{ background: 'var(--blue-mist)' }}
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <span className="inline-flex items-center justify-center rounded-[13px] border border-[var(--line)] bg-white text-[var(--blue)]" style={{ width: 46, height: 46 }}>
+              <ActiveIcon className="w-[22px] h-[22px]" strokeWidth={2.2} />
+            </span>
+            {current.feature && (
+              <span className="kicker" style={{ color: 'var(--blue)' }}>Signature design</span>
+            )}
+          </div>
+
+          <div className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--blue-deep)]">
+            {current.label}
+          </div>
+
+          <div className="font-display font-bold tracking-tightest text-ink leading-[0.98] mt-1.5 text-[clamp(1.8rem,4vw,2.75rem)]">
+            {current.value}
+          </div>
+
+          {current.note && (
+            <div className="mt-3 text-[0.9rem] leading-relaxed text-[var(--ink-2)] max-w-md">
+              {current.note}
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function SpiderTent() {
   const [selectedSize, setSelectedSize] = useState(
     sizes.find((s) => s.popular)?.title ?? sizes[0].title
@@ -192,38 +293,37 @@ export default function SpiderTent() {
             </Rise>
           </div>
 
-          <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          {/* Liste-rangées éditoriales (informatif) — rangées à filets : numéro
+              fantôme, chip d'icône, titre + desc. Survol discret, aucun état. */}
+          <RevealStagger className="border-t border-[var(--line)]">
             {features.map(({ Icon, title, desc }, i) => (
               <motion.div
                 variants={staggerChild}
                 key={title}
                 data-cursor
-                whileHover={{ y: -6 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                className="group relative overflow-hidden bg-white rounded-[28px] border border-[var(--line)] hover:border-[var(--blue)] p-7 md:p-8 flex flex-col cursor-pointer transition-colors duration-300"
-                style={{ boxShadow: '0 1px 0 rgba(11,28,63,0.02)' }}
+                className="spider-uc-row relative flex items-center gap-3.5 md:gap-5 overflow-hidden bg-white border-b border-[var(--line)] px-3.5 py-4 md:px-6 md:py-6 transition-colors duration-200"
               >
-                <div
-                  className="absolute inset-x-0 -bottom-24 h-40 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ background: 'radial-gradient(60% 100% at 50% 100%, rgba(0,102,204,0.18), transparent 70%)', filter: 'blur(22px)' }}
-                />
-                <div className="relative flex items-center justify-between mb-10">
-                  <span className="flex items-center justify-center w-14 h-14 rounded-2xl bg-[var(--blue-soft)] group-hover:bg-[var(--blue)] transition-colors duration-300">
-                    <Icon className="w-6 h-6 text-[var(--blue)] group-hover:text-white transition-colors duration-300" />
-                  </span>
-                  <span className="font-display text-3xl font-bold text-ink/[0.08] tabular-nums group-hover:text-[var(--blue)]/20 transition-colors duration-300">
-                    0{i + 1}
-                  </span>
-                </div>
-                <div className="relative mt-auto">
-                  <div className="font-display text-xl font-semibold text-ink tracking-tight mb-2 group-hover:text-[var(--blue)] transition-colors duration-300">
+                <span
+                  className="font-display shrink-0 tabular-nums select-none text-lg md:text-2xl font-extrabold"
+                  style={{ width: 30, color: '#c2d2ea' }}
+                >
+                  0{i + 1}
+                </span>
+                <span className="flex items-center justify-center shrink-0 w-9 h-9 md:w-11 md:h-11 rounded-[11px] bg-[var(--blue-soft)] text-[var(--blue)]">
+                  <Icon className="w-[18px] h-[18px] md:w-5 md:h-5" strokeWidth={2.2} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-display text-[0.95rem] md:text-xl font-semibold leading-tight text-ink tracking-tight">
                     {title}
-                  </div>
-                  <div className="text-sm text-[var(--muted)] leading-relaxed">{desc}</div>
-                </div>
+                  </span>
+                  <span className="block text-[0.8rem] md:text-sm leading-snug text-[var(--muted)] mt-0.5">
+                    {desc}
+                  </span>
+                </span>
               </motion.div>
             ))}
           </RevealStagger>
+          <style>{`.spider-uc-row:hover{background:var(--blue-mist);}`}</style>
         </div>
       </section>
 
@@ -321,71 +421,11 @@ export default function SpiderTent() {
             </Rise>
           </div>
 
-          <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-            {specs.map((s, i) => {
-              const Icon = s.icon;
-              if (s.feature) {
-                // Deep-blue accent panel — spans 2 columns / 2 rows on large screens for rhythm.
-                return (
-                  <motion.div
-                    variants={staggerChild}
-                    key={s.label}
-                    data-cursor
-                    whileHover={{ y: -6 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                    className="group relative overflow-hidden bg-deep text-white rounded-[28px] p-7 md:p-9 flex flex-col justify-between sm:col-span-2 lg:row-span-2 min-h-[220px] lg:min-h-full cursor-pointer"
-                  >
-                    <div
-                      className="absolute -top-16 -right-16 w-64 h-64 rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{ background: 'radial-gradient(circle, rgba(70,150,255,0.45), transparent 70%)', filter: 'blur(34px)' }}
-                    />
-                    <div className="relative flex items-center justify-between">
-                      <span className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm">
-                        <Icon className="w-5 h-5 text-[#7db4f0]" />
-                      </span>
-                      <span className="kicker" style={{ color: '#7db4f0' }}>Signature design</span>
-                    </div>
-                    <div className="relative mt-8">
-                      <div className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45 mb-3">{s.label}</div>
-                      <div className="font-display font-bold tracking-tightest leading-none text-white text-[clamp(2rem,4vw,3rem)]">
-                        {s.value}
-                      </div>
-                      {s.note && <div className="mt-4 text-sm text-white/55 leading-relaxed max-w-xs">{s.note}</div>}
-                    </div>
-                  </motion.div>
-                );
-              }
-              return (
-                <motion.div
-                  variants={staggerChild}
-                  key={s.label}
-                  data-cursor
-                  whileHover={{ y: -6 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                  className="group relative overflow-hidden bg-white rounded-[22px] border border-[var(--line)] hover:border-[var(--blue)] p-6 md:p-7 flex flex-col cursor-pointer transition-colors duration-300"
-                  style={{ boxShadow: '0 1px 0 rgba(11,28,63,0.02)' }}
-                >
-                  <div
-                    className="absolute inset-x-0 -bottom-20 h-32 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ background: 'radial-gradient(60% 100% at 50% 100%, rgba(0,102,204,0.16), transparent 70%)', filter: 'blur(20px)' }}
-                  />
-                  <div className="relative flex items-center justify-between mb-7">
-                    <span className="flex items-center justify-center w-11 h-11 rounded-xl bg-[var(--blue-soft)] group-hover:bg-[var(--blue)] transition-colors duration-300">
-                      <Icon className="w-5 h-5 text-[var(--blue)] group-hover:text-white transition-colors duration-300" />
-                    </span>
-                    <span className="text-xs font-semibold text-ink/20 tabular-nums group-hover:text-[var(--blue)]/40 transition-colors">0{i + 1}</span>
-                  </div>
-                  <div className="relative mt-auto">
-                    <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)] mb-2">{s.label}</div>
-                    <div className="font-display font-bold tracking-tight text-ink leading-tight text-[clamp(1.1rem,1.9vw,1.4rem)]">
-                      {s.value}
-                    </div>
-                    {s.note && <div className="mt-2 text-[13px] text-[var(--muted)] leading-relaxed">{s.note}</div>}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </RevealStagger>
+          {/* Liste scindée (rail + détail) — rail de labels sélectionnables à
+              gauche, grand panneau valeur synchronisé à droite. */}
+          <Reveal>
+            <SpecSplitList />
+          </Reveal>
         </div>
       </section>
 

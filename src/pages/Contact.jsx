@@ -14,34 +14,37 @@ import {
   ArrowRight,
   ArrowLeft,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Quote,
 } from 'lucide-react';
 import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 
 const reviews = [
   {
-    initials: 'LD',
-    name: 'Laurent Dubois',
-    role: 'EventPro France',
-    gradient: 'linear-gradient(135deg, rgb(26, 86, 219), rgb(59, 130, 246))',
+    ini: 'CM',
+    grad: 'linear-gradient(135deg,#0066cc,#3b82f6)',
+    name: 'Camille Mercier',
+    role: 'Trail Évasion Annecy',
+    date: '12 mai 2026',
     text: 'Structures gonflables de qualité exceptionnelle. Installation en 2 minutes chrono, rendu visuel impressionnant et service client très réactif. Parfait pour nos événements professionnels.',
-    date: '28 avril 2026',
   },
   {
-    initials: 'SM',
-    name: 'Sophie Martin',
-    role: 'Marketing & Events',
-    gradient: 'linear-gradient(135deg, rgb(8, 145, 178), rgb(6, 182, 212))',
+    ini: 'YB',
+    grad: 'linear-gradient(135deg,#0891b2,#06b6d4)',
+    name: 'Yanis B.',
+    role: 'Agence Lumen — Lyon',
+    date: '3 juillet 2025',
     text: 'Tente Spider impeccable pour notre salon. Design moderne, montage ultra-rapide et personnalisation parfaite. Conception suisse, qualité au rendez-vous. Je recommande vivement.',
-    date: '17 juillet 2025',
   },
   {
-    initials: 'JR',
-    name: 'Jean-Pierre Rousseau',
-    role: 'Sports & Festivals',
-    gradient: 'linear-gradient(135deg, rgb(124, 58, 237), rgb(167, 139, 250))',
+    ini: 'FN',
+    grad: 'linear-gradient(135deg,#2563eb,#60a5fa)',
+    name: 'Farida Nasri',
+    role: 'Comité Marathon du Léman',
+    date: '21 décembre 2024',
     text: 'Quatrième commande et toujours aussi satisfait. Produits haut de gamme, délais respectés, équipe professionnelle. Les structures résistent parfaitement aux conditions extérieures.',
-    date: '15 décembre 2024',
   },
 ];
 
@@ -109,6 +112,37 @@ function matchStructureType(product) {
 const inputCls =
   'w-full bg-white h-12 md:h-14 pl-11 md:pl-12 pr-4 text-sm md:text-base text-ink rounded-[14px] border border-[var(--line)] placeholder:text-[var(--muted)]/70 focus:border-[var(--blue)] focus-visible:outline-none transition-colors';
 
+// Authentic multicolor Google "G" logo (vector, no black).
+function GoogleG({ size = 18 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      aria-label="Google"
+      role="img"
+      style={{ display: 'block', flexShrink: 0 }}
+    >
+      <path
+        fill="#4285F4"
+        d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"
+      />
+      <path
+        fill="#34A853"
+        d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M11.69 28.18c-.44-1.32-.69-2.73-.69-4.18s.25-2.86.69-4.18v-5.7H4.34A21.98 21.98 0 0 0 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"
+      />
+      <path
+        fill="#EA4335"
+        d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"
+      />
+    </svg>
+  );
+}
+
 export default function Contact() {
   const [searchParams] = useSearchParams();
   const productParam = searchParams.get('product') || '';
@@ -125,7 +159,17 @@ export default function Contact() {
   });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [openFaq, setOpenFaq] = useState(null);
+  const [openFaq, setOpenFaq] = useState(0);
+
+  // Reviews carousel (one review at a time, directional transitions).
+  const [[reviewIdx, reviewDir], setReviewState] = useState([0, 0]);
+  const goReview = (d) =>
+    setReviewState(([i]) => {
+      const next = (i + d + reviews.length) % reviews.length;
+      return [next, d];
+    });
+  const jumpReview = (i) => setReviewState(([cur]) => [i, i > cur ? 1 : -1]);
+  const review = reviews[reviewIdx];
 
   // Pre-select / pre-fill the project type from the URL query param.
   useEffect(() => {
@@ -593,34 +637,100 @@ export default function Contact() {
             </Reveal>
           </div>
 
-          <RevealStagger className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
-            {reviews.map((r) => (
-              <motion.div key={r.initials} variants={staggerChild} className="flex flex-col bg-deep p-7">
-                <div className="flex items-center gap-3 mb-5">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                    style={{ background: r.gradient }}
+          {/* V53 — Carrousel : un avis à la fois, panneau bleu, flèches préc./suiv. et points */}
+          <Reveal className="max-w-2xl mx-auto">
+            <div className="relative overflow-hidden" style={{ borderRadius: 22 }}>
+              <AnimatePresence mode="wait" custom={reviewDir}>
+                <motion.div
+                  key={reviewIdx}
+                  custom={reviewDir}
+                  initial={{ opacity: 0, x: reviewDir >= 0 ? 40 : -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: reviewDir >= 0 ? -40 : 40 }}
+                  transition={{ duration: 0.28 }}
+                  className="bg-deep border border-white/10"
+                  style={{ borderRadius: 22, padding: '22px 22px 20px', color: '#fff' }}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <Quote size={26} color="#9fc6ff" fill="#9fc6ff" style={{ opacity: 0.85 }} />
+                    <span
+                      className="inline-flex items-center gap-1.5"
+                      style={{
+                        background: 'rgba(255,255,255,.12)',
+                        borderRadius: 9999,
+                        padding: '3px 9px 3px 7px',
+                        fontSize: '0.66rem',
+                        fontWeight: 600,
+                      }}
+                    >
+                      <GoogleG size={12} /> Publié sur Google
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.95rem', lineHeight: 1.55, margin: '0 0 16px', color: '#eaf2ff' }}>
+                    {review.text}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                      style={{ background: review.grad }}
+                    >
+                      {review.ini}
+                    </span>
+                    <div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>{review.name}</div>
+                      <div style={{ fontSize: '0.72rem', color: '#a8c2e6' }}>{review.role}</div>
+                    </div>
+                    <span className="ml-auto flex items-center gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      ))}
+                    </span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <div className="flex items-center justify-between mt-4">
+              <div className="flex items-center gap-2">
+                {[-1, 1].map((d) => (
+                  <motion.button
+                    key={d}
+                    type="button"
+                    onClick={() => goReview(d)}
+                    whileTap={{ scale: 0.9 }}
+                    aria-label={d < 0 ? 'Précédent' : 'Suivant'}
+                    className="cursor-pointer inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/15 bg-white/5 text-white hover:border-white/35 transition-colors"
                   >
-                    {r.initials}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-sm text-white">{r.name}</div>
-                    <div className="text-xs text-white/50">{r.role}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-0.5 mb-3">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-sm text-white/65 leading-relaxed flex-1">{r.text}</p>
-                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
-                  <span className="text-xs text-white/40">{r.date}</span>
-                  <span className="text-xs text-white/40">Publié sur Google</span>
-                </div>
-              </motion.div>
-            ))}
-          </RevealStagger>
+                    {d < 0 ? (
+                      <ChevronLeft size={18} strokeWidth={2.4} />
+                    ) : (
+                      <ChevronRight size={18} strokeWidth={2.4} />
+                    )}
+                  </motion.button>
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
+                {reviews.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => jumpReview(i)}
+                    aria-label={`Avis ${i + 1}`}
+                    className="cursor-pointer"
+                    style={{
+                      width: i === reviewIdx ? 22 : 8,
+                      height: 8,
+                      borderRadius: 9999,
+                      background: i === reviewIdx ? 'var(--blue-bright)' : 'rgba(255,255,255,0.25)',
+                      border: 'none',
+                      transition: 'width .25s, background .25s',
+                      padding: 0,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -628,25 +738,44 @@ export default function Contact() {
       <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
           <SectionHeader align="center" kicker="Questions fréquentes" index="02" className="mb-12" title="Tout ce que vous devez savoir" />
-          <RevealStagger className="border-t border-[var(--line)]">
+          {/* V57 — Accordéon hairline : liste sobre séparée par des filets bleus, chevron qui pivote, ouverture unique */}
+          <RevealStagger style={{ borderTop: '1px solid var(--line)' }}>
             {faqs.map((faq, i) => {
               const isOpen = openFaq === i;
               return (
-                <motion.div key={faq.question} variants={staggerChild} className="border-b border-[var(--line)]">
+                <motion.div
+                  key={faq.question}
+                  variants={staggerChild}
+                  style={{ borderBottom: '1px solid var(--line)' }}
+                >
                   <button
                     type="button"
-                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    onClick={() => setOpenFaq(isOpen ? -1 : i)}
                     aria-expanded={isOpen}
-                    className="w-full flex items-center justify-between gap-4 text-left py-6 group"
+                    className="cursor-pointer w-full flex items-center gap-3.5 text-left"
+                    style={{ padding: '16px 2px', background: 'transparent', border: 'none' }}
                   >
-                    <h3 className="font-display text-[17px] md:text-lg font-semibold text-ink group-hover:text-[var(--blue)] transition-colors">{faq.question}</h3>
-                    <motion.div
-                      animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[var(--line)]"
+                    <span
+                      className="font-display flex-1 text-base md:text-[17px] font-semibold"
+                      style={{
+                        color: isOpen ? 'var(--blue-deep)' : 'var(--ink)',
+                        transition: 'color 0.2s',
+                      }}
                     >
-                      <ChevronDown className="w-4 h-4 text-[var(--muted)]" />
-                    </motion.div>
+                      {faq.question}
+                    </span>
+                    <motion.span
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      className="grid place-items-center flex-shrink-0"
+                      style={{
+                        width: 26,
+                        height: 26,
+                        color: isOpen ? 'var(--blue)' : 'var(--muted)',
+                      }}
+                    >
+                      <ChevronDown size={18} strokeWidth={2.2} />
+                    </motion.span>
                   </button>
                   <AnimatePresence initial={false}>
                     {isOpen && (
@@ -655,10 +784,20 @@ export default function Contact() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                         style={{ overflow: 'hidden' }}
                       >
-                        <p className="text-[15px] text-[var(--muted)] leading-relaxed pb-6 max-w-2xl">{faq.answer}</p>
+                        <p
+                          className="leading-relaxed"
+                          style={{
+                            margin: 0,
+                            padding: '0 40px 18px 2px',
+                            fontSize: '0.95rem',
+                            color: 'var(--muted)',
+                          }}
+                        >
+                          {faq.answer}
+                        </p>
                       </motion.div>
                     )}
                   </AnimatePresence>

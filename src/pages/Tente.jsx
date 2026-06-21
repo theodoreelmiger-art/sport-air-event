@@ -1,24 +1,26 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight, ArrowUpRight, MessageCircle,
-  Layers, Gauge, Wind, Timer, Sparkles, Flame, ShieldCheck, Feather,
+  ArrowRight, MessageCircle,
+  Layers, Gauge, Wind, Timer, Sparkles, Flame, ShieldCheck, Feather, Droplet,
   Trophy, Briefcase, Music, Store,
 } from 'lucide-react';
-import { Reveal, RevealStagger, Rise, MaskHeading, Magnetic, staggerChild } from '../lib/motion.jsx';
+import { Reveal, Rise, MaskHeading, Magnetic } from '../lib/motion.jsx';
 import ProductConfigurator from '../components/ProductConfigurator.jsx';
 import { CONFIGURATORS } from '../data/configurators.js';
 
-// Spec data — icon + label + prominent value. `feature` marks the deep-blue hero spec.
+// Spec data — icon + label + prominent value. `big`/`tail` drive the large headline,
+// `badges` the pill row in the detail panel. `badgeIcon` leads the first badge.
 const SPECS = [
-  { icon: Flame, label: 'Résistance au vent', value: "Jusqu'à 70 km/h", note: 'Structure haute pression stabilisée', feature: true },
-  { icon: Layers, label: 'Matériau', value: 'Oxford 600D + TPU', note: 'Haute résistance' },
-  { icon: Gauge, label: 'Pression de gonflage', value: 'Haute pression 0.35 bar' },
-  { icon: Timer, label: 'Temps de gonflage', value: '60–90 secondes' },
-  { icon: Sparkles, label: 'Impression', value: 'Sublimation HD 360°', note: 'Résistante aux UV' },
-  { icon: ShieldCheck, label: 'Certification', value: 'Anti-feu M2, Anti-UV' },
-  { icon: Wind, label: 'Garantie', value: '5 ans structure + impression' },
-  { icon: Feather, label: 'Poids (4×4m)', value: '~12 kg' },
+  { icon: Flame, label: 'Résistance au vent', value: "Jusqu'à 70 km/h", note: 'Structure haute pression stabilisée', big: '70', tail: 'km/h', badgeIcon: Wind, badges: ['70 km/h', 'Lestage inclus'] },
+  { icon: Layers, label: 'Matériau', value: 'Oxford 600D + TPU', note: 'Haute résistance', big: 'Oxford 600D', tail: '+ TPU', badgeIcon: Droplet, badges: ['Oxford 600D', 'TPU', 'Haute résistance'] },
+  { icon: Gauge, label: 'Pression de gonflage', value: 'Haute pression 0.35 bar', big: '0.35', tail: 'bar', badgeIcon: Gauge, badges: ['0.35 bar', 'Haute pression'] },
+  { icon: Timer, label: 'Temps de gonflage', value: '60–90 secondes', big: '60–90', tail: 'sec', badgeIcon: Timer, badges: ['60–90 s', '1 personne'] },
+  { icon: Sparkles, label: 'Impression', value: 'Sublimation HD 360°', note: 'Résistante aux UV', big: 'HD 360°', tail: 'UV', badgeIcon: Sparkles, badges: ['Sublimation', '360°', 'Anti-UV'] },
+  { icon: ShieldCheck, label: 'Certification', value: 'Anti-feu M2, Anti-UV', big: 'M2', tail: 'anti-feu', badgeIcon: Flame, badges: ['M2', 'Anti-feu', 'Anti-UV'] },
+  { icon: Wind, label: 'Garantie', value: '5 ans structure + impression', big: '5', tail: 'ans', badgeIcon: ShieldCheck, badges: ['5 ans', 'Structure', 'Impression'] },
+  { icon: Feather, label: 'Poids (4×4m)', value: '~12 kg', big: '~12', tail: 'kg', badgeIcon: Feather, badges: ['~12 kg', '4×4m'] },
 ];
 
 const USAGES = [
@@ -27,6 +29,162 @@ const USAGES = [
   { tag: '03', icon: Music, title: 'Festivals & concerts', desc: 'Zones presse, accueil VIP, backstage' },
   { tag: '04', icon: Store, title: 'Points de vente', desc: 'Pop-up stores, démonstrations, promotions' },
 ];
+
+// Shared blue palette — white & blue only, no black.
+const BLUE = '#0066cc';
+const BLUE_DEEP = '#0052a3';
+const BLUE_SOFT = '#e8f1fd';
+const BLUE_MIST = '#f3f8ff';
+const LINE = '#e4ecf7';
+const INK = '#0b1c3f';
+const INK_2 = '#2c3e63';
+const MUTE = '#5b6f8e';
+
+/* ░░ SPECS — V71 "Liste scindée" : rail de labels à gauche, grand panneau valeur + badges à droite ░░ */
+function SpecsSplit() {
+  const [active, setActive] = useState(0);
+  const s = SPECS[active];
+  const Icon = s.icon;
+  const BadgeIcon = s.badgeIcon;
+
+  return (
+    <div style={{ color: INK }}>
+      <div
+        className="grid gap-2.5 md:gap-3"
+        style={{ gridTemplateColumns: 'minmax(150px, 0.85fr) 1.15fr' }}
+      >
+        {/* Left rail — selectable label list */}
+        <div
+          style={{
+            border: `1px solid ${LINE}`,
+            borderRadius: 18,
+            overflow: 'hidden',
+            background: '#ffffff',
+            alignSelf: 'start',
+          }}
+        >
+          {SPECS.map((sp, i) => {
+            const on = i === active;
+            const RIcon = sp.icon;
+            return (
+              <button
+                key={sp.label}
+                type="button"
+                onClick={() => setActive(i)}
+                className="cursor-pointer w-full flex items-center gap-2.5 text-left relative"
+                style={{
+                  padding: '13px 14px',
+                  borderTop: i === 0 ? 'none' : `1px solid ${LINE}`,
+                  background: on ? BLUE_MIST : 'transparent',
+                  transition: 'background .18s',
+                }}
+              >
+                {on && (
+                  <motion.span
+                    layoutId="specsRail"
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 7,
+                      bottom: 7,
+                      width: 3,
+                      borderRadius: 9999,
+                      background: BLUE,
+                    }}
+                  />
+                )}
+                <span
+                  className="inline-flex items-center justify-center shrink-0"
+                  style={{ width: 30, height: 30, borderRadius: 9, background: on ? BLUE : BLUE_SOFT, color: on ? '#fff' : BLUE, transition: 'background .2s, color .2s' }}
+                >
+                  <RIcon className="w-[15px] h-[15px]" strokeWidth={2.4} />
+                </span>
+                <span
+                  style={{
+                    fontSize: '0.82rem',
+                    fontWeight: on ? 700 : 600,
+                    color: on ? BLUE_DEEP : INK_2,
+                    lineHeight: 1.15,
+                  }}
+                >
+                  {sp.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right — big detail panel for the active spec */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -8 }}
+            transition={{ duration: 0.26 }}
+            style={{
+              border: `1px solid ${LINE}`,
+              borderRadius: 18,
+              background: BLUE_MIST,
+              padding: '22px 20px',
+            }}
+          >
+            <span
+              className="inline-flex items-center justify-center mb-4"
+              style={{ width: 48, height: 48, borderRadius: 14, background: '#ffffff', border: `1px solid ${LINE}`, color: BLUE }}
+            >
+              <Icon className="w-6 h-6" strokeWidth={2.2} />
+            </span>
+
+            <div
+              style={{ fontSize: '0.72rem', fontWeight: 700, color: BLUE_DEEP, textTransform: 'uppercase', letterSpacing: '0.14em' }}
+            >
+              {s.label}
+            </div>
+
+            <div
+              className="font-display flex items-end gap-2 flex-wrap"
+              style={{ marginTop: 6, lineHeight: 0.95 }}
+            >
+              <span style={{ fontSize: 'clamp(2.1rem, 6vw, 3.2rem)', letterSpacing: '-0.03em', color: INK, fontWeight: 700 }}>
+                {s.big}
+              </span>
+              <span style={{ fontSize: 'clamp(1rem, 3vw, 1.5rem)', color: BLUE, paddingBottom: 6 }}>
+                {s.tail}
+              </span>
+            </div>
+
+            <div style={{ marginTop: 12, fontSize: '0.95rem', lineHeight: 1.45, color: INK_2 }}>
+              {s.value}
+              {s.note && <span style={{ color: MUTE }}> · {s.note}</span>}
+            </div>
+
+            <div className="flex flex-wrap gap-2 mt-5">
+              {s.badges.map((b, bi) => (
+                <span
+                  key={b}
+                  className="inline-flex items-center gap-1.5"
+                  style={{
+                    border: `1px solid ${LINE}`,
+                    background: '#ffffff',
+                    borderRadius: 9999,
+                    padding: '5px 11px',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    color: INK_2,
+                  }}
+                >
+                  {bi === 0 && <BadgeIcon className="w-3 h-3" strokeWidth={2.6} style={{ color: BLUE }} />}
+                  {b}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
 
 export default function Tente() {
   return (
@@ -54,7 +212,7 @@ export default function Tente() {
         {/* ░░ CONFIGURATOR (shared) ░░ */}
         <ProductConfigurator data={CONFIGURATORS.tente} />
 
-        {/* ░░ SPECS — editorial bento ░░ */}
+        {/* ░░ SPECS — split rail + detail panel (V71) ░░ */}
         <section className="bg-paper py-20 md:py-28">
           <div className="max-w-content mx-auto px-5 sm:px-8">
             <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16">
@@ -75,75 +233,13 @@ export default function Tente() {
               </Rise>
             </div>
 
-            <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-              {SPECS.map((s, i) => {
-                const Icon = s.icon;
-                if (s.feature) {
-                  // Deep-blue accent panel — spans 2 columns / 2 rows on large screens for rhythm.
-                  return (
-                    <motion.div
-                      variants={staggerChild}
-                      key={s.label}
-                      data-cursor
-                      whileHover={{ y: -6 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                      className="group relative overflow-hidden bg-deep text-white rounded-[28px] p-7 md:p-9 flex flex-col justify-between sm:col-span-2 lg:row-span-2 min-h-[220px] lg:min-h-full cursor-pointer"
-                    >
-                      <div
-                        className="absolute -top-16 -right-16 w-64 h-64 rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
-                        style={{ background: 'radial-gradient(circle, rgba(70,150,255,0.45), transparent 70%)', filter: 'blur(34px)' }}
-                      />
-                      <div className="relative flex items-center justify-between">
-                        <span className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm">
-                          <Icon className="w-5 h-5 text-[#7db4f0]" />
-                        </span>
-                        <span className="kicker" style={{ color: '#7db4f0' }}>Performance clé</span>
-                      </div>
-                      <div className="relative mt-8">
-                        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45 mb-3">{s.label}</div>
-                        <div className="font-display font-bold tracking-tightest leading-none text-white text-[clamp(2.2rem,4.5vw,3.4rem)]">
-                          {s.value}
-                        </div>
-                        {s.note && <div className="mt-4 text-sm text-white/55 leading-relaxed max-w-xs">{s.note}</div>}
-                      </div>
-                    </motion.div>
-                  );
-                }
-                return (
-                  <motion.div
-                    variants={staggerChild}
-                    key={s.label}
-                    data-cursor
-                    whileHover={{ y: -6 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                    className="group relative overflow-hidden bg-white rounded-[22px] border border-[var(--line)] hover:border-[var(--blue)] p-6 md:p-7 flex flex-col cursor-pointer transition-colors duration-300"
-                    style={{ boxShadow: '0 1px 0 rgba(11,28,63,0.02)' }}
-                  >
-                    <div
-                      className="absolute inset-x-0 -bottom-20 h-32 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{ background: 'radial-gradient(60% 100% at 50% 100%, rgba(0,102,204,0.16), transparent 70%)', filter: 'blur(20px)' }}
-                    />
-                    <div className="relative flex items-center justify-between mb-7">
-                      <span className="flex items-center justify-center w-11 h-11 rounded-xl bg-[var(--blue-soft)] group-hover:bg-[var(--blue)] transition-colors duration-300">
-                        <Icon className="w-5 h-5 text-[var(--blue)] group-hover:text-white transition-colors duration-300" />
-                      </span>
-                      <span className="text-xs font-semibold text-ink/20 tabular-nums group-hover:text-[var(--blue)]/40 transition-colors">0{i + 1}</span>
-                    </div>
-                    <div className="relative mt-auto">
-                      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)] mb-2">{s.label}</div>
-                      <div className="font-display font-bold tracking-tight text-ink leading-tight text-[clamp(1.15rem,2vw,1.45rem)]">
-                        {s.value}
-                      </div>
-                      {s.note && <div className="mt-2 text-[13px] text-[var(--muted)] leading-relaxed">{s.note}</div>}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </RevealStagger>
+            <Reveal>
+              <SpecsSplit />
+            </Reveal>
           </div>
         </section>
 
-        {/* ░░ PARFAITE POUR — premium use-case cards ░░ */}
+        {/* ░░ PARFAITE POUR — éditorial rangées à filets (V73, non-interactif) ░░ */}
         <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
           <div className="max-w-content mx-auto px-5 sm:px-8">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
@@ -167,43 +263,76 @@ export default function Tente() {
               </Reveal>
             </div>
 
-            <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
-              {USAGES.map((u) => {
-                const Icon = u.icon;
-                return (
-                  <motion.div
-                    variants={staggerChild}
-                    key={u.tag}
-                    data-cursor
-                    whileHover={{ y: -6 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                    className="group relative overflow-hidden rounded-[28px] bg-white border border-[var(--line)] hover:border-[var(--blue)] p-8 md:p-9 cursor-pointer transition-colors duration-300"
-                  >
-                    {/* subtle blue glow on hover */}
-                    <div
-                      className="absolute -bottom-24 -right-10 w-64 h-64 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.18), transparent 70%)', filter: 'blur(36px)' }}
-                    />
-                    {/* oversized ghost number */}
-                    <span className="absolute top-4 right-6 font-display font-bold leading-none text-[var(--blue)]/[0.06] group-hover:text-[var(--blue)]/[0.1] transition-colors select-none pointer-events-none" style={{ fontSize: 'clamp(4.5rem,9vw,7rem)' }}>
-                      {u.tag}
-                    </span>
-
-                    <div className="relative flex items-center justify-between mb-10">
-                      <span className="flex items-center justify-center w-14 h-14 rounded-2xl bg-[var(--blue-soft)] group-hover:bg-[var(--blue)] transition-colors duration-300">
-                        <Icon className="w-6 h-6 text-[var(--blue)] group-hover:text-white transition-colors duration-300" />
-                      </span>
-                      <ArrowUpRight className="w-5 h-5 text-[var(--muted)] group-hover:text-[var(--blue)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
-                    </div>
-
-                    <div className="relative">
-                      <div className="font-display text-xl md:text-2xl font-bold text-ink tracking-tight mb-2">{u.title}</div>
-                      <div className="text-[15px] text-[var(--muted)] leading-relaxed max-w-sm">{u.desc}</div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </RevealStagger>
+            <Reveal>
+              <div style={{ color: INK }}>
+                <div style={{ borderTop: `1px solid ${LINE}` }}>
+                  {USAGES.map((u) => {
+                    const Icon = u.icon;
+                    return (
+                      <div
+                        key={u.tag}
+                        className="uc-row relative flex items-center gap-4 overflow-hidden"
+                        style={{
+                          borderBottom: `1px solid ${LINE}`,
+                          background: '#ffffff',
+                          padding: '20px 14px 20px 16px',
+                          transition: 'background .22s',
+                        }}
+                      >
+                        <span
+                          className="font-display shrink-0 tabular-nums select-none"
+                          style={{
+                            fontSize: '1.25rem',
+                            fontWeight: 800,
+                            width: 34,
+                            color: '#c2d2ea',
+                          }}
+                        >
+                          {u.tag}
+                        </span>
+                        <span
+                          className="flex items-center justify-center shrink-0"
+                          style={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: 13,
+                            background: BLUE_SOFT,
+                            color: BLUE,
+                          }}
+                        >
+                          <Icon className="w-5 h-5" strokeWidth={2.2} />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span
+                            className="font-display block"
+                            style={{
+                              fontSize: '1.1rem',
+                              lineHeight: 1.2,
+                              fontWeight: 700,
+                              color: INK,
+                            }}
+                          >
+                            {u.title}
+                          </span>
+                          <span
+                            className="block"
+                            style={{
+                              fontSize: '0.92rem',
+                              lineHeight: 1.4,
+                              color: MUTE,
+                              marginTop: 3,
+                            }}
+                          >
+                            {u.desc}
+                          </span>
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <style>{`.uc-row:hover{background:${BLUE_MIST};}`}</style>
+              </div>
+            </Reveal>
           </div>
         </section>
       </main>

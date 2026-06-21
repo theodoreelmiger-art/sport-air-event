@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, Globe, Menu, X, Check } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, Globe, Menu, X, Check, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { LOGO, PRODUCT_LINKS } from '../data/site.js';
+
+const EASE = [0.22, 1, 0.36, 1];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -10,6 +13,37 @@ export default function Header() {
   const [langOpen, setLangOpen] = useState(false);
   const location = useLocation();
 
+  const wrapRef = useRef(null);
+  const closeT = useRef(null);
+
+  const cancelClose = () => {
+    if (closeT.current) {
+      clearTimeout(closeT.current);
+      closeT.current = null;
+    }
+  };
+  const scheduleClose = () => {
+    cancelClose();
+    closeT.current = setTimeout(() => setDeskProd(false), 110);
+  };
+
+  // Outside-click + Escape close for the "Produits" dropdown.
+  useEffect(() => {
+    const onDoc = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setDeskProd(false);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') setDeskProd(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('keydown', onKey);
+      cancelClose();
+    };
+  }, []);
+
   useEffect(() => {
     setOpen(false);
     setProdOpen(false);
@@ -17,7 +51,24 @@ export default function Header() {
     setLangOpen(false);
   }, [location.pathname]);
 
-  const isActive = (p) => location.pathname === p;
+  const isProductActive = PRODUCT_LINKS.some((p) => p.to === location.pathname);
+
+  // Hover / focus / click open behaviour for the centered "Produits" dropdown.
+  const wrapProps = {
+    ref: wrapRef,
+    onMouseEnter: () => {
+      cancelClose();
+      setDeskProd(true);
+    },
+    onMouseLeave: scheduleClose,
+    onFocus: () => {
+      cancelClose();
+      setDeskProd(true);
+    },
+    onBlur: (e) => {
+      if (!e.currentTarget.contains(e.relatedTarget)) setDeskProd(false);
+    },
+  };
 
   return (
     <>
@@ -32,139 +83,239 @@ export default function Header() {
           width: 'calc(100% - 48px)',
           maxWidth: 1100,
           zIndex: 1000,
-          borderRadius: 9999,
-          padding: '6px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'nowrap',
-          background: 'rgba(255, 255, 255, 0.82)',
-          backdropFilter: 'blur(28px)',
-          WebkitBackdropFilter: 'blur(28px)',
-          border: '1px solid rgba(255, 255, 255, 0.5)',
-          boxShadow: 'rgba(0, 0, 0, 0.08) 0px 8px 32px',
         }}
       >
-        <div style={{ flexShrink: 0, width: 120 }}>
-          <Link className="flex items-center" to="/Home">
-            <img src={LOGO} alt="SPORT AIR EVENT" style={{ height: 36, width: 'auto', objectFit: 'contain' }} />
-          </Link>
-        </div>
+        <nav
+          className="flex items-center gap-2 sm:gap-3 pl-3 pr-2 py-2 rounded-full overflow-x-clip"
+          style={{
+            background: '#fff',
+            border: '1px solid var(--line)',
+            boxShadow: '0 14px 40px -20px rgba(11,28,63,0.25)',
+          }}
+        >
+          {/* Logo */}
+          <div className="shrink-0" style={{ width: 120 }}>
+            <Link className="flex items-center select-none" to="/Home">
+              <img
+                src={LOGO}
+                alt="SPORT AIR EVENT"
+                style={{ height: 30, width: 'auto', objectFit: 'contain' }}
+              />
+            </Link>
+          </div>
 
-        <nav className="hidden lg:flex items-center justify-center gap-1 flex-1">
-          <Link
-            className={`px-3 py-2 text-[13px] font-medium rounded-full transition-colors ${
-              isActive('/Home') ? 'text-[#1a56db] bg-blue-50' : 'text-gray-700 hover:text-[#1a56db] hover:bg-gray-50'
-            }`}
-            to="/Home"
-          >
-            Accueil
-          </Link>
-
-          <div className="nav-item relative">
-            <button
-              onClick={() => setDeskProd((v) => !v)}
-              className="flex items-center gap-1 px-3 py-2 text-[13px] font-medium rounded-full transition-colors text-gray-700 hover:text-[#1a56db] hover:bg-gray-50"
-            >
-              Produits
-              <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform ${deskProd ? 'rotate-180' : ''}`} />
-            </button>
-            <div
-              className="nav-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 py-2"
+          {/* Desktop centered nav group */}
+          <div className="hidden lg:flex items-center gap-4 mx-auto">
+            <Link
+              to="/Home"
+              className="relative px-1 py-1 cursor-pointer transition-opacity hover:opacity-80"
               style={{
-                borderRadius: 20,
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                background: 'rgba(255, 255, 255, 0.95)',
-                border: '1px solid rgba(0, 0, 0, 0.06)',
-                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 8px 32px',
-                ...(deskProd ? { opacity: 1, visibility: 'visible', transform: 'translateX(-50%) translateY(0)' } : {}),
+                fontSize: '0.9rem',
+                fontWeight: isActive('/Home', location) ? 600 : 500,
+                color: isActive('/Home', location) ? 'var(--blue-deep)' : 'var(--ink)',
               }}
             >
-              {PRODUCT_LINKS.map((p) => (
-                <Link
-                  key={p.to}
-                  className="block px-5 py-2.5 text-sm transition-colors rounded-lg mx-1 text-gray-700 hover:bg-gray-50 hover:text-[#1a56db]"
-                  to={p.to}
-                >
-                  {p.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+              Accueil
+            </Link>
 
-          <NavLink
-            className={({ isActive }) =>
-              `px-3 py-2 text-[13px] font-medium rounded-full transition-colors ${
-                isActive ? 'text-[#1a56db] bg-blue-50' : 'text-gray-700 hover:text-[#1a56db] hover:bg-gray-50'
-              }`
-            }
-            to="/About"
-          >
-            À propos
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              `px-3 py-2 text-[13px] font-medium rounded-full transition-colors ${
-                isActive ? 'text-[#1a56db] bg-blue-50' : 'text-gray-700 hover:text-[#1a56db] hover:bg-gray-50'
-              }`
-            }
-            to="/Contact"
-          >
-            Contact
-          </NavLink>
-        </nav>
-
-        <div className="hidden lg:flex items-center justify-end gap-2 flex-shrink-0">
-          <div className="relative">
-            <button
-              onClick={() => setLangOpen((v) => !v)}
-              className="flex items-center gap-1.5 px-3 py-2 font-medium text-gray-600 hover:text-[#1a56db] rounded-full hover:bg-gray-50 transition-colors"
-              style={{ fontSize: 13 }}
-            >
-              <Globe className="w-3.5 h-3.5" />
-              <span>FR</span>
-              <ChevronDown className={`w-3 h-3 opacity-60 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {langOpen && (
-              <div
-                className="absolute top-full right-0 mt-2 w-40 py-1.5 text-left"
+            {/* "Produits" — NOT a link. Dropdown opens directly below, centered. */}
+            <div className="relative" {...wrapProps}>
+              <button
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded={deskProd}
+                onClick={() => setDeskProd((v) => !v)}
+                className="flex items-center gap-1 px-1 py-1 cursor-pointer transition-opacity hover:opacity-80"
                 style={{
-                  borderRadius: 16,
-                  backdropFilter: 'blur(24px)',
-                  WebkitBackdropFilter: 'blur(24px)',
-                  background: 'rgba(255, 255, 255, 0.97)',
-                  border: '1px solid rgba(0, 0, 0, 0.06)',
-                  boxShadow: 'rgba(0, 0, 0, 0.12) 0px 8px 32px',
+                  fontSize: '0.9rem',
+                  fontWeight: deskProd || isProductActive ? 600 : 500,
+                  color: deskProd || isProductActive ? 'var(--blue-deep)' : 'var(--ink)',
                 }}
               >
-                <button
-                  onClick={() => setLangOpen(false)}
-                  className="w-full flex items-center justify-between px-4 py-2 text-sm text-[#1a56db] font-medium hover:bg-gray-50"
-                >
-                  <span>🇫🇷 Français</span>
-                  <Check className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
-          </div>
-          <Link
-            className="cta-iridescent inline-flex items-center text-white font-semibold rounded-full transition-all hover:scale-[1.02]"
-            to="/Contact"
-            style={{ fontSize: 13, padding: '8px 16px' }}
-          >
-            Demander un devis
-          </Link>
-        </div>
+                Produits
+                <motion.span animate={{ rotate: deskProd ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                  <ChevronDown className="w-4 h-4" strokeWidth={2.2} />
+                </motion.span>
+              </button>
 
-        <button
-          className="lg:hidden flex items-center justify-center text-gray-900"
-          aria-label="Menu"
-          style={{ width: 44, height: 44, borderRadius: '50%' }}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+              <AnimatePresence>
+                {deskProd && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                    transition={{ duration: 0.18, ease: EASE }}
+                    role="menu"
+                    aria-label="Produits"
+                    className="absolute top-full left-1/2 z-30 pt-3"
+                    style={{ width: 268, transform: 'translateX(-50%)' }}
+                  >
+                    <div
+                      className="rounded-[22px] overflow-hidden"
+                      style={{
+                        background: '#fff',
+                        border: '1px solid var(--line)',
+                        boxShadow: '0 18px 50px -22px rgba(11,28,63,0.28)',
+                      }}
+                    >
+                      {/* little caret */}
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2"
+                        style={{
+                          top: 6,
+                          width: 14,
+                          height: 14,
+                          background: '#fff',
+                          borderTop: '1px solid var(--line)',
+                          borderLeft: '1px solid var(--line)',
+                          transform: 'translateX(-50%) rotate(45deg)',
+                        }}
+                      />
+                      <div
+                        className="px-4 pt-3 pb-2 kicker relative"
+                        style={{ background: 'var(--blue-mist)' }}
+                      >
+                        Nos produits
+                      </div>
+                      <ul className="p-1.5">
+                        {PRODUCT_LINKS.map((p, i) => {
+                          const active = location.pathname === p.to;
+                          return (
+                            <li key={p.to}>
+                              <Link
+                                to={p.to}
+                                role="menuitem"
+                                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer text-left transition-colors group/item"
+                                style={{
+                                  background: active ? 'var(--blue-soft)' : 'transparent',
+                                  color: active ? 'var(--blue-deep)' : 'var(--ink)',
+                                }}
+                              >
+                                <span
+                                  className="grid place-items-center rounded-lg shrink-0"
+                                  style={{
+                                    width: 26,
+                                    height: 26,
+                                    background: active ? 'var(--blue)' : 'var(--blue-mist)',
+                                    color: active ? '#fff' : 'var(--blue)',
+                                  }}
+                                >
+                                  {active ? (
+                                    <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                                  ) : (
+                                    <span className="font-display tabular-nums" style={{ fontSize: '0.7rem' }}>
+                                      {String(i + 1).padStart(2, '0')}
+                                    </span>
+                                  )}
+                                </span>
+                                <span
+                                  className="flex-1 leading-tight"
+                                  style={{ fontSize: '0.88rem', fontWeight: active ? 600 : 500 }}
+                                >
+                                  {p.label}
+                                </span>
+                                <ArrowUpRight
+                                  className="w-3.5 h-3.5 shrink-0"
+                                  style={{ color: active ? 'var(--blue)' : 'var(--line)' }}
+                                  strokeWidth={2.4}
+                                />
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <Link
+              to="/About"
+              className="relative px-1 py-1 cursor-pointer transition-opacity hover:opacity-80"
+              style={{
+                fontSize: '0.9rem',
+                fontWeight: isActive('/About', location) ? 600 : 500,
+                color: isActive('/About', location) ? 'var(--blue-deep)' : 'var(--ink)',
+              }}
+            >
+              À propos
+            </Link>
+            <Link
+              to="/Contact"
+              className="relative px-1 py-1 cursor-pointer transition-opacity hover:opacity-80"
+              style={{
+                fontSize: '0.9rem',
+                fontWeight: isActive('/Contact', location) ? 600 : 500,
+                color: isActive('/Contact', location) ? 'var(--blue-deep)' : 'var(--ink)',
+              }}
+            >
+              Contact
+            </Link>
+          </div>
+
+          {/* Desktop right controls: FR + Devis CTA */}
+          <div className="hidden lg:flex items-center gap-2 shrink-0">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setLangOpen((v) => !v)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-full cursor-pointer transition-opacity hover:opacity-80"
+                style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--ink)' }}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>FR</span>
+                <ChevronDown
+                  className={`w-3 h-3 opacity-60 transition-transform ${langOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+              {langOpen && (
+                <div
+                  className="absolute top-full right-0 mt-2 w-40 py-1.5 text-left"
+                  style={{
+                    borderRadius: 16,
+                    background: '#fff',
+                    border: '1px solid var(--line)',
+                    boxShadow: '0 18px 50px -22px rgba(11,28,63,0.28)',
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setLangOpen(false)}
+                    className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium cursor-pointer transition-colors"
+                    style={{ color: 'var(--blue-deep)' }}
+                  >
+                    <span>🇫🇷 Français</span>
+                    <Check className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <Link to="/Contact" className="shrink-0">
+              <motion.span
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full cursor-pointer"
+                style={{ background: 'var(--blue)', color: '#fff', fontSize: '0.85rem', fontWeight: 600 }}
+              >
+                Demander un devis
+                <ArrowRight className="w-4 h-4" strokeWidth={2.4} />
+              </motion.span>
+            </Link>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            className="lg:hidden flex items-center justify-center ml-auto cursor-pointer"
+            aria-label="Menu"
+            style={{ width: 40, height: 40, borderRadius: '50%', color: 'var(--ink)' }}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </nav>
       </header>
 
       {/* Mobile menu */}
@@ -174,36 +325,44 @@ export default function Header() {
           style={{ background: 'rgba(255,255,255,0.98)', backdropFilter: 'blur(20px)' }}
         >
           <div className="flex flex-col items-center justify-center min-h-screen gap-1 px-8 text-center">
-            <Link to="/Home" className="py-3 text-lg font-medium text-gray-900">
+            <Link to="/Home" className="py-3 text-lg font-medium" style={{ color: 'var(--ink)' }}>
               Accueil
             </Link>
             <button
-              className="py-3 text-lg font-medium text-gray-900 flex items-center gap-1"
+              type="button"
+              className="py-3 text-lg font-medium flex items-center gap-1 cursor-pointer"
+              style={{ color: 'var(--ink)' }}
               onClick={() => setProdOpen((v) => !v)}
             >
               Produits <ChevronDown className={`w-4 h-4 transition-transform ${prodOpen ? 'rotate-180' : ''}`} />
             </button>
             {prodOpen &&
               PRODUCT_LINKS.map((p) => (
-                <Link key={p.to} to={p.to} className="py-2 text-base text-gray-600">
+                <Link key={p.to} to={p.to} className="py-2 text-base" style={{ color: 'var(--ink-2)' }}>
                   {p.label}
                 </Link>
               ))}
-            <Link to="/About" className="py-3 text-lg font-medium text-gray-900">
+            <Link to="/About" className="py-3 text-lg font-medium" style={{ color: 'var(--ink)' }}>
               À propos
             </Link>
-            <Link to="/Contact" className="py-3 text-lg font-medium text-gray-900">
+            <Link to="/Contact" className="py-3 text-lg font-medium" style={{ color: 'var(--ink)' }}>
               Contact
             </Link>
             <Link
               to="/Contact"
-              className="cta-iridescent mt-4 inline-flex items-center text-white font-semibold rounded-full px-6 py-3"
+              className="mt-4 inline-flex items-center gap-1.5 text-white font-semibold rounded-full px-6 py-3"
+              style={{ background: 'var(--blue)' }}
             >
               Demander un devis
+              <ArrowRight className="w-4 h-4" strokeWidth={2.4} />
             </Link>
           </div>
         </div>
       )}
     </>
   );
+}
+
+function isActive(path, location) {
+  return location.pathname === path;
 }

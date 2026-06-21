@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, ChevronDown, Clock, Shield, Sparkles, Truck, Star } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Clock, Shield, Sparkles, Truck, Star, Award, Timer, Flag, Gauge, Wind, ShieldCheck, Quote } from 'lucide-react';
 import { Reveal, RevealStagger, WordsReveal, Magnetic, staggerChild, ClipReveal, Rise, MaskHeading } from '../lib/motion.jsx';
 import { Counter, MouseGlow } from '../lib/interactions.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
@@ -47,11 +47,11 @@ const products = [
 ];
 
 const reviews = [
-  { ini: 'LD', grad: 'linear-gradient(135deg,#0066cc,#3b82f6)', name: 'Laurent Dubois', role: 'EventPro France', date: '28 avril 2026',
+  { ini: 'CM', grad: 'linear-gradient(135deg,#0066cc,#3b82f6)', name: 'Camille Mercier', role: 'Trail Évasion Annecy', date: '12 mai 2026',
     text: 'Structures gonflables de qualité exceptionnelle. Installation en 2 minutes chrono, rendu visuel impressionnant et service client très réactif. Parfait pour nos événements professionnels.' },
-  { ini: 'SM', grad: 'linear-gradient(135deg,#0891b2,#06b6d4)', name: 'Sophie Martin', role: 'Marketing & Events', date: '17 juillet 2025',
+  { ini: 'YB', grad: 'linear-gradient(135deg,#0891b2,#06b6d4)', name: 'Yanis B.', role: 'Agence Lumen — Lyon', date: '3 juillet 2025',
     text: 'Tente Spider impeccable pour notre salon. Design moderne, montage ultra-rapide et personnalisation parfaite. Conception suisse, qualité au rendez-vous. Je recommande vivement.' },
-  { ini: 'JR', grad: 'linear-gradient(135deg,#7c3aed,#a78bfa)', name: 'Jean-Pierre Rousseau', role: 'Sports & Festivals', date: '15 décembre 2024',
+  { ini: 'FN', grad: 'linear-gradient(135deg,#2563eb,#60a5fa)', name: 'Farida Nasri', role: 'Comité Marathon du Léman', date: '21 décembre 2024',
     text: 'Quatrième commande et toujours aussi satisfait. Produits haut de gamme, délais respectés, équipe professionnelle. Les structures résistent parfaitement aux conditions extérieures.' },
 ];
 
@@ -67,6 +67,193 @@ const faqs = [
 const Stars = ({ size }) => (
   <>{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`${size} fill-amber-400 text-amber-400`} />)}</>
 );
+
+/* ── Stats (animated counters · design #50) ───────────────────────────── */
+const STATS = [
+  { value: 20, suffix: ' ans', label: "D'expérience" },
+  { value: 2, suffix: ' min', label: 'Installation' },
+  { value: 100, suffix: '%', label: 'Conception Suisse' },
+];
+const STAT_ICONS = [Award, Timer, Flag];
+
+/* useCountUp — count-up on mount via requestAnimationFrame (easeOutCubic). */
+function useCountUp(target, { duration = 1500 } = {}) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef(0);
+  useEffect(() => {
+    let start = 0;
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const step = (now) => {
+      if (!start) start = now;
+      const p = Math.min((now - start) / duration, 1);
+      setValue(Math.round(target * ease(p)));
+      if (p < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    setValue(0);
+    rafRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [target, duration]);
+  return value;
+}
+
+/* Progress-ring stat (design #50) — arc fills while the number counts up;
+   clicking a ring promotes it (active selection). */
+function StatRing({ stat, Icon, active, onSelect, duration }) {
+  const value = useCountUp(stat.value, { duration });
+  const ratio = Math.min(value / stat.value, 1);
+  const R = 34;
+  const C = 2 * Math.PI * R;
+  return (
+    <motion.div
+      role="button"
+      tabIndex={0}
+      onClick={onSelect}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(); } }}
+      whileTap={{ scale: 0.96 }}
+      whileHover={{ y: -2 }}
+      data-cursor
+      className="cursor-pointer text-center outline-none"
+      style={{
+        border: `1px solid ${active ? 'var(--blue)' : 'var(--line)'}`,
+        background: active ? 'var(--blue-mist)' : '#ffffff',
+        borderRadius: 18,
+        padding: '16px 8px 14px',
+        transition: 'background .2s, border-color .2s',
+      }}
+    >
+      <div style={{ position: 'relative', width: 84, height: 84, margin: '0 auto' }}>
+        <svg width="84" height="84" viewBox="0 0 84 84">
+          <circle cx="42" cy="42" r={R} fill="none" stroke="var(--blue-soft)" strokeWidth="8" />
+          <circle cx="42" cy="42" r={R} fill="none" stroke="var(--blue)" strokeWidth="8" strokeLinecap="round"
+            strokeDasharray={C} strokeDashoffset={C * (1 - ratio)} transform="rotate(-90 42 42)" />
+        </svg>
+        <span className="inline-flex items-center justify-center" style={{ position: 'absolute', inset: 0, margin: 'auto', width: 28, height: 28, color: 'var(--blue)' }}>
+          <Icon size={18} strokeWidth={2.2} />
+        </span>
+      </div>
+      <div className="font-display" style={{ marginTop: 10, fontSize: '1.6rem', lineHeight: 1, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+        {value}<span style={{ color: 'var(--blue)', fontSize: '0.6em' }}>{stat.suffix}</span>
+      </div>
+      <div style={{ marginTop: 5, fontSize: '0.78rem', fontWeight: 600, color: 'var(--ink-2)' }}>{stat.label}</div>
+    </motion.div>
+  );
+}
+
+/* Stats section (animated progress-ring counters · design #50). */
+function StatsRings() {
+  const [active, setActive] = useState(1);
+  const durations = [1500, 1100, 1800];
+  return (
+    <section className="bg-white border-b border-[var(--line)] py-16 md:py-20">
+      <div className="max-w-content mx-auto px-5 sm:px-8">
+        <div className="flex items-center justify-between mb-7">
+          <div>
+            <div className="kicker" style={{ color: 'var(--blue)' }}>Performance</div>
+            <h3 className="font-display font-bold text-ink tracking-tight" style={{ fontSize: 'clamp(1.4rem,2.4vw,1.9rem)', lineHeight: 1.05, marginTop: 6 }}>Nos repères</h3>
+          </div>
+          <span className="inline-flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--blue-soft)', color: 'var(--blue)' }}>
+            <Gauge size={20} strokeWidth={2.2} />
+          </span>
+        </div>
+        <RevealStagger className="grid grid-cols-3 gap-3 sm:gap-4">
+          {STATS.map((s, i) => (
+            <motion.div variants={staggerChild} key={s.label}>
+              <StatRing stat={s} Icon={STAT_ICONS[i]} active={i === active} onSelect={() => setActive(i)} duration={durations[i]} />
+            </motion.div>
+          ))}
+        </RevealStagger>
+        <Reveal as="div" delay={0.1} className="flex items-center gap-2 mt-4" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--blue-mist)', padding: '10px 14px', fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink-2)' }}>
+          <Wind size={16} strokeWidth={2.2} style={{ color: 'var(--blue)', flexShrink: 0 }} />
+          <span>{STATS[active].label} — sélectionné</span>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* Soft radial feather mask (design #87) so each logo dissolves into its
+   white chip with no visible square edge. */
+const logoMask = {
+  WebkitMaskImage: 'radial-gradient(130% 130% at 50% 48%, #000 60%, transparent 92%)',
+  maskImage: 'radial-gradient(130% 130% at 50% 48%, #000 60%, transparent 92%)',
+  clipPath: 'inset(0.5% 2.2% 0.5% 0.5%)',
+};
+
+/* Reviews carousel (design #53) — one deep-blue framed slide at a time,
+   animated directional transitions, prev/next buttons + clickable dots. */
+function ReviewsCarousel() {
+  const [[idx, dir], setState] = useState([0, 0]);
+  const go = (d) => setState(([i]) => [(i + d + reviews.length) % reviews.length, d]);
+  const jump = (i) => setState(([cur]) => [i, i > cur ? 1 : -1]);
+  const r = reviews[idx];
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+          </svg>
+          <span className="text-sm font-bold text-ink"><Counter to={4.9} decimals={1} /> / <Counter to={127} /> avis</span>
+        </div>
+        <div className="flex items-center gap-1"><Stars size="w-4 h-4" /></div>
+      </div>
+
+      <div className="relative overflow-hidden" style={{ borderRadius: 22 }}>
+        <AnimatePresence mode="wait" custom={dir}>
+          <motion.div key={idx} custom={dir}
+            initial={{ opacity: 0, x: dir >= 0 ? 40 : -40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: dir >= 0 ? -40 : 40 }}
+            transition={{ duration: 0.28 }} className="bg-deep" style={{ borderRadius: 22, padding: '26px 26px 22px', color: '#fff' }}>
+            <div className="flex items-center justify-between mb-4">
+              <Quote size={28} color="#9fc6ff" fill="#9fc6ff" style={{ opacity: 0.85 }} />
+              <span className="inline-flex items-center gap-1.5" style={{ background: 'rgba(255,255,255,.12)', borderRadius: 9999, padding: '4px 11px 4px 8px', fontSize: '0.72rem', fontWeight: 600 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                </svg>
+                Publié sur Google
+              </span>
+            </div>
+            <p style={{ fontSize: '1rem', lineHeight: 1.55, margin: '0 0 20px', color: '#eaf2ff' }}>{r.text}</p>
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center font-display shrink-0 text-white font-bold" style={{ width: 44, height: 44, borderRadius: 9999, background: r.grad, fontSize: '0.95rem' }}>{r.ini}</span>
+              <div>
+                <div className="text-sm font-bold">{r.name}</div>
+                <div className="text-xs" style={{ color: '#a8c2e6' }}>{r.role}</div>
+              </div>
+              <span className="ml-auto flex items-center gap-0.5"><Stars size="w-3.5 h-3.5" /></span>
+            </div>
+            <div className="mt-4 pt-4 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
+              <span className="text-xs" style={{ color: '#a8c2e6' }}>{r.date}</span>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center gap-2">
+          {[-1, 1].map((d) => (
+            <motion.button key={d} type="button" onClick={() => go(d)} whileTap={{ scale: 0.9 }} data-cursor
+              aria-label={d < 0 ? 'Précédent' : 'Suivant'} className="cursor-pointer inline-flex items-center justify-center"
+              style={{ width: 40, height: 40, borderRadius: 9999, border: '1px solid var(--line)', background: '#ffffff', color: 'var(--blue)' }}>
+              {d < 0 ? <ChevronLeft size={18} strokeWidth={2.4} /> : <ChevronRight size={18} strokeWidth={2.4} />}
+            </motion.button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          {reviews.map((_, i) => (
+            <button key={i} type="button" onClick={() => jump(i)} aria-label={`Avis ${i + 1}`} data-cursor className="cursor-pointer"
+              style={{ width: i === idx ? 22 : 8, height: 8, borderRadius: 9999, background: i === idx ? 'var(--blue)' : 'var(--line)', border: 'none', transition: 'width .25s, background .25s', padding: 0 }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* Sticky scrollytelling product showcase (desktop) + stacked (mobile) */
 function ProductShowcase() {
@@ -195,15 +382,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ░░ TRUST / LOGOS ░░ */}
+      {/* ░░ TRUST / LOGOS — marquee infini (design #87) ░░ */}
       <section className="bg-white border-b border-[var(--line)] py-10">
-        <p className="text-center kicker mb-7" style={{ color: 'var(--muted)' }}>Ils nous font confiance</p>
+        <div className="flex items-center justify-center gap-2 mb-7">
+          <ShieldCheck size={18} className="text-[var(--blue)]" strokeWidth={2.4} />
+          <p className="kicker" style={{ color: 'var(--blue)' }}>Ils nous font confiance</p>
+        </div>
         <div className="relative">
+          {/* Fade edges so logos slide in/out softly (white → transparent) */}
           <div className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right,#fff,transparent)' }} />
           <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left,#fff,transparent)' }} />
-          <div className="logo-track">{[...logos, ...logos, ...logos].map((logo, i) => (<div className="logo-item" key={i}><img src={logo.src} alt={logo.alt} loading="eager" width="120" height="40" /></div>))}</div>
+          {/* .logo-track scrolls continuously and never pauses (no hover pause) */}
+          <div className="logo-track">
+            {[...logos, ...logos, ...logos].map((logo, i) => (
+              <div
+                key={i}
+                aria-hidden={i >= logos.length ? true : undefined}
+                className="shrink-0 flex items-center justify-center"
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid var(--line)',
+                  borderRadius: 14,
+                  height: 56,
+                  margin: '0 11px',
+                  padding: '0 20px',
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                }}
+              >
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  loading="eager"
+                  width="120"
+                  height="40"
+                  draggable={false}
+                  style={{ height: 30, width: 'auto', objectFit: 'contain', filter: 'grayscale(1)', opacity: 0.72, pointerEvents: 'none', ...logoMask }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
+
+      {/* ░░ STATS — animated progress-ring counters (design #50) ░░ */}
+      <StatsRings />
 
       {/* ░░ MANIFESTO (deep blue) ░░ */}
       <section className="bg-deep text-white relative overflow-hidden">
@@ -217,12 +440,26 @@ export default function Home() {
               Depuis 20 ans, nous fabriquons des structures gonflables événementielles haut de gamme : impact visuel maximal, durabilité et personnalisation complète, pour les marques et les événements les plus exigeants.
             </Reveal>
           </div>
-          <RevealStagger className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
+          {/* Hairline divided rows w/ index (design #42) — display only, no quantity controls */}
+          <RevealStagger style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
             {features.map((f, i) => (
-              <motion.div variants={staggerChild} key={i} className="bg-[#06245f] p-6 md:p-8" data-cursor>
-                <div className="flex items-center justify-between mb-8"><f.icon className="w-5 h-5 text-[#7db4f0]" /><span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span></div>
-                <div className="font-display font-semibold text-[15px] mb-1.5">{f.title}</div>
-                <div className="text-[13px] text-white/50 leading-relaxed">{f.desc}</div>
+              <motion.div
+                variants={staggerChild}
+                key={i}
+                data-cursor
+                className="group relative flex items-center gap-4 overflow-hidden hover:bg-white/[0.04] transition-colors duration-200"
+                style={{ borderBottom: '1px solid rgba(255,255,255,0.14)', padding: '15px 14px 15px 12px' }}
+              >
+                <span className="font-display shrink-0 tabular-nums" style={{ fontSize: '0.95rem', fontWeight: 700, width: 26, color: 'rgba(125,180,240,0.65)' }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="flex items-center justify-center shrink-0 text-[#7db4f0]">
+                  <f.icon size={20} strokeWidth={2.1} />
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-display" style={{ fontSize: '0.96rem', lineHeight: 1.2, fontWeight: 600, color: '#ffffff' }}>{f.title}</span>
+                  <span className="block" style={{ fontSize: '0.82rem', lineHeight: 1.35, color: 'rgba(255,255,255,0.55)', marginTop: 3 }}>{f.desc}</span>
+                </span>
               </motion.div>
             ))}
           </RevealStagger>
@@ -251,19 +488,10 @@ export default function Home() {
               <span className="text-sm text-[var(--muted)]">Basé sur <strong className="text-ink/70"><Counter to={127} /></strong> avis</span>
             </Reveal>
           </div>
-          <RevealStagger className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {reviews.map((r) => (
-              <motion.div key={r.ini} variants={staggerChild} data-cursor className="flex flex-col p-7 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] hover:border-[var(--blue)]/30 hover:-translate-y-1 transition-all duration-300">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style={{ background: r.grad }}>{r.ini}</div>
-                  <div><div className="font-semibold text-sm text-ink">{r.name}</div><div className="text-xs text-[var(--muted)]">{r.role}</div></div>
-                </div>
-                <div className="flex items-center gap-0.5 mb-3"><Stars size="w-3.5 h-3.5" /></div>
-                <p className="text-sm text-ink/70 leading-relaxed flex-1">{r.text}</p>
-                <div className="mt-5 pt-4 border-t border-[var(--line)] flex items-center justify-between"><span className="text-xs text-[var(--muted)]">{r.date}</span><span className="text-xs text-[var(--muted)]">Publié sur Google</span></div>
-              </motion.div>
-            ))}
-          </RevealStagger>
+          {/* Carousel (prev / next + dots · design #53) */}
+          <Reveal as="div" className="max-w-2xl mx-auto">
+            <ReviewsCarousel />
+          </Reveal>
         </div>
       </section>
 
@@ -271,19 +499,29 @@ export default function Home() {
       <section className="py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
           <SectionHeader align="center" kicker="Questions fréquentes" className="mb-12" title="Tout ce que vous devez savoir" lead="Des réponses claires à vos questions" />
-          <RevealStagger className="border-t border-[var(--line)]">
+          {/* Accordéon hairline (design #57) — ultra-sober, single-open */}
+          <RevealStagger style={{ borderTop: '1px solid var(--line)' }}>
             {faqs.map(({ q, a }, i) => {
               const isOpen = openFaq === i;
               return (
-                <motion.div key={i} variants={staggerChild} className="border-b border-[var(--line)]">
-                  <button onClick={() => setOpenFaq(isOpen ? null : i)} aria-expanded={isOpen} data-cursor className="w-full flex items-center justify-between gap-4 text-left py-6 group">
-                    <h3 className="font-display text-[17px] md:text-lg font-semibold text-ink group-hover:text-[var(--blue)] transition-colors">{q}</h3>
-                    <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[var(--line)]"><ChevronDown className="w-4 h-4 text-[var(--muted)]" /></motion.div>
+                <motion.div key={i} variants={staggerChild} style={{ borderBottom: '1px solid var(--line)' }}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    data-cursor
+                    className="cursor-pointer w-full flex items-center gap-3.5 text-left"
+                    style={{ padding: '16px 2px', background: 'transparent', border: 'none' }}
+                  >
+                    <h3 className="font-display flex-1" style={{ fontSize: '1rem', fontWeight: 600, color: isOpen ? 'var(--blue-deep)' : 'var(--ink)', transition: 'color 0.2s' }}>{q}</h3>
+                    <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} style={{ display: 'grid', placeItems: 'center', width: 26, height: 26, flexShrink: 0, color: isOpen ? 'var(--blue)' : 'var(--ink-2)' }}>
+                      <ChevronDown size={18} strokeWidth={2.2} />
+                    </motion.span>
                   </button>
                   <AnimatePresence initial={false}>
                     {isOpen && (
-                      <motion.div key="c" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} style={{ overflow: 'hidden' }}>
-                        <p className="text-[15px] text-[var(--muted)] leading-relaxed pb-6 max-w-2xl">{a}</p>
+                      <motion.div key="c" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }} style={{ overflow: 'hidden' }}>
+                        <p style={{ margin: 0, padding: '0 40px 18px 2px', fontSize: '0.92rem', lineHeight: 1.6, color: 'var(--ink-2)' }}>{a}</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -294,21 +532,36 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ░░ CTA ░░ */}
+      {/* ░░ CTA — dégradé bleu profond, action unique centrée (design #94) ░░ */}
       <section className="px-5 sm:px-8 pb-20">
-        <div className="relative max-w-content mx-auto rounded-[28px] overflow-hidden flex items-center justify-center bg-deep" style={{ minHeight: 380 }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-deep relative max-w-content mx-auto overflow-hidden rounded-[28px] text-white"
+        >
           <MouseGlow color="rgba(70,150,255,0.3)" size={560} />
-          <div className="relative z-10 text-center px-6 py-24 max-w-2xl">
-            <Reveal as="div" y={14} className="flex justify-center mb-5"><span className="kicker" style={{ color: 'rgba(255,255,255,0.85)' }}>Prêt à démarrer</span></Reveal>
-            <Reveal as="h2" delay={0.05} className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.1rem,5vw,4rem)', lineHeight: 1.0 }}>Prêt à marquer les esprits ?</Reveal>
-            <Reveal as="p" delay={0.12} className="mt-5 text-white/75 text-lg">Conception Suisse. Livraison France et Europe.</Reveal>
-            <Reveal delay={0.2} className="mt-9">
+          {/* Soft radial accent */}
+          <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(120% 90% at 50% -10%, rgba(59,130,246,0.45) 0%, rgba(10,30,66,0) 60%)' }} />
+          <div className="relative z-10 flex flex-col items-center text-center px-6 py-16 md:py-20">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.12]">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <Reveal as="h2" delay={0.05} className="font-display font-bold tracking-tightest mt-5" style={{ fontSize: 'clamp(2.1rem,5vw,4rem)', lineHeight: 1.05, maxWidth: '16ch' }}>Prêt à marquer les esprits ?</Reveal>
+            <Reveal as="p" delay={0.12} className="mt-3 text-white/75 text-lg max-w-md">Conception Suisse. Livraison France et Europe.</Reveal>
+            {/* Single prominent action, centered at the bottom — no call/message split */}
+            <Reveal delay={0.2} className="mt-9 w-full flex justify-center">
               <Magnetic>
-                <Link to="/Contact" data-cursor className="inline-flex items-center gap-2 bg-white text-[var(--blue)] font-semibold rounded-full px-8 py-4 text-[15px] hover:bg-white/90 transition-colors">Demander un devis gratuit <ArrowRight className="w-4 h-4" /></Link>
+                <Link to="/Contact" data-cursor className="inline-flex w-full max-w-[320px] items-center justify-center gap-2 rounded-full bg-white text-[var(--blue)] font-semibold px-8 py-4 text-[15px] hover:bg-white/90 transition-colors">
+                  Demander un devis <ArrowRight className="w-4 h-4" />
+                </Link>
               </Magnetic>
             </Reveal>
+            <div className="mt-4 inline-flex items-center gap-1.5 text-[0.78rem] text-white/55">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Réponse sous 24 h — devis sans engagement
+            </div>
           </div>
-        </div>
+        </motion.div>
       </section>
     </div>
   );
