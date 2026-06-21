@@ -1,26 +1,24 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, Layers, Ruler, MoveVertical, Sparkles, Timer, Wind, Plug, ShieldCheck,
   Flag, Bike, DoorOpen, Store,
 } from 'lucide-react';
-import { Reveal, Rise, MaskHeading, Magnetic } from '../lib/motion.jsx';
+import { Reveal, Rise, MaskHeading, Magnetic, RevealStagger, staggerChild } from '../lib/motion.jsx';
 import ProductConfigurator from '../components/ProductConfigurator.jsx';
 import { CONFIGURATORS } from '../data/configurators.js';
 
-// Each spec keeps its real label (k) + full real value (v). `big`/`tail` are a
-// compact headline distilled from the real value for the V71 detail panel, and
-// `badges` are short tags derived from that same real value — no new facts.
+// Each spec keeps its real label (k) + full real value (v). `note` is an optional
+// short sub-line drawn only from the original copy — no new facts.
 const specs = [
-  { k: 'Matériau', v: 'Oxford 600D haute résistance + soudure thermique', icon: Layers, big: 'Oxford 600D', tail: '+ soudure', badges: ['Oxford 600D', 'Soudure thermique', 'Haute résistance'] },
-  { k: 'Largeurs disponibles', v: '5m – 6m – 7m – 8m – 10m', icon: Ruler, big: '5 – 10', tail: 'm', badges: ['5m', '6m', '7m', '8m', '10m'] },
-  { k: 'Hauteur', v: '3m à 5m selon largeur', icon: MoveVertical, big: '3 – 5', tail: 'm', badges: ['3m à 5m', 'Selon largeur'] },
-  { k: 'Impression', v: 'Sublimation HD 360° UV résistant', icon: Sparkles, big: 'HD 360°', tail: 'UV', badges: ['Sublimation', '360°', 'Anti-UV'] },
-  { k: 'Temps de gonflage', v: '10-15 minutes', icon: Timer, big: '10-15', tail: 'min', badges: ['10-15 min'] },
-  { k: 'Résistance au vent', v: "Jusqu'à 60 km/h avec haubans", icon: Wind, big: '60', tail: 'km/h', badges: ['60 km/h', 'Avec haubans'] },
-  { k: 'Alimentation ventilateur', v: '220V inclus', icon: Plug, big: '220', tail: 'V', badges: ['220V', 'Inclus'] },
-  { k: 'Garantie', v: '2 ans structure + 3 ans impression', icon: ShieldCheck, big: '2 + 3', tail: 'ans', badges: ['2 ans structure', '3 ans impression'] },
+  { k: 'Matériau', v: 'Oxford 600D haute résistance + soudure thermique', icon: Layers },
+  { k: 'Largeurs disponibles', v: '5m – 6m – 7m – 8m – 10m', icon: Ruler },
+  { k: 'Hauteur', v: '3m à 5m selon largeur', icon: MoveVertical },
+  { k: 'Impression', v: 'Sublimation HD 360° UV résistant', icon: Sparkles },
+  { k: 'Temps de gonflage', v: '10-15 minutes', icon: Timer },
+  { k: 'Résistance au vent', v: "Jusqu'à 60 km/h avec haubans", icon: Wind },
+  { k: 'Alimentation ventilateur', v: '220V inclus', icon: Plug },
+  { k: 'Garantie', v: '2 ans structure + 3 ans impression', icon: ShieldCheck },
 ];
 
 const useCases = [
@@ -31,11 +29,6 @@ const useCases = [
 ];
 
 export default function ArchesGonflables() {
-  // V71 — split list: left rail of selectable labels, right synced detail panel.
-  const [active, setActive] = useState(0);
-  const current = specs[active];
-  const CurrentIcon = current.icon;
-
   return (
     <div className="overflow-x-clip bg-paper">
       {/* ░░ SLIM HERO ░░ */}
@@ -64,14 +57,13 @@ export default function ArchesGonflables() {
       {/* ░░ CONFIGURATOR (shared) ░░ */}
       <ProductConfigurator data={CONFIGURATORS.arches} />
 
-      {/* ░░ SPECS — V71 split list (rail + synced detail) ░░ */}
+      {/* ░░ SPECS — compact spec-card grid (label + valeur en évidence) ░░ */}
       <section className="bg-white border-t border-[var(--line)]">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
           {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12 md:mb-16">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-9 md:mb-12">
             <div className="max-w-2xl">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                <span className="text-xs font-semibold tabular-nums text-ink/30">02</span>
                 <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
                 <span className="kicker">Fiche technique</span>
               </Reveal>
@@ -86,113 +78,35 @@ export default function ArchesGonflables() {
             </Rise>
           </div>
 
-          {/* Split list — left rail + right detail panel */}
-          <Reveal>
-            <div className="grid gap-3 md:gap-4 grid-cols-1 lg:[grid-template-columns:minmax(220px,0.85fr)_1.15fr]">
-              {/* Left rail — selectable label list */}
-              <div
-                className="overflow-hidden self-start bg-white rounded-[18px] border border-[var(--line)]"
-              >
-                {specs.map((s, i) => {
-                  const on = i === active;
-                  const RIcon = s.icon;
-                  return (
-                    <button
-                      key={s.k}
-                      type="button"
-                      data-cursor
-                      onClick={() => setActive(i)}
-                      className="cursor-pointer w-full flex items-center gap-2.5 text-left relative transition-colors duration-200"
-                      style={{
-                        padding: '13px 14px',
-                        borderTop: i === 0 ? 'none' : '1px solid var(--line)',
-                        background: on ? 'var(--blue-mist)' : 'transparent',
-                      }}
-                    >
-                      {on && (
-                        <motion.span
-                          layoutId="arches-spec-rail"
-                          className="absolute left-0 rounded-full"
-                          style={{ top: 7, bottom: 7, width: 3, background: 'var(--blue)' }}
-                        />
-                      )}
-                      <span
-                        className="inline-flex items-center justify-center shrink-0 transition-colors duration-200"
-                        style={{
-                          width: 30, height: 30, borderRadius: 9,
-                          background: on ? 'var(--blue)' : 'var(--blue-soft)',
-                          color: on ? '#fff' : 'var(--blue)',
-                        }}
-                      >
-                        <RIcon className="w-4 h-4" strokeWidth={2.4} />
-                      </span>
-                      <span
-                        className="text-[0.82rem] leading-tight transition-colors duration-200"
-                        style={{
-                          fontWeight: on ? 700 : 600,
-                          color: on ? 'var(--blue-deep)' : 'var(--ink-2)',
-                        }}
-                      >
-                        {s.k}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Right — big detail panel for the active spec */}
-              <AnimatePresence mode="wait">
+          {/* Compact spec cards — icône + label, valeur en évidence */}
+          <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-3.5">
+            {specs.map((s) => {
+              const Icon = s.icon;
+              return (
                 <motion.div
-                  key={active}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -8 }}
-                  transition={{ duration: 0.26 }}
-                  className="rounded-[18px] border border-[var(--line)] bg-[var(--blue-mist)] p-6 md:p-8"
+                  variants={staggerChild}
+                  key={s.k}
+                  className="arch-spec-card flex flex-col rounded-2xl border border-[var(--line)] bg-white p-4 md:p-5 transition-colors duration-200"
                 >
-                  <span
-                    className="inline-flex items-center justify-center mb-4 bg-white border border-[var(--line)] text-[var(--blue)]"
-                    style={{ width: 48, height: 48, borderRadius: 14 }}
-                  >
-                    <CurrentIcon className="w-6 h-6" strokeWidth={2.2} />
-                  </span>
-
-                  <div className="text-[0.72rem] font-bold uppercase tracking-[0.08em] text-[var(--blue-deep)]">
-                    {current.k}
-                  </div>
-
-                  <div
-                    className="font-display flex items-end gap-2 flex-wrap mt-1.5"
-                    style={{ lineHeight: 0.95 }}
-                  >
-                    <span className="text-ink tracking-tightest" style={{ fontSize: 'clamp(1.9rem, 5vw, 2.9rem)' }}>
-                      {current.big}
+                  <div className="flex items-center gap-2.5 mb-3.5">
+                    <span
+                      className="inline-flex items-center justify-center shrink-0 bg-[var(--blue-soft)] text-[var(--blue)]"
+                      style={{ width: 32, height: 32, borderRadius: 10 }}
+                    >
+                      <Icon className="w-4 h-4" strokeWidth={2.4} />
                     </span>
-                    <span className="text-[var(--blue)]" style={{ fontSize: 'clamp(1rem, 2.4vw, 1.45rem)', paddingBottom: 6 }}>
-                      {current.tail}
+                    <span className="text-[0.7rem] font-bold uppercase tracking-[0.1em] leading-tight text-[var(--blue-deep)]">
+                      {s.k}
                     </span>
                   </div>
-
-                  <div className="mt-2.5 text-[0.95rem] leading-relaxed text-[var(--ink-2)] max-w-md">
-                    {current.v}
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 mt-5">
-                    {current.badges.map((b, bi) => (
-                      <span
-                        key={b}
-                        className="inline-flex items-center gap-1.5 border border-[var(--line)] bg-white rounded-full text-[var(--ink-2)] font-bold"
-                        style={{ padding: '5px 11px', fontSize: '0.74rem' }}
-                      >
-                        {bi === 0 && <CurrentIcon className="w-3 h-3 text-[var(--blue)]" strokeWidth={2.6} />}
-                        {b}
-                      </span>
-                    ))}
+                  <div className="font-display font-bold tracking-tightest text-ink leading-[1.1] text-[clamp(1.05rem,1.8vw,1.35rem)]">
+                    {s.v}
                   </div>
                 </motion.div>
-              </AnimatePresence>
-            </div>
-          </Reveal>
+              );
+            })}
+          </RevealStagger>
+          <style>{`.arch-spec-card:hover{border-color:rgba(0,102,204,0.2);background:var(--blue-mist);}`}</style>
         </div>
       </section>
 
@@ -229,12 +143,6 @@ export default function ArchesGonflables() {
                       className="uc-row relative flex items-center gap-4 overflow-hidden border-b border-[var(--line)] bg-white last:border-b-0 transition-colors duration-200"
                       style={{ padding: '20px 18px 20px 22px' }}
                     >
-                      <span
-                        className="font-display shrink-0 tabular-nums select-none"
-                        style={{ fontSize: '1.4rem', fontWeight: 800, width: 40, color: '#c2d2ea' }}
-                      >
-                        {c.n}
-                      </span>
                       <span
                         className="flex items-center justify-center shrink-0 bg-[var(--blue-soft)] text-[var(--blue)]"
                         style={{ width: 46, height: 46, borderRadius: 13 }}

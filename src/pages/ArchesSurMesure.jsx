@@ -1,190 +1,162 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Check, ArrowRight } from 'lucide-react';
-import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
+import { ArrowRight, Check } from 'lucide-react';
+import { Reveal, RevealStagger, Magnetic, staggerChild, motion } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 import DevisModal from '../components/DevisModal.jsx';
 
-const dimensions = [
-  'Dimensions personnalisées selon vos besoins',
+/* ░░ Per-product config — ONLY this block differs between the 3 sur-mesure pages ░░ */
+const PRODUCT = {
+  name: 'Arche Sur Mesure',
+  image: 'images/02_e1e114d2c_ChatGPTImage16janv202615_18_26.png',
+  intro: "Arches de 5 à 15 mètres de largeur. Votre vision, notre expertise — conception et fabrication sur mesure pour vos événements d'exception.",
+  width: { label: 'Largeur', range: 'De 5 à 15 m', placeholder: 'ex. 8' },
+  height: { label: 'Hauteur', range: 'Selon la largeur', placeholder: 'ex. 5' },
+  delay: 'Délai : 6-8 semaines',
+};
+
+/* Finishes / options the client can pick — rendered as CHECKBOX rows */
+const OPTIONS = [
+  'Impression totale 360°',
+  'Forme courbe ou géométrique',
+  'Maquette 3D de validation',
+  'Logo XXL visible de loin',
+];
+
+/* Short "Toujours inclus" advantages strip */
+const INCLUDED = [
   'Design 100% sur mesure',
-  'Maquette 3D incluse',
-  'Délai : 6-8 semaines',
-];
-
-const included = [
-  'Impression haute qualité de votre logo et design',
-  'Modélisation 3D gratuite',
-  'Design 3D gratuit',
+  'Modélisation & design 3D gratuits',
+  'Impression haute qualité de votre logo',
   'Ventilateur électrique professionnel fourni',
-  'Kit de fixation et sac de transport inclus',
+  'Kit de fixation & sac de transport inclus',
   'Garantie 2 ans structure + 3 ans impression',
-];
-
-const reasons = [
-  { title: 'Hauteur précise', desc: 'De 5 à 15m — idéale pour votre lieu' },
-  { title: 'Branding total', desc: 'Logo XXL visible de loin' },
-  { title: 'Impact garanti', desc: 'Première impression inoubliable' },
-  { title: 'Flexibilité', desc: 'Designs uniques, formes courbes ou géométriques' },
-];
-
-const process = [
-  { n: '01', title: 'Échange initial', desc: 'Parlez-nous de votre événement. Réponse rapide garantie.' },
-  { n: '02', title: 'Conception 3D', desc: 'Visualisez votre arche avant fabrication (inclus)' },
-  { n: '03', title: 'Fabrication', desc: 'Construction et impression haute définition (6-8 semaines)' },
-  { n: '04', title: 'Installation clé en main', desc: 'Support technique, garantie, et assistance comprise' },
 ];
 
 export default function ArchesSurMesure() {
   const [devisOpen, setDevisOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  const toggle = (opt) =>
+    setSelected((s) => (s.includes(opt) ? s.filter((x) => x !== opt) : [...s, opt]));
 
   return (
     <div className="overflow-x-clip bg-paper">
-      {/* ░░ HERO ░░ */}
-      <section className="bg-paper pt-28 md:pt-36 pb-16 md:pb-24">
-        <div className="max-w-content mx-auto px-5 sm:px-8">
+      {/* ░░ SLIM HERO (light) ░░ */}
+      <section className="bg-paper pt-28 md:pt-32 pb-10 md:pb-14">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-6">
-              <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
+              <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                 <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Création exclusive</span>
+                <span className="kicker">Création exclusive · Sur mesure</span>
               </Reveal>
-              <h1 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2.4rem,6vw,4.6rem)', lineHeight: 0.98 }}>
-                Arche Sur Mesure
+              <h1 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2.2rem,5vw,3.6rem)', lineHeight: 1.0 }}>
+                {PRODUCT.name}
               </h1>
-              <Reveal as="p" delay={0.12} y={18} className="lead mt-6 max-w-md">
-                Arches de 5 à 15 mètres de largeur. Votre vision, notre expertise.
-                Conception et fabrication sur mesure pour vos événements{' '}
-                <span className="serif-accent text-ink/70">d&apos;exception.</span>
+              <Reveal as="p" delay={0.1} y={16} className="lead mt-4 max-w-md">
+                {PRODUCT.intro}
               </Reveal>
-
-              <Reveal as="div" delay={0.2} className="mt-7 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--line)] bg-white">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
+              <Reveal as="div" delay={0.18} className="mt-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--line)] bg-white">
+                <Check className="w-4 h-4" style={{ color: 'var(--blue)' }} />
                 <span className="text-[13px] font-semibold text-ink">Impression totale comprise</span>
-              </Reveal>
-
-              <Reveal as="div" delay={0.28} className="mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                <Magnetic>
-                  <button
-                    onClick={() => setDevisOpen(true)}
-                    className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
-                  >
-                    Demander un devis <ArrowRight className="w-4 h-4" />
-                  </button>
-                </Magnetic>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-[var(--muted)]">Prix HT</span>
-                  <span className="font-display text-xl font-bold text-ink">Sur devis</span>
-                </div>
               </Reveal>
             </div>
 
             <div className="lg:col-span-6">
-              <Reveal y={40} className="relative">
-                <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--paper-2)] border border-[var(--line)] flex items-center justify-center p-10 md:p-14" style={{ aspectRatio: '4 / 3' }}>
-                  <span className="absolute top-5 left-6 font-display text-[5rem] md:text-[7rem] font-bold leading-none text-ink/[0.04] select-none">SM</span>
-                  <img
-                    src="images/02_e1e114d2c_ChatGPTImage16janv202615_18_26.png"
-                    alt="Arche Sur Mesure Sport Air Event"
-                    loading="eager"
-                    className="relative max-h-[80%] object-contain"
-                    style={{ mixBlendMode: 'multiply', clipPath: 'inset(0px 8px 0px 0px)' }}
-                  />
-                </div>
+              <Reveal y={30}>
+                <img
+                  src={PRODUCT.image}
+                  alt={PRODUCT.name}
+                  loading="eager"
+                  className="product-render w-full max-h-[340px] object-contain"
+                />
               </Reveal>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ░░ DIMENSIONS + INCLUS ░░ */}
+      {/* ░░ VOS DIMENSIONS SUR MESURE ░░ */}
       <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
-        <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            <div className="lg:col-span-5">
-              <SectionHeader
-                kicker="Dimensions personnalisées"
-                index="01"
-                title={<>De 5 à 15 mètres<br />de largeur</>}
-                lead="Selon vos besoins. Chaque arche est conçue à la mesure exacte de votre lieu et de votre événement."
-              />
-              <RevealStagger className="mt-9 border-t border-[var(--line)]">
-                {dimensions.map((d) => (
-                  <motion.div variants={staggerChild} key={d} className="flex items-center gap-3 py-4 border-b border-[var(--line)]">
-                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: 'var(--blue)' }} />
-                    <span className="text-[15px] text-ink/80">{d}</span>
-                  </motion.div>
-                ))}
-              </RevealStagger>
-            </div>
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <SectionHeader
+            kicker="Configuration"
+            title="Vos dimensions sur mesure"
+            lead="Indiquez les dimensions exactes de votre structure — nous fabriquons à la mesure de votre espace."
+          />
 
-            <div className="lg:col-span-7">
-              <Reveal className="rounded-[var(--radius-lg)] bg-paper border border-[var(--line)] hover:border-ink/15 transition-colors p-7 md:p-9">
-                <h3 className="font-display text-lg md:text-xl font-bold text-ink">Inclus dans le prix de base</h3>
-                <div className="mt-6 grid sm:grid-cols-2 gap-x-8 gap-y-4">
-                  {included.map((item) => (
-                    <div key={item} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--blue)' }} />
-                      <span className="text-sm text-ink/75 leading-relaxed">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ░░ POURQUOI (dark) ░░ */}
-      <section className="bg-deep text-white py-12 md:py-16">
-        <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="max-w-2xl mb-14 md:mb-16">
-            <SectionHeader
-              light
-              kicker="Sur mesure"
-              index="02"
-              title={<>Pourquoi personnaliser<br /><span className="serif-accent text-white/55">votre arche ?</span></>}
-            />
-          </div>
-          <RevealStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
-            {reasons.map((r, i) => (
-              <motion.div variants={staggerChild} key={r.title} className="bg-deep p-6 md:p-8">
-                <div className="flex items-center justify-between mb-8">
-                  <Check className="w-5 h-5 text-[#5aa2f0]" />
-                  <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
-                </div>
-                <div className="font-display font-semibold text-[15px] mb-1.5">{r.title}</div>
-                <div className="text-[13px] text-white/50 leading-relaxed">{r.desc}</div>
-              </motion.div>
+          <Reveal className="mt-9 grid sm:grid-cols-3 gap-4">
+            {[
+              { ...PRODUCT.width },
+              { ...PRODUCT.height },
+              { label: 'Quantité', range: 'Nombre de structures', placeholder: 'ex. 1' },
+            ].map((f) => (
+              <div key={f.label} className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-paper p-5">
+                <label className="kicker block mb-2" style={{ color: 'var(--muted)' }}>{f.label}</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder={f.placeholder}
+                  className="w-full bg-white border border-[var(--line)] rounded-[var(--radius)] px-3.5 py-2.5 text-[15px] text-ink outline-none focus:border-[var(--blue)] transition-colors"
+                />
+                <p className="text-[12px] text-[var(--muted)] mt-2">{f.range}</p>
+              </div>
             ))}
-          </RevealStagger>
+          </Reveal>
+
+          {/* Options — CHECKBOX rows */}
+          <div className="mt-8">
+            <div className="kicker mb-3" style={{ color: 'var(--muted)' }}>Finitions & options</div>
+            <RevealStagger className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-white overflow-hidden">
+              {OPTIONS.map((opt, i) => {
+                const on = selected.includes(opt);
+                return (
+                  <motion.div
+                    key={opt}
+                    variants={staggerChild}
+                    role="button"
+                    tabIndex={0}
+                    data-cursor
+                    onClick={() => toggle(opt)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(opt); } }}
+                    className={`cursor-pointer flex items-center gap-3.5 px-5 py-3.5 transition-colors hover:bg-paper ${i > 0 ? 'border-t border-[var(--line)]' : ''}`}
+                  >
+                    <span
+                      className="flex items-center justify-center flex-shrink-0 rounded-md transition-colors"
+                      style={{
+                        width: 24, height: 24,
+                        background: on ? 'var(--blue)' : '#fff',
+                        border: on ? '1.5px solid var(--blue)' : '1.5px solid var(--line)',
+                      }}
+                    >
+                      {on && <Check size={15} strokeWidth={3} color="#fff" />}
+                    </span>
+                    <span className="text-[15px] text-ink/85">{opt}</span>
+                  </motion.div>
+                );
+              })}
+            </RevealStagger>
+          </div>
         </div>
       </section>
 
-      {/* ░░ PROCESS ░░ */}
+      {/* ░░ TOUJOURS INCLUS ░░ */}
       <section className="bg-paper py-12 md:py-16">
-        <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="max-w-2xl mb-14 md:mb-16">
-            <SectionHeader
-              kicker="Notre méthode"
-              index="03"
-              title={<>De l&apos;idée<br />à la réalité</>}
-              lead="Un accompagnement complet, de la première conversation à l'installation clé en main."
-            />
-          </div>
-
-          <RevealStagger className="grid md:grid-cols-2 gap-5">
-            {process.map((step) => (
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <SectionHeader
+            kicker="Sans supplément"
+            title="Toujours inclus"
+            lead="Chaque création sur mesure comprend, de série, l'essentiel pour un résultat impeccable."
+          />
+          <RevealStagger className="mt-9 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {INCLUDED.map((item) => (
               <motion.div
                 variants={staggerChild}
-                key={step.n}
-                className="flex items-start gap-5 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] hover:border-ink/15 transition-colors p-7"
+                key={item}
+                className="flex items-start gap-3 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] px-5 py-4"
               >
-                <span className="font-display text-2xl font-bold tabular-nums leading-none" style={{ color: 'var(--blue)' }}>{step.n}</span>
-                <div>
-                  <h4 className="font-display font-semibold text-ink text-[17px]">{step.title}</h4>
-                  <p className="text-sm text-[var(--muted)] leading-relaxed mt-1.5">{step.desc}</p>
-                </div>
+                <Check className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--blue)' }} />
+                <span className="text-sm text-ink/80 leading-relaxed">{item}</span>
               </motion.div>
             ))}
           </RevealStagger>
@@ -193,8 +165,8 @@ export default function ArchesSurMesure() {
 
       {/* ░░ CTA ░░ */}
       <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
-        <div className="max-w-content mx-auto px-5 sm:px-8">
-          <Reveal className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-7">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <Reveal className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
               <p className="font-display text-2xl md:text-3xl font-bold text-ink tracking-tight max-w-md">
                 Un projet d&apos;exception ? Parlons-en.
@@ -206,6 +178,7 @@ export default function ArchesSurMesure() {
             </div>
             <Magnetic>
               <button
+                type="button"
                 onClick={() => setDevisOpen(true)}
                 className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
               >
@@ -219,10 +192,10 @@ export default function ArchesSurMesure() {
       <DevisModal
         open={devisOpen}
         onClose={() => setDevisOpen(false)}
-        productName="Arche Sur Mesure"
+        productName={PRODUCT.name}
         groupLabel={null}
         lines={[]}
-        extras={[]}
+        extras={selected.map((label) => ({ label, qty: 1, unit: 0 }))}
         total={null}
       />
     </div>

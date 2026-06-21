@@ -4,182 +4,198 @@ import { Reveal, RevealStagger, Magnetic, staggerChild, motion } from '../lib/mo
 import SectionHeader from '../components/SectionHeader.jsx';
 import DevisModal from '../components/DevisModal.jsx';
 
-const highlights = [
+/* ░░ Per-product config — ONLY this block differs between the 3 sur-mesure pages ░░ */
+const PRODUCT = {
+  name: 'Tente Sur Mesure',
+  image: 'images/cutout/tente.png',
+  intro: 'Tentes de 6 à 20 mètres de diamètre. Votre vision, notre expertise — conception et fabrication sur mesure.',
+  width: { label: 'Diamètre', range: 'De 6 à 20 m', placeholder: 'ex. 12' },
+  height: { label: 'Hauteur', range: 'Selon le modèle', placeholder: 'ex. 5' },
+  delay: 'Délai : 8-12 semaines',
+};
+
+/* Finishes / options the client can pick — rendered as CHECKBOX rows */
+const OPTIONS = [
+  'Impression totale 360°',
+  'Forme spéciale (dôme, géodésique, polygone)',
+  'Maquette 3D de validation',
+  'Plancher / habillage intérieur',
+];
+
+/* Short "Toujours inclus" advantages strip */
+const INCLUDED = [
   'Design 100% personnalisé',
-  'Maquette 3D incluse',
-  'Conception suisse',
-  'Délai : 8-12 semaines',
+  'Modélisation & maquette 3D',
+  'Impression haute définition de votre logo',
+  'Ventilateur professionnel fourni',
+  'Kit de fixation & sac de transport',
+  'Garantie 2 ans structure + 3 ans impression',
 ];
-
-const reasons = [
-  { title: 'Dimensions exactes', desc: 'De 6 à 20m — adaptée à votre espace unique' },
-  { title: 'Design 100% personnel', desc: 'Votre vision devient réalité sans compromis' },
-  { title: 'Impression totale 360°', desc: 'Logo, couleurs, design sur tous les panneaux' },
-  { title: 'Formes spéciales', desc: 'Dôme, géodésique, polygone — possibilités infinies' },
-];
-
-const steps = [
-  { n: '01', title: 'Consultation', desc: 'Présentez votre projet et vos besoins. Réponse sous 24h.' },
-  { n: '02', title: 'Design & Maquette 3D', desc: 'Nous créons votre vision en 3D (2-3 semaines)' },
-  { n: '03', title: 'Fabrication', desc: 'Construction et impression (6-10 semaines)' },
-  { n: '04', title: 'Livraison & Support', desc: 'Installation, garantie, et support technique inclus' },
-];
-
-const ProductImage = () => (
-  <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--paper-2)] border border-[var(--line)] flex items-center justify-center p-10 md:p-14" style={{ aspectRatio: '4 / 3' }}>
-    <span className="absolute top-5 left-6 font-display text-[5rem] md:text-[7rem] font-bold leading-none text-ink/[0.04] select-none">SM</span>
-    <img
-      src="images/22_4887239cb_ChatGPTImage16janv202616_52_44.png"
-      alt="Tente Sur Mesure Sport Air Event"
-      loading="lazy"
-      className="relative max-h-[78%] object-contain"
-      style={{ mixBlendMode: 'multiply' }}
-    />
-  </div>
-);
 
 export default function TenteSurMesure() {
   const [devisOpen, setDevisOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  const toggle = (opt) =>
+    setSelected((s) => (s.includes(opt) ? s.filter((x) => x !== opt) : [...s, opt]));
 
   return (
-    <div className="overflow-x-clip bg-paper pt-24 md:pt-28">
-      <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
-          {/* ░░ Sticky product image (desktop) ░░ */}
-          <div className="hidden lg:flex lg:sticky lg:top-28 lg:h-[calc(100vh-7rem)] items-center">
-            <Reveal className="w-full">
-              <ProductImage />
-            </Reveal>
-          </div>
-
-          {/* ░░ Editorial content column ░░ */}
-          <div className="py-12 md:py-16 space-y-16 md:space-y-20 pb-28">
-            {/* Intro */}
-            <header>
-              <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
-                <span className="text-xs font-semibold tabular-nums text-ink/30">01</span>
-                <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Création exclusive</span>
+    <div className="overflow-x-clip bg-paper">
+      {/* ░░ SLIM HERO (light) ░░ */}
+      <section className="bg-paper pt-28 md:pt-32 pb-10 md:pb-14">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-6">
+              <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
+                <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
+                <span className="kicker">Création exclusive · Sur mesure</span>
               </Reveal>
-
-              <Reveal as="h1" y={26} delay={0.05} className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2.4rem,5.2vw,4rem)', lineHeight: 0.98 }}>
-                Tente Sur Mesure
+              <h1 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2.2rem,5vw,3.6rem)', lineHeight: 1.0 }}>
+                {PRODUCT.name}
+              </h1>
+              <Reveal as="p" delay={0.1} y={16} className="lead mt-4 max-w-md">
+                {PRODUCT.intro}
               </Reveal>
-
-              <Reveal as="p" y={20} delay={0.12} className="lead mt-6 max-w-md">
-                Tentes de 6 à 20 mètres de diamètre. <span className="serif-accent text-ink/60">Votre vision, notre expertise.</span> Conception et fabrication sur mesure.
+              <Reveal as="div" delay={0.18} className="mt-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--line)] bg-white">
+                <Check className="w-4 h-4" style={{ color: 'var(--blue)' }} />
+                <span className="text-[13px] font-semibold text-ink">Impression totale comprise</span>
               </Reveal>
+            </div>
 
-              <Reveal as="div" delay={0.18} className="mt-7 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[var(--line)]">
-                <Check className="w-4 h-4 text-[var(--blue)]" />
-                <span className="text-sm font-semibold text-ink">Impression totale comprise</span>
-              </Reveal>
-
-              {/* Mobile image */}
-              <Reveal className="lg:hidden mt-10">
-                <ProductImage />
-              </Reveal>
-            </header>
-
-            {/* Dimensions personnalisées */}
-            <section>
-              <SectionHeader
-                kicker="Spécifications"
-                index="02"
-                title="Dimensions personnalisées"
-                lead="De 6 à 20 mètres de diamètre selon vos besoins"
-              />
-              <RevealStagger className="mt-8 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] overflow-hidden">
-                {highlights.map((h, i) => (
-                  <motion.div
-                    key={h}
-                    variants={staggerChild}
-                    className={`flex items-center gap-4 px-6 py-5 ${i > 0 ? 'border-t border-[var(--line)]' : ''}`}
-                  >
-                    <span className="text-xs font-semibold tabular-nums text-ink/30 w-6">0{i + 1}</span>
-                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: 'var(--blue)' }} />
-                    <span className="text-[15px] text-ink/80">{h}</span>
-                  </motion.div>
-                ))}
-              </RevealStagger>
-            </section>
-
-            {/* Pourquoi — dark premium section */}
-            <section className="relative -mx-5 sm:-mx-8 lg:mx-0">
-              <div className="bg-deep text-white rounded-[var(--radius-lg)] px-6 sm:px-8 md:px-10 py-12 md:py-14">
-                <SectionHeader
-                  light
-                  kicker="Le choix sur mesure"
-                  index="03"
-                  title={<>Pourquoi choisir<br /><span className="serif-accent text-white/55">la version Sur Mesure ?</span></>}
+            <div className="lg:col-span-6">
+              <Reveal y={30}>
+                <img
+                  src={PRODUCT.image}
+                  alt={PRODUCT.name}
+                  loading="eager"
+                  className="product-render w-full max-h-[340px] object-contain"
                 />
-                <RevealStagger className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
-                  {reasons.map((r, i) => (
-                    <motion.div variants={staggerChild} key={r.title} className="bg-deep p-6 md:p-7">
-                      <div className="flex items-center justify-between mb-6">
-                        <Check className="w-5 h-5 text-[#5aa2f0]" />
-                        <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
-                      </div>
-                      <div className="font-display font-semibold text-[15px] mb-1.5">{r.title}</div>
-                      <div className="text-[13px] text-white/50 leading-relaxed">{r.desc}</div>
-                    </motion.div>
-                  ))}
-                </RevealStagger>
-              </div>
-            </section>
-
-            {/* Processus et délais */}
-            <section>
-              <SectionHeader
-                kicker="Étape par étape"
-                index="04"
-                title="Processus et délais"
-              />
-              <div className="mt-8 border-t border-[var(--line)]">
-                {steps.map((s, i) => (
-                  <Reveal key={s.n} y={24} delay={i * 0.04} className="flex gap-6 py-6 border-b border-[var(--line)]">
-                    <span className="font-display text-2xl md:text-3xl font-bold text-ink/15 leading-none w-12 flex-shrink-0 tabular-nums">{s.n}</span>
-                    <div className="pt-0.5">
-                      <h4 className="font-display font-semibold text-ink text-[17px]">{s.title}</h4>
-                      <p className="text-sm text-[var(--muted)] mt-1 leading-relaxed">{s.desc}</p>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-            </section>
-
-            {/* Price + CTA */}
-            <Reveal className="sticky bottom-4">
-              <div className="rounded-[var(--radius-lg)] bg-white border border-[var(--line)] hover:border-ink/15 transition-colors p-6 md:p-8 shadow-[0_8px_30px_rgba(11,13,18,0.06)]">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-                  <div className="flex-1">
-                    <div className="kicker mb-1.5" style={{ color: 'var(--muted)' }}>Prix HT</div>
-                    <div className="font-display text-3xl md:text-4xl font-bold text-ink">Sur devis</div>
-                  </div>
-                  <Magnetic>
-                    <button
-                      type="button"
-                      onClick={() => setDevisOpen(true)}
-                      className="cta-iridescent inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
-                    >
-                      Demander un devis
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </Magnetic>
-                </div>
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ░░ VOS DIMENSIONS SUR MESURE ░░ */}
+      <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <SectionHeader
+            kicker="Configuration"
+            title="Vos dimensions sur mesure"
+            lead="Indiquez les dimensions exactes de votre structure — nous fabriquons à la mesure de votre espace."
+          />
+
+          <Reveal className="mt-9 grid sm:grid-cols-3 gap-4">
+            {[
+              { ...PRODUCT.width },
+              { ...PRODUCT.height },
+              { label: 'Quantité', range: 'Nombre de structures', placeholder: 'ex. 1' },
+            ].map((f) => (
+              <div key={f.label} className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-paper p-5">
+                <label className="kicker block mb-2" style={{ color: 'var(--muted)' }}>{f.label}</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder={f.placeholder}
+                  className="w-full bg-white border border-[var(--line)] rounded-[var(--radius)] px-3.5 py-2.5 text-[15px] text-ink outline-none focus:border-[var(--blue)] transition-colors"
+                />
+                <p className="text-[12px] text-[var(--muted)] mt-2">{f.range}</p>
+              </div>
+            ))}
+          </Reveal>
+
+          {/* Options — CHECKBOX rows */}
+          <div className="mt-8">
+            <div className="kicker mb-3" style={{ color: 'var(--muted)' }}>Finitions & options</div>
+            <RevealStagger className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-white overflow-hidden">
+              {OPTIONS.map((opt, i) => {
+                const on = selected.includes(opt);
+                return (
+                  <motion.div
+                    key={opt}
+                    variants={staggerChild}
+                    role="button"
+                    tabIndex={0}
+                    data-cursor
+                    onClick={() => toggle(opt)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(opt); } }}
+                    className={`cursor-pointer flex items-center gap-3.5 px-5 py-3.5 transition-colors hover:bg-paper ${i > 0 ? 'border-t border-[var(--line)]' : ''}`}
+                  >
+                    <span
+                      className="flex items-center justify-center flex-shrink-0 rounded-md transition-colors"
+                      style={{
+                        width: 24, height: 24,
+                        background: on ? 'var(--blue)' : '#fff',
+                        border: on ? '1.5px solid var(--blue)' : '1.5px solid var(--line)',
+                      }}
+                    >
+                      {on && <Check size={15} strokeWidth={3} color="#fff" />}
+                    </span>
+                    <span className="text-[15px] text-ink/85">{opt}</span>
+                  </motion.div>
+                );
+              })}
+            </RevealStagger>
+          </div>
+        </div>
+      </section>
+
+      {/* ░░ TOUJOURS INCLUS ░░ */}
+      <section className="bg-paper py-12 md:py-16">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <SectionHeader
+            kicker="Sans supplément"
+            title="Toujours inclus"
+            lead="Chaque création sur mesure comprend, de série, l'essentiel pour un résultat impeccable."
+          />
+          <RevealStagger className="mt-9 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {INCLUDED.map((item) => (
+              <motion.div
+                variants={staggerChild}
+                key={item}
+                className="flex items-start gap-3 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] px-5 py-4"
+              >
+                <Check className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--blue)' }} />
+                <span className="text-sm text-ink/80 leading-relaxed">{item}</span>
+              </motion.div>
+            ))}
+          </RevealStagger>
+        </div>
+      </section>
+
+      {/* ░░ CTA ░░ */}
+      <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <Reveal className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div>
+              <p className="font-display text-2xl md:text-3xl font-bold text-ink tracking-tight max-w-md">
+                Un projet d&apos;exception ? Parlons-en.
+              </p>
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="text-sm text-[var(--muted)]">Prix HT</span>
+                <span className="font-display text-xl font-bold text-ink">Sur devis</span>
+              </div>
+            </div>
+            <Magnetic>
+              <button
+                type="button"
+                onClick={() => setDevisOpen(true)}
+                className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
+              >
+                Demander un devis <ArrowRight className="w-4 h-4" />
+              </button>
+            </Magnetic>
+          </Reveal>
+        </div>
+      </section>
 
       <DevisModal
         open={devisOpen}
         onClose={() => setDevisOpen(false)}
-        productName="Tente Sur Mesure"
+        productName={PRODUCT.name}
         groupLabel={null}
         lines={[]}
-        extras={[]}
+        extras={selected.map((label) => ({ label, qty: 1, unit: 0 }))}
         total={null}
       />
     </div>

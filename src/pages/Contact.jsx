@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageCircle,
   CircleCheck,
+  Check,
   Star,
   Send,
   User,
@@ -11,6 +12,8 @@ import {
   Building2,
   Mail,
   Phone,
+  Clock,
+  ShieldCheck,
   ArrowRight,
   ArrowLeft,
   ChevronDown,
@@ -84,9 +87,10 @@ const faqs = [
 const structureTypes = ['Tente Spider', 'Arches', 'Colonnes', 'Mobilier', 'Sur Mesure'];
 
 const promises = [
-  { icon: CircleCheck, title: 'Réponse sous 24h', desc: 'Notre équipe vous contacte rapidement' },
-  { icon: Star, title: 'Devis gratuit', desc: 'Sans engagement' },
-  { icon: Package, title: 'Accompagnement', desc: 'De la conception à la livraison' },
+  { icon: Clock, title: 'Réponse sous 24h', desc: 'Notre équipe vous contacte rapidement.' },
+  { icon: Star, title: 'Devis gratuit', desc: 'Sans aucun engagement de votre part.' },
+  { icon: Package, title: 'Accompagnement', desc: 'De la conception à la livraison.' },
+  { icon: ShieldCheck, title: 'Conception Suisse', desc: 'Garantie qualité, finitions premium.' },
 ];
 
 const steps = [
@@ -110,7 +114,7 @@ function matchStructureType(product) {
 
 // Shared input styling — flat, hairline border, blue focus ring (editorial system).
 const inputCls =
-  'w-full bg-white h-12 md:h-14 pl-11 md:pl-12 pr-4 text-sm md:text-base text-ink rounded-[14px] border border-[var(--line)] placeholder:text-[var(--muted)]/70 focus:border-[var(--blue)] focus-visible:outline-none transition-colors';
+  'w-full bg-white h-12 md:h-13 pl-11 md:pl-12 pr-4 text-sm md:text-[15px] text-ink rounded-[14px] border border-[var(--line)] placeholder:text-[var(--muted)]/70 focus:border-[var(--blue)] focus-visible:outline-none transition-colors';
 
 // Authentic multicolor Google "G" logo (vector, no black).
 function GoogleG({ size = 18 }) {
@@ -265,116 +269,136 @@ export default function Contact() {
 
   return (
     <div className="overflow-x-clip bg-paper">
-      {/* ░░ HERO + FORM ░░ */}
-      <section className="bg-paper pt-28 md:pt-36 pb-20 md:pb-28">
+      {/* ░░ HERO ░░ */}
+      <section className="bg-paper pt-28 md:pt-32 pb-9 md:pb-12">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
-          {/* Editorial intro */}
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-9 md:mb-12">
-            <div className="lg:col-span-7">
-              <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
-                <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Parlons de votre projet</span>
-              </Reveal>
-              <h1
-                className="font-display font-bold text-ink tracking-tightest"
-                style={{ fontSize: 'clamp(2.6rem,6vw,5rem)', lineHeight: 0.96, maxWidth: '14ch' }}
-              >
-                Contactez-nous
-                <br />
-                <span className="serif-accent text-ink/45" style={{ fontWeight: 500 }}>
-                  pour votre devis
-                </span>
-              </h1>
-            </div>
-            <Reveal as="p" delay={0.1} className="lg:col-span-5 lead">
+          <div className="max-w-3xl">
+            <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
+              <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
+              <span className="kicker">Parlons de votre projet</span>
+            </Reveal>
+            <h1
+              className="font-display font-bold text-ink tracking-tightest"
+              style={{ fontSize: 'clamp(2.4rem,5.4vw,4rem)', lineHeight: 1, maxWidth: '16ch' }}
+            >
+              Contactez-nous{' '}
+              <span className="serif-accent text-ink/45" style={{ fontWeight: 500 }}>
+                pour votre devis
+              </span>
+            </h1>
+            <Reveal as="p" delay={0.1} className="lead mt-5 max-w-xl">
               Demandez votre devis personnalisé gratuit. Notre équipe vous accompagne de la
               conception à la livraison, avec une réponse garantie sous 24h.
             </Reveal>
           </div>
+        </div>
+      </section>
 
-          {/* Promises — flat hairline grid */}
-          <RevealStagger className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden mb-14 md:mb-20">
-            {promises.map((p, i) => (
-              <motion.div variants={staggerChild} key={p.title} className="bg-white p-6 md:p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <p.icon className="w-5 h-5 text-[var(--blue)]" />
-                  <span className="text-xs font-semibold text-ink/25 tabular-nums">0{i + 1}</span>
-                </div>
-                <h3 className="font-display font-semibold text-[15px] text-ink mb-1.5">{p.title}</h3>
-                <p className="text-[13px] text-[var(--muted)] leading-relaxed">{p.desc}</p>
-              </motion.div>
-            ))}
-          </RevealStagger>
-
-          {/* Form card — flat editorial */}
-          <Reveal>
-            <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-              {/* Left rail */}
-              <div className="lg:col-span-4 lg:sticky lg:top-28">
-                <div className="kicker mb-4">Formulaire de contact</div>
-                <h2
-                  className="font-display font-bold text-ink tracking-tightest"
-                  style={{ fontSize: 'clamp(1.7rem,3vw,2.4rem)', lineHeight: 1.05 }}
-                >
-                  Décrivez votre projet
-                </h2>
-                <p className="lead mt-5">
-                  Remplissez le formulaire ci-dessous et recevez une réponse sous 24h
-                </p>
-
-                <div className="mt-8 pt-8 border-t border-[var(--line)] space-y-5">
-                  <div>
-                    <p className="text-sm text-[var(--muted)] mb-2">Vous préférez nous écrire directement ?</p>
-                    <a
-                      href="mailto:contact@sport-air-event.com"
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--blue)] hover:underline"
-                    >
-                      <Mail className="w-4 h-4" />
-                      contact@sport-air-event.com
-                    </a>
+      {/* ░░ TWO-COLUMN : INFO + FORM ░░ */}
+      <section className="bg-paper pb-12 md:pb-16">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
+          <div className="grid lg:grid-cols-12 gap-6 lg:gap-10 items-start">
+            {/* ── Left rail : reassurance + contact ── */}
+            <div className="lg:col-span-5 lg:sticky lg:top-28 space-y-6">
+              <Reveal>
+                <div className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-white p-6 md:p-7">
+                  <div className="kicker mb-3">Pourquoi nous</div>
+                  <h2 className="font-display text-xl md:text-2xl font-bold text-ink mb-5">
+                    Un interlocuteur dédié
+                  </h2>
+                  <div className="space-y-px bg-[var(--line)] border border-[var(--line)] rounded-[14px] overflow-hidden">
+                    {promises.map((p) => (
+                      <div key={p.title} className="flex items-start gap-3.5 bg-white p-4">
+                        <span className="grid place-items-center w-9 h-9 rounded-[10px] bg-[var(--blue-soft)] flex-shrink-0">
+                          <p.icon className="w-4 h-4 text-[var(--blue)]" />
+                        </span>
+                        <div className="min-w-0">
+                          <h3 className="font-display font-semibold text-[14px] text-ink leading-tight">
+                            {p.title}
+                          </h3>
+                          <p className="text-[12.5px] text-[var(--muted)] leading-snug mt-0.5">
+                            {p.desc}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="pt-5 border-t border-[var(--line)]">
-                    <p className="text-sm text-[var(--muted)] mb-3">Ou contactez-nous sur WhatsApp</p>
+                </div>
+              </Reveal>
+
+              {/* Direct contact card */}
+              <Reveal delay={0.08}>
+                <div className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-white p-6 md:p-7">
+                  <p className="text-[13px] text-[var(--muted)] mb-2">
+                    Vous préférez nous écrire directement ?
+                  </p>
+                  <a
+                    href="mailto:contact@sport-air-event.com"
+                    data-cursor
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--blue)] hover:underline break-all"
+                  >
+                    <Mail className="w-4 h-4 flex-shrink-0" />
+                    contact@sport-air-event.com
+                  </a>
+                  <div className="mt-5 pt-5 border-t border-[var(--line)]">
+                    <p className="text-[13px] text-[var(--muted)] mb-3">
+                      Ou contactez-nous sur WhatsApp
+                    </p>
                     <a
                       href="https://wa.me/41774835190"
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-cursor
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-ink border border-[var(--line)] hover:border-ink/15 transition-colors"
                     >
                       <MessageCircle className="w-4 h-4 text-[#25D366]" />
                       WhatsApp
                     </a>
                   </div>
+                  <div className="mt-5 pt-5 border-t border-[var(--line)] flex items-center gap-2 text-[13px] text-[var(--muted)]">
+                    <span>Conception Suisse</span>
+                    <span aria-hidden>🇨🇭</span>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
+            </div>
 
-              {/* Form */}
-              <div className="lg:col-span-8">
-                <form className="rounded-[var(--radius-lg)] bg-white border border-[var(--line)] overflow-hidden" onSubmit={(e) => e.preventDefault()}>
+            {/* ── Form ── */}
+            <div className="lg:col-span-7">
+              <Reveal delay={0.04}>
+                <form
+                  className="rounded-[var(--radius-lg)] bg-white border border-[var(--line)] overflow-hidden"
+                  onSubmit={(e) => e.preventDefault()}
+                >
                   {/* Step header */}
-                  <div className="px-6 md:px-10 pt-7 md:pt-9 pb-8 border-b border-[var(--line)]">
-                    <div className="flex items-baseline justify-between mb-7">
-                      <h3 className="font-display text-lg md:text-xl font-bold text-ink">Demandez votre devis</h3>
-                      <span className="text-sm text-[var(--muted)]">Réponse sous 24h</span>
+                  <div className="px-6 md:px-9 pt-6 md:pt-8 pb-6 border-b border-[var(--line)]">
+                    <div className="flex items-baseline justify-between mb-6">
+                      <h3 className="font-display text-lg md:text-xl font-bold text-ink">
+                        Demandez votre devis
+                      </h3>
+                      <span className="text-[13px] text-[var(--muted)]">Réponse sous 24h</span>
                     </div>
                     <div className="flex items-center gap-2 md:gap-4">
                       {steps.map((s, i) => {
                         const num = i + 1;
                         const reached = step >= num;
                         return (
-                          <div key={s.label} className="flex items-center gap-2 md:gap-4 flex-1 last:flex-none">
+                          <div
+                            key={s.label}
+                            className="flex items-center gap-2 md:gap-4 flex-1 last:flex-none"
+                          >
                             <div className="flex flex-col items-center gap-2">
                               <div
-                                className={`w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-colors ${
+                                className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-colors ${
                                   reached
                                     ? 'bg-deep text-white'
                                     : 'bg-paper text-[var(--muted)] border border-[var(--line)]'
                                 }`}
                               >
-                                <s.icon className="w-4 h-4 md:w-5 md:h-5" />
+                                <s.icon className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                               </div>
                               <span
-                                className={`text-[10px] md:text-xs font-medium ${
+                                className={`text-[10px] md:text-[11px] font-medium ${
                                   reached ? 'text-ink' : 'text-[var(--muted)]'
                                 }`}
                               >
@@ -384,7 +408,7 @@ export default function Contact() {
                             {i < steps.length - 1 && (
                               <div
                                 className={`flex-1 h-px transition-colors ${
-                                  step >= num + 1 ? 'bg-ink' : 'bg-[var(--line)]'
+                                  step >= num + 1 ? 'bg-[var(--blue)]' : 'bg-[var(--line)]'
                                 }`}
                               />
                             )}
@@ -394,14 +418,16 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  <div className="p-6 md:p-10">
+                  <div className="p-6 md:p-9">
                     {step === 1 && (
-                      <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                      <div className="space-y-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Entreprise *</label>
+                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">
+                              Entreprise *
+                            </label>
                             <div className="relative">
-                              <Building2 className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
+                              <Building2 className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-[18px] md:h-[18px] text-[var(--muted)]" />
                               <input
                                 className={inputCls}
                                 placeholder="Nom de votre entreprise"
@@ -412,9 +438,11 @@ export default function Contact() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Nom complet *</label>
+                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">
+                              Nom complet *
+                            </label>
                             <div className="relative">
-                              <User className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
+                              <User className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-[18px] md:h-[18px] text-[var(--muted)]" />
                               <input
                                 className={inputCls}
                                 placeholder="Votre nom"
@@ -425,9 +453,11 @@ export default function Contact() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Email *</label>
+                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">
+                              Email *
+                            </label>
                             <div className="relative">
-                              <Mail className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
+                              <Mail className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-[18px] md:h-[18px] text-[var(--muted)]" />
                               <input
                                 type="email"
                                 className={inputCls}
@@ -439,9 +469,11 @@ export default function Contact() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Téléphone *</label>
+                            <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">
+                              Téléphone *
+                            </label>
                             <div className="relative">
-                              <Phone className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
+                              <Phone className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-[18px] md:h-[18px] text-[var(--muted)]" />
                               <input
                                 className={inputCls}
                                 placeholder="06 XX XX XX XX"
@@ -456,6 +488,7 @@ export default function Contact() {
                           <button
                             type="button"
                             onClick={handleContinue}
+                            data-cursor
                             className="cta-iridescent w-full px-7 py-3.5 text-[15px] font-semibold inline-flex items-center justify-center gap-2"
                           >
                             Continuer
@@ -466,33 +499,64 @@ export default function Contact() {
                     )}
 
                     {step === 2 && (
-                      <div className="space-y-6">
+                      <div className="space-y-5">
                         <div>
-                          <label className="text-xs font-semibold mb-3 block text-ink/70 uppercase tracking-wide">Type de structure</label>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+                          <label className="text-xs font-semibold mb-3 block text-ink/70 uppercase tracking-wide">
+                            Type de structure
+                          </label>
+                          <div className="space-y-px bg-[var(--line)] border border-[var(--line)] rounded-[14px] overflow-hidden">
                             {structureTypes.map((type) => {
                               const active = form.structure === type;
+                              const toggle = () =>
+                                setForm((f) => ({
+                                  ...f,
+                                  structure: f.structure === type ? '' : type,
+                                }));
                               return (
-                                <button
+                                <div
                                   key={type}
-                                  type="button"
-                                  onClick={() => setForm((f) => ({ ...f, structure: type }))}
-                                  className={`py-3 px-3 rounded-[14px] border text-sm md:text-base font-semibold transition-colors ${
-                                    active
-                                      ? 'border-ink bg-deep text-white'
-                                      : 'border-[var(--line)] bg-white text-ink hover:border-ink/20'
-                                  }`}
+                                  role="button"
+                                  tabIndex={0}
+                                  data-cursor
+                                  onClick={toggle}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                      e.preventDefault();
+                                      toggle();
+                                    }
+                                  }}
+                                  className="cursor-pointer flex items-center gap-3 bg-white px-4 py-3 transition-colors hover:bg-[var(--blue-mist)]"
                                 >
-                                  {type}
-                                </button>
+                                  <span
+                                    className="grid place-items-center flex-shrink-0 transition-colors"
+                                    style={{
+                                      width: 24,
+                                      height: 24,
+                                      borderRadius: 7,
+                                      background: active ? 'var(--blue)' : '#fff',
+                                      border: active ? 'none' : '1.5px solid var(--line)',
+                                    }}
+                                  >
+                                    {active && <Check size={15} strokeWidth={3} color="#fff" />}
+                                  </span>
+                                  <span
+                                    className={`text-sm md:text-[15px] font-semibold ${
+                                      active ? 'text-ink' : 'text-ink/80'
+                                    }`}
+                                  >
+                                    {type}
+                                  </span>
+                                </div>
                               );
                             })}
                           </div>
                         </div>
                         <div>
-                          <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Dimensions / quantité</label>
+                          <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">
+                            Dimensions / quantité
+                          </label>
                           <div className="relative">
-                            <Package className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[var(--muted)]" />
+                            <Package className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-[18px] md:h-[18px] text-[var(--muted)]" />
                             <input
                               className={inputCls}
                               placeholder="Ex : 3x3m, 2 unités…"
@@ -502,10 +566,12 @@ export default function Contact() {
                           </div>
                         </div>
                         <div>
-                          <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">Votre message</label>
+                          <label className="text-xs font-semibold mb-2 block text-ink/70 uppercase tracking-wide">
+                            Votre message
+                          </label>
                           <textarea
                             rows={4}
-                            className="w-full bg-white px-4 py-3 text-sm md:text-base text-ink rounded-[14px] border border-[var(--line)] placeholder:text-[var(--muted)]/70 focus:border-[var(--blue)] focus-visible:outline-none transition-colors"
+                            className="w-full bg-white px-4 py-3 text-sm md:text-[15px] text-ink rounded-[14px] border border-[var(--line)] placeholder:text-[var(--muted)]/70 focus:border-[var(--blue)] focus-visible:outline-none transition-colors"
                             placeholder="Décrivez votre projet, vos besoins, vos délais…"
                             value={form.message}
                             onChange={updateField('message')}
@@ -515,6 +581,7 @@ export default function Contact() {
                           <button
                             type="button"
                             onClick={handleBack}
+                            data-cursor
                             className="px-5 py-3.5 rounded-full text-[15px] font-semibold text-ink border border-[var(--line)] hover:border-ink/20 inline-flex items-center justify-center gap-2 transition-colors"
                           >
                             <ArrowLeft className="w-4 h-4" />
@@ -524,6 +591,7 @@ export default function Contact() {
                             <button
                               type="button"
                               onClick={handleContinue}
+                              data-cursor
                               className="cta-iridescent w-full px-7 py-3.5 text-[15px] font-semibold inline-flex items-center justify-center gap-2"
                             >
                               Continuer
@@ -535,7 +603,7 @@ export default function Contact() {
                     )}
 
                     {step === 3 && (
-                      <div className="space-y-6">
+                      <div className="space-y-5">
                         {submitted ? (
                           <div className="text-center py-8 md:py-12">
                             <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-5 rounded-full flex items-center justify-center border border-[var(--line)] bg-paper">
@@ -547,35 +615,47 @@ export default function Contact() {
                           </div>
                         ) : (
                           <>
-                            <div className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-paper p-5 md:p-7">
-                              <h3 className="font-display text-base md:text-lg font-semibold text-ink mb-4">Récapitulatif</h3>
+                            <div className="rounded-[14px] border border-[var(--line)] bg-paper p-5 md:p-6">
+                              <h3 className="font-display text-base md:text-lg font-semibold text-ink mb-3">
+                                Récapitulatif
+                              </h3>
                               <dl className="divide-y divide-[var(--line)]">
-                                <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                <div className="flex justify-between gap-4 text-sm md:text-[15px] py-2.5">
                                   <dt className="text-[var(--muted)]">Entreprise</dt>
-                                  <dd className="font-semibold text-ink text-right">{form.entreprise}</dd>
+                                  <dd className="font-semibold text-ink text-right">
+                                    {form.entreprise}
+                                  </dd>
                                 </div>
-                                <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                <div className="flex justify-between gap-4 text-sm md:text-[15px] py-2.5">
                                   <dt className="text-[var(--muted)]">Nom complet</dt>
                                   <dd className="font-semibold text-ink text-right">{form.nom}</dd>
                                 </div>
-                                <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                <div className="flex justify-between gap-4 text-sm md:text-[15px] py-2.5">
                                   <dt className="text-[var(--muted)]">Email</dt>
-                                  <dd className="font-semibold text-ink text-right">{form.email}</dd>
+                                  <dd className="font-semibold text-ink text-right break-all">
+                                    {form.email}
+                                  </dd>
                                 </div>
-                                <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                <div className="flex justify-between gap-4 text-sm md:text-[15px] py-2.5">
                                   <dt className="text-[var(--muted)]">Téléphone</dt>
-                                  <dd className="font-semibold text-ink text-right">{form.telephone}</dd>
+                                  <dd className="font-semibold text-ink text-right">
+                                    {form.telephone}
+                                  </dd>
                                 </div>
                                 {form.structure && (
-                                  <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                  <div className="flex justify-between gap-4 text-sm md:text-[15px] py-2.5">
                                     <dt className="text-[var(--muted)]">Type de structure</dt>
-                                    <dd className="font-semibold text-ink text-right">{form.structure}</dd>
+                                    <dd className="font-semibold text-ink text-right">
+                                      {form.structure}
+                                    </dd>
                                   </div>
                                 )}
                                 {form.dimensions && (
-                                  <div className="flex justify-between gap-4 text-sm md:text-base py-2.5">
+                                  <div className="flex justify-between gap-4 text-sm md:text-[15px] py-2.5">
                                     <dt className="text-[var(--muted)]">Dimensions / quantité</dt>
-                                    <dd className="font-semibold text-ink text-right">{form.dimensions}</dd>
+                                    <dd className="font-semibold text-ink text-right">
+                                      {form.dimensions}
+                                    </dd>
                                   </div>
                                 )}
                               </dl>
@@ -584,6 +664,7 @@ export default function Contact() {
                               <button
                                 type="button"
                                 onClick={handleBack}
+                                data-cursor
                                 className="px-5 py-3.5 rounded-full text-[15px] font-semibold text-ink border border-[var(--line)] hover:border-ink/20 inline-flex items-center justify-center gap-2 transition-colors"
                               >
                                 <ArrowLeft className="w-4 h-4" />
@@ -594,6 +675,7 @@ export default function Contact() {
                                   type="button"
                                   onClick={handleSubmit}
                                   disabled={sending}
+                                  data-cursor
                                   className="cta-iridescent w-full px-7 py-3.5 text-[15px] font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-60"
                                 >
                                   Envoyer ma demande
@@ -607,24 +689,46 @@ export default function Contact() {
                     )}
                   </div>
                 </form>
-              </div>
+              </Reveal>
             </div>
-          </Reveal>
+          </div>
         </div>
       </section>
 
       {/* ░░ REVIEWS (dark) ░░ */}
       <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
-            <SectionHeader light kicker="Témoignages" index="01" title={<>Ils nous font<br />confiance</>} />
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-9 md:mb-12">
+            <SectionHeader
+              light
+              kicker="Témoignages"
+              title={
+                <>
+                  Ils nous font
+                  <br />
+                  confiance
+                </>
+              }
+            />
             <Reveal as="div" delay={0.1} className="flex items-center gap-4 md:pb-2">
               <div className="flex items-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
                 </svg>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -633,11 +737,13 @@ export default function Contact() {
                 </div>
                 <span className="font-display text-xl font-bold text-white ml-1">4.9</span>
               </div>
-              <span className="text-sm text-white/55">Basé sur <strong className="text-white/80">127</strong> avis</span>
+              <span className="text-sm text-white/55">
+                Basé sur <strong className="text-white/80">127</strong> avis
+              </span>
             </Reveal>
           </div>
 
-          {/* V53 — Carrousel : un avis à la fois, panneau bleu, flèches préc./suiv. et points */}
+          {/* Carrousel : un avis à la fois, panneau bleu, flèches préc./suiv. et points */}
           <Reveal className="max-w-2xl mx-auto">
             <div className="relative overflow-hidden" style={{ borderRadius: 22 }}>
               <AnimatePresence mode="wait" custom={reviewDir}>
@@ -666,7 +772,14 @@ export default function Contact() {
                       <GoogleG size={12} /> Publié sur Google
                     </span>
                   </div>
-                  <p style={{ fontSize: '0.95rem', lineHeight: 1.55, margin: '0 0 16px', color: '#eaf2ff' }}>
+                  <p
+                    style={{
+                      fontSize: '0.95rem',
+                      lineHeight: 1.55,
+                      margin: '0 0 16px',
+                      color: '#eaf2ff',
+                    }}
+                  >
                     {review.text}
                   </p>
                   <div className="flex items-center gap-3">
@@ -699,6 +812,7 @@ export default function Contact() {
                     onClick={() => goReview(d)}
                     whileTap={{ scale: 0.9 }}
                     aria-label={d < 0 ? 'Précédent' : 'Suivant'}
+                    data-cursor
                     className="cursor-pointer inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/15 bg-white/5 text-white hover:border-white/35 transition-colors"
                   >
                     {d < 0 ? (
@@ -716,6 +830,7 @@ export default function Contact() {
                     type="button"
                     onClick={() => jumpReview(i)}
                     aria-label={`Avis ${i + 1}`}
+                    data-cursor
                     className="cursor-pointer"
                     style={{
                       width: i === reviewIdx ? 22 : 8,
@@ -737,8 +852,13 @@ export default function Contact() {
       {/* ░░ FAQ ░░ */}
       <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
-          <SectionHeader align="center" kicker="Questions fréquentes" index="02" className="mb-12" title="Tout ce que vous devez savoir" />
-          {/* V57 — Accordéon hairline : liste sobre séparée par des filets bleus, chevron qui pivote, ouverture unique */}
+          <SectionHeader
+            align="center"
+            kicker="Questions fréquentes"
+            className="mb-9 md:mb-12"
+            title="Tout ce que vous devez savoir"
+          />
+          {/* Accordéon hairline : liste sobre séparée par des filets bleus, chevron qui pivote, ouverture unique */}
           <RevealStagger style={{ borderTop: '1px solid var(--line)' }}>
             {faqs.map((faq, i) => {
               const isOpen = openFaq === i;
@@ -752,6 +872,7 @@ export default function Contact() {
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? -1 : i)}
                     aria-expanded={isOpen}
+                    data-cursor
                     className="cursor-pointer w-full flex items-center gap-3.5 text-left"
                     style={{ padding: '16px 2px', background: 'transparent', border: 'none' }}
                   >

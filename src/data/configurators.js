@@ -90,19 +90,22 @@ export const CONFIGURATORS = {
     productName: 'Mobilier Gonflable',
     image: 'images/22_4887239cb_ChatGPTImage16janv202616_52_44.png',
     modalGroupLabel: null,
+    // category = filter chip (Assises · Tables · Bars). Accessoire group is shown for all categories.
     groups: [
-      { label: 'Assises', items: [
+      { label: 'Assises', category: 'Assises', items: [
         { name: 'Pouf gonflable imprimé', price: 180 },
         { name: 'Chaise basse', price: 280 },
         { name: 'Sofa 1 place', price: 290 },
         { name: 'Sofa 2 places', price: 460 },
       ] },
-      { label: 'Tables', items: [
+      { label: 'Tables', category: 'Tables', items: [
         { name: 'Table basse', price: 370 },
         { name: 'Table haute', price: 490 },
       ] },
-      { label: 'Bars', items: [{ name: 'Bar gonflable droit', price: 600 }] },
+      { label: 'Bars', category: 'Bars', items: [{ name: 'Bar gonflable droit', price: 600 }] },
     ],
+    accessories: { label: 'Accessoires', items: [{ name: 'Pompe 220 volts', price: 60 }] },
+    custom: ['Impression HD', 'Matériaux premium', 'Montage rapide', 'Design 3D gratuit'],
     included: [],
   },
 };

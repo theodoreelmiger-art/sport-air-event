@@ -1,26 +1,25 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ArrowRight, MessageCircle,
-  Layers, Gauge, Wind, Timer, Sparkles, Flame, ShieldCheck, Feather, Droplet,
+  Layers, Gauge, Wind, Timer, Sparkles, Flame, ShieldCheck, Feather,
   Trophy, Briefcase, Music, Store,
 } from 'lucide-react';
-import { Reveal, Rise, MaskHeading, Magnetic } from '../lib/motion.jsx';
+import { Reveal, Rise, MaskHeading, Magnetic, RevealStagger, staggerChild } from '../lib/motion.jsx';
 import ProductConfigurator from '../components/ProductConfigurator.jsx';
 import { CONFIGURATORS } from '../data/configurators.js';
 
-// Spec data — icon + label + prominent value. `big`/`tail` drive the large headline,
-// `badges` the pill row in the detail panel. `badgeIcon` leads the first badge.
+// Spec data — icon + label + prominent value + optional small sub-note. Every
+// real label/value/note is preserved verbatim from the original fiche technique.
 const SPECS = [
-  { icon: Flame, label: 'Résistance au vent', value: "Jusqu'à 70 km/h", note: 'Structure haute pression stabilisée', big: '70', tail: 'km/h', badgeIcon: Wind, badges: ['70 km/h', 'Lestage inclus'] },
-  { icon: Layers, label: 'Matériau', value: 'Oxford 600D + TPU', note: 'Haute résistance', big: 'Oxford 600D', tail: '+ TPU', badgeIcon: Droplet, badges: ['Oxford 600D', 'TPU', 'Haute résistance'] },
-  { icon: Gauge, label: 'Pression de gonflage', value: 'Haute pression 0.35 bar', big: '0.35', tail: 'bar', badgeIcon: Gauge, badges: ['0.35 bar', 'Haute pression'] },
-  { icon: Timer, label: 'Temps de gonflage', value: '60–90 secondes', big: '60–90', tail: 'sec', badgeIcon: Timer, badges: ['60–90 s', '1 personne'] },
-  { icon: Sparkles, label: 'Impression', value: 'Sublimation HD 360°', note: 'Résistante aux UV', big: 'HD 360°', tail: 'UV', badgeIcon: Sparkles, badges: ['Sublimation', '360°', 'Anti-UV'] },
-  { icon: ShieldCheck, label: 'Certification', value: 'Anti-feu M2, Anti-UV', big: 'M2', tail: 'anti-feu', badgeIcon: Flame, badges: ['M2', 'Anti-feu', 'Anti-UV'] },
-  { icon: Wind, label: 'Garantie', value: '5 ans structure + impression', big: '5', tail: 'ans', badgeIcon: ShieldCheck, badges: ['5 ans', 'Structure', 'Impression'] },
-  { icon: Feather, label: 'Poids (4×4m)', value: '~12 kg', big: '~12', tail: 'kg', badgeIcon: Feather, badges: ['~12 kg', '4×4m'] },
+  { icon: Flame, label: 'Résistance au vent', value: "Jusqu'à 70 km/h", note: 'Structure haute pression stabilisée' },
+  { icon: Layers, label: 'Matériau', value: 'Oxford 600D + TPU', note: 'Haute résistance' },
+  { icon: Gauge, label: 'Pression de gonflage', value: 'Haute pression 0.35 bar' },
+  { icon: Timer, label: 'Temps de gonflage', value: '60–90 secondes' },
+  { icon: Sparkles, label: 'Impression', value: 'Sublimation HD 360°', note: 'Résistante aux UV' },
+  { icon: ShieldCheck, label: 'Certification', value: 'Anti-feu M2, Anti-UV' },
+  { icon: Wind, label: 'Garantie', value: '5 ans structure + impression' },
+  { icon: Feather, label: 'Poids (4×4m)', value: '~12 kg' },
 ];
 
 const USAGES = [
@@ -37,152 +36,50 @@ const BLUE_SOFT = '#e8f1fd';
 const BLUE_MIST = '#f3f8ff';
 const LINE = '#e4ecf7';
 const INK = '#0b1c3f';
-const INK_2 = '#2c3e63';
 const MUTE = '#5b6f8e';
 
-/* ░░ SPECS — V71 "Liste scindée" : rail de labels à gauche, grand panneau valeur + badges à droite ░░ */
-function SpecsSplit() {
-  const [active, setActive] = useState(0);
-  const s = SPECS[active];
-  const Icon = s.icon;
-  const BadgeIcon = s.badgeIcon;
-
+/* ░░ SPECS — compact spec-card grid : icône + label, valeur en évidence, petit sous-titre ░░ */
+function SpecsGrid() {
   return (
-    <div style={{ color: INK }}>
-      <div
-        className="grid gap-2.5 md:gap-3"
-        style={{ gridTemplateColumns: 'minmax(150px, 0.85fr) 1.15fr' }}
-      >
-        {/* Left rail — selectable label list */}
-        <div
-          style={{
-            border: `1px solid ${LINE}`,
-            borderRadius: 18,
-            overflow: 'hidden',
-            background: '#ffffff',
-            alignSelf: 'start',
-          }}
-        >
-          {SPECS.map((sp, i) => {
-            const on = i === active;
-            const RIcon = sp.icon;
-            return (
-              <button
-                key={sp.label}
-                type="button"
-                onClick={() => setActive(i)}
-                className="cursor-pointer w-full flex items-center gap-2.5 text-left relative"
-                style={{
-                  padding: '13px 14px',
-                  borderTop: i === 0 ? 'none' : `1px solid ${LINE}`,
-                  background: on ? BLUE_MIST : 'transparent',
-                  transition: 'background .18s',
-                }}
-              >
-                {on && (
-                  <motion.span
-                    layoutId="specsRail"
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      top: 7,
-                      bottom: 7,
-                      width: 3,
-                      borderRadius: 9999,
-                      background: BLUE,
-                    }}
-                  />
-                )}
-                <span
-                  className="inline-flex items-center justify-center shrink-0"
-                  style={{ width: 30, height: 30, borderRadius: 9, background: on ? BLUE : BLUE_SOFT, color: on ? '#fff' : BLUE, transition: 'background .2s, color .2s' }}
-                >
-                  <RIcon className="w-[15px] h-[15px]" strokeWidth={2.4} />
-                </span>
-                <span
-                  style={{
-                    fontSize: '0.82rem',
-                    fontWeight: on ? 700 : 600,
-                    color: on ? BLUE_DEEP : INK_2,
-                    lineHeight: 1.15,
-                  }}
-                >
-                  {sp.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right — big detail panel for the active spec */}
-        <AnimatePresence mode="wait">
+    <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-3.5">
+      {SPECS.map((s) => {
+        const Icon = s.icon;
+        return (
           <motion.div
-            key={active}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -8 }}
-            transition={{ duration: 0.26 }}
-            style={{
-              border: `1px solid ${LINE}`,
-              borderRadius: 18,
-              background: BLUE_MIST,
-              padding: '22px 20px',
-            }}
+            variants={staggerChild}
+            key={s.label}
+            className="spec-card flex flex-col rounded-2xl border bg-white p-4 md:p-5 transition-colors duration-200"
+            style={{ borderColor: LINE }}
           >
-            <span
-              className="inline-flex items-center justify-center mb-4"
-              style={{ width: 48, height: 48, borderRadius: 14, background: '#ffffff', border: `1px solid ${LINE}`, color: BLUE }}
-            >
-              <Icon className="w-6 h-6" strokeWidth={2.2} />
-            </span>
-
-            <div
-              style={{ fontSize: '0.72rem', fontWeight: 700, color: BLUE_DEEP, textTransform: 'uppercase', letterSpacing: '0.14em' }}
-            >
-              {s.label}
-            </div>
-
-            <div
-              className="font-display flex items-end gap-2 flex-wrap"
-              style={{ marginTop: 6, lineHeight: 0.95 }}
-            >
-              <span style={{ fontSize: 'clamp(2.1rem, 6vw, 3.2rem)', letterSpacing: '-0.03em', color: INK, fontWeight: 700 }}>
-                {s.big}
+            <div className="flex items-center gap-2.5 mb-3.5">
+              <span
+                className="inline-flex items-center justify-center shrink-0"
+                style={{ width: 32, height: 32, borderRadius: 10, background: BLUE_SOFT, color: BLUE }}
+              >
+                <Icon className="w-4 h-4" strokeWidth={2.4} />
               </span>
-              <span style={{ fontSize: 'clamp(1rem, 3vw, 1.5rem)', color: BLUE, paddingBottom: 6 }}>
-                {s.tail}
+              <span
+                style={{ fontSize: '0.7rem', fontWeight: 700, color: BLUE_DEEP, textTransform: 'uppercase', letterSpacing: '0.1em', lineHeight: 1.2 }}
+              >
+                {s.label}
               </span>
             </div>
-
-            <div style={{ marginTop: 12, fontSize: '0.95rem', lineHeight: 1.45, color: INK_2 }}>
+            <div
+              className="font-display tracking-tightest"
+              style={{ fontSize: 'clamp(1.2rem, 2vw, 1.5rem)', lineHeight: 1.1, color: INK, fontWeight: 700 }}
+            >
               {s.value}
-              {s.note && <span style={{ color: MUTE }}> · {s.note}</span>}
             </div>
-
-            <div className="flex flex-wrap gap-2 mt-5">
-              {s.badges.map((b, bi) => (
-                <span
-                  key={b}
-                  className="inline-flex items-center gap-1.5"
-                  style={{
-                    border: `1px solid ${LINE}`,
-                    background: '#ffffff',
-                    borderRadius: 9999,
-                    padding: '5px 11px',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    color: INK_2,
-                  }}
-                >
-                  {bi === 0 && <BadgeIcon className="w-3 h-3" strokeWidth={2.6} style={{ color: BLUE }} />}
-                  {b}
-                </span>
-              ))}
-            </div>
+            {s.note && (
+              <div style={{ marginTop: 6, fontSize: '0.82rem', lineHeight: 1.4, color: MUTE }}>
+                {s.note}
+              </div>
+            )}
           </motion.div>
-        </AnimatePresence>
-      </div>
-    </div>
+        );
+      })}
+      <style>{`.spec-card:hover{border-color:${BLUE}33;background:${BLUE_MIST};}`}</style>
+    </RevealStagger>
   );
 }
 
@@ -212,13 +109,12 @@ export default function Tente() {
         {/* ░░ CONFIGURATOR (shared) ░░ */}
         <ProductConfigurator data={CONFIGURATORS.tente} />
 
-        {/* ░░ SPECS — split rail + detail panel (V71) ░░ */}
+        {/* ░░ SPECS — compact spec-card grid ░░ */}
         <section className="bg-paper py-12 md:py-16">
           <div className="max-w-content mx-auto px-5 sm:px-8">
-            <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-14 md:mb-16">
+            <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-9 md:mb-12">
               <div className="lg:col-span-7 flex flex-col items-start max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                  <span className="text-xs font-semibold tabular-nums text-ink/30">01</span>
                   <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
                   <span className="kicker">Fiche technique</span>
                 </Reveal>
@@ -233,9 +129,7 @@ export default function Tente() {
               </Rise>
             </div>
 
-            <Reveal>
-              <SpecsSplit />
-            </Reveal>
+            <SpecsGrid />
           </div>
         </section>
 
@@ -245,7 +139,6 @@ export default function Tente() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
               <div className="flex flex-col items-start max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                  <span className="text-xs font-semibold tabular-nums text-ink/30">02</span>
                   <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
                   <span className="kicker">Cas d'usage</span>
                 </Reveal>
@@ -279,17 +172,6 @@ export default function Tente() {
                           transition: 'background .22s',
                         }}
                       >
-                        <span
-                          className="font-display shrink-0 tabular-nums select-none"
-                          style={{
-                            fontSize: '1.25rem',
-                            fontWeight: 800,
-                            width: 34,
-                            color: '#c2d2ea',
-                          }}
-                        >
-                          {u.tag}
-                        </span>
                         <span
                           className="flex items-center justify-center shrink-0"
                           style={{

@@ -1,41 +1,148 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { MessageSquareText, X, Send, Check, Sparkles } from 'lucide-react';
+import { Magnetic, motion } from '../lib/motion.jsx';
 
-// Faithful reproduction of the original "Assistant SPORT AIR EVENT" chatbot.
-// Keyword-scripted answers captured from the live site.
+// "Assistant SPORT AIR EVENT" — keyword-scripted answers grounded in the real
+// products, prices, delivery, warranty and customization info from the site.
 
 const GREETING =
-  'Bonjour ! 👋 Je suis l\'assistant virtuel de SPORT AIR EVENT. Comment puis-je vous aider avec nos structures gonflables événementielles ?';
+  "Bonjour ! Je suis l'assistant SPORT AIR EVENT. Posez-moi une question sur nos structures gonflables, nos tarifs ou nos délais — ou demandez directement un devis personnalisé.";
 
+// Tappable quick-reply chips (the user taps, we answer).
 const QUICK_REPLIES = [
-  'Quels sont vos délais de livraison ?',
-  'Quelles tailles de tentes sont disponibles ?',
-  'Faites-vous de la location ?',
-  'Comment obtenir un devis ?',
+  'Vos produits et tarifs ?',
+  'Délais de livraison ?',
+  'Garantie ?',
+  'Personnalisation ?',
+  'Installation ?',
 ];
 
+// Smart canned answers — real products & prices.
 const RULES = [
-  { re: /(locat|louer|location)/i, a: "Nous ne proposons pas de location de structures, uniquement des ventes. Pour un devis personnalisé, n'hésitez pas à nous contacter par email ou téléphone." },
-  { re: /(europe|situé|situe|où êtes|ou etes|pays|basé|base|suisse)/i, a: "Nous sommes basés en Suisse et assurons la livraison dans toute l'Europe. Pour plus de détails ou pour un devis personnalisé, n'hésitez pas à nous contacter par email ou téléphone." },
-  { re: /(délai|delai|livraison|combien de temps|quand|production)/i, a: "Nos délais de production sont de 2 à 3 semaines, avec un délai minimum requis de 2 semaines avant la livraison. Pour des informations spécifiques ou des demandes urgentes, n'hésitez pas à nous contacter par email ou téléphone." },
-  { re: /(taille|dimension|format|3x3|4x4|5x5|grand|spider)/i, a: "Les tentes Spider gonflables sont disponibles en trois tailles : 3x3m, 4x4m et 5x5m. Pour des détails sur les tarifs, je vous recommande de consulter la page produit ou de demander un devis via notre formulaire de contact." },
-  { re: /(garantie|garanti)/i, a: "La garantie varie selon les produits : 5 ans pour les tentes Spider, 2 ans pour les arches gonflables et 3 ans pour les impressions. Pour plus de détails sur un produit spécifique, n'hésitez pas à demander un devis ou à consulter la page correspondante." },
-  { re: /(install|montage|monter|gonfl|2 min)/i, a: "L'installation de nos structures gonflables, comme la tente Spider, se fait en seulement 2 minutes par une personne. Pour des conseils spécifiques ou un accompagnement, n'hésitez pas à nous contacter. Vous pouvez aussi utiliser notre page produit pour plus d'informations." },
-  { re: /(personnalis|logo|couleur|imprim|design|marque)/i, a: "La personnalisation de votre logo en couleur est incluse dans tous nos produits. Vous pouvez visualiser la personnalisation avec notre maquette 3D gratuite. Pour un devis précis, n'hésitez pas à nous contacter !" },
-  { re: /(prix|tarif|coût|cout|cher|combien)/i, a: "Les prix varient selon la configuration choisie. Je vous recommande de consulter la page produit correspondante ou de demander un devis personnalisé via notre formulaire de contact." },
-  { re: /(devis|commander|acheter|comment obtenir)/i, a: "Pour obtenir un devis gratuit et personnalisé, cliquez sur le bouton « Demander un devis » ou rendez-vous sur notre page Contact. Nous vous répondons sous 24h !" },
-  { re: /(contact|email|e-mail|mail|téléphone|telephone|appeler|joindre|whatsapp)/i, a: "Vous pouvez nous contacter par email à contact@sport-air-event.com ou via WhatsApp. Nous répondons à toutes les demandes sous 24h !" },
-  { re: /(merci|super|génial|genial|parfait)/i, a: "Avec plaisir ! N'hésitez pas si vous avez d'autres questions. 😊" },
-  { re: /(bonjour|salut|coucou|hello|bonsoir|hey)/i, a: "Bonjour ! 👋 Ravi de vous accueillir. Posez-moi votre question sur nos structures gonflables, ou demandez un devis personnalisé !" },
+  {
+    re: /(tente|spider|3x3|4x4|5x5)/i,
+    a: "La Tente Spider gonflable existe en 3x3m, 4x4m et 5x5m, dès 1180€. Installation en 2 minutes par une seule personne, garantie 5 ans et personnalisation 360° incluse.",
+  },
+  {
+    re: /(arche|arch)/i,
+    a: "Nos arches gonflables démarrent à 1490€ (plusieurs tailles disponibles). Idéales pour les lignes de départ/arrivée et les entrées d'événement. Personnalisation complète incluse.",
+  },
+  {
+    re: /(colonne|colon|totem)/i,
+    a: "Les colonnes gonflables sont disponibles dès 590€ — parfaites pour baliser un parcours ou habiller un stand. Personnalisation 360° en couleur incluse.",
+  },
+  {
+    re: /(mobilier|canap|fauteuil|table|comptoir|meuble)/i,
+    a: "Notre mobilier gonflable (canapés, fauteuils, comptoirs, tables) démarre à 180€. Léger, transportable et entièrement personnalisable à vos couleurs.",
+  },
+  {
+    re: /(produit|gamme|catalogue|que vendez|que proposez|qu'est-ce|structures?)/i,
+    a: "Notre gamme : Tente Spider (dès 1180€), Arches gonflables (dès 1490€), Colonnes gonflables (dès 590€) et Mobilier gonflable (dès 180€). Tout est personnalisable à 360°.",
+  },
+  {
+    re: /(prix|tarif|coût|cout|cher|combien|budget)/i,
+    a: "Nos tarifs de départ : Tente Spider dès 1180€, Arches dès 1490€, Colonnes dès 590€, Mobilier dès 180€. Le prix final dépend de la taille et de la personnalisation — demandez un devis gratuit pour un chiffrage précis.",
+  },
+  {
+    re: /(locat|louer|location)/i,
+    a: "Nous proposons uniquement la vente (pas de location) de structures personnalisées à vos couleurs. Pour un devis adapté à votre événement, contactez-nous.",
+  },
+  {
+    re: /(europe|situé|situe|où êtes|ou etes|pays|basé|base|suisse|livr|expédi|expedi)/i,
+    a: "Basés en Suisse, nous livrons dans toute l'Europe. Comptez 2 à 3 semaines de production (délai minimum de 2 semaines avant l'événement).",
+  },
+  {
+    re: /(délai|delai|combien de temps|quand|production|rapide|urgent)/i,
+    a: "Délai de production : 2 à 3 semaines, avec un minimum de 2 semaines avant la livraison. Pour une demande urgente, contactez-nous afin que l'on étudie la faisabilité.",
+  },
+  {
+    re: /(garantie|garanti|durée de vie|duree de vie|solide|résist|resist)/i,
+    a: "Garanties selon le produit : 5 ans sur les tentes Spider, 2 ans sur les arches gonflables et 3 ans sur les impressions. Des matériaux pensés pour durer.",
+  },
+  {
+    re: /(install|montage|monter|gonfl|2 min|facile|rapide à)/i,
+    a: "L'installation est ultra simple : la tente Spider se monte en 2 minutes par une seule personne, sans outil. Un souffleur suffit à gonfler la structure.",
+  },
+  {
+    re: /(personnalis|logo|couleur|imprim|design|marque|360|maquette|3d)/i,
+    a: "Personnalisation 360° en couleur incluse dans tous nos produits. Vous validez le rendu grâce à une maquette 3D gratuite avant production.",
+  },
+  {
+    re: /(devis|commander|acheter|comment obtenir|demande)/i,
+    a: "Pour un devis gratuit et personnalisé, utilisez le bouton « Demander un devis » ci-dessous (page Contact). Nous répondons sous 24h !",
+    cta: true,
+  },
+  {
+    re: /(contact|email|e-mail|mail|téléphone|telephone|appeler|joindre|whatsapp)/i,
+    a: "Vous pouvez nous écrire via la page Contact, par email ou WhatsApp. Toutes les demandes reçoivent une réponse sous 24h.",
+    cta: true,
+  },
+  {
+    re: /(merci|super|génial|genial|parfait|top|nickel)/i,
+    a: "Avec plaisir ! N'hésitez pas si vous avez d'autres questions.",
+  },
+  {
+    re: /(bonjour|salut|coucou|hello|bonsoir|hey|hi)/i,
+    a: "Bonjour ! Ravi de vous accueillir. Posez-moi votre question sur nos structures gonflables, ou demandez un devis personnalisé.",
+  },
 ];
 
-const FALLBACK =
-  "Je suis là pour vous renseigner sur nos structures gonflables ! Pour une réponse précise, n'hésitez pas à demander un devis personnalisé ou à nous contacter par email ou téléphone.";
+const FALLBACK = {
+  a: "Je peux vous renseigner sur nos produits (Tente Spider, Arches, Colonnes, Mobilier), les tarifs, les délais, la garantie ou la personnalisation. Pour une réponse sur mesure, demandez un devis gratuit.",
+  cta: true,
+};
 
 function answerFor(text) {
   const found = RULES.find((r) => r.re.test(text));
-  return found ? found.a : FALLBACK;
+  return found || FALLBACK;
+}
+
+// 24px checkbox-style confirmation tick reused for the "online" indicator.
+function Bubble({ from, text, cta }) {
+  const isUser = from === 'user';
+  return (
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div className="max-w-[86%]">
+        <div
+          className="px-3.5 py-2.5 text-[13.5px] leading-relaxed"
+          style={
+            isUser
+              ? {
+                  background: 'linear-gradient(135deg, var(--blue-bright), var(--blue-deep))',
+                  color: '#fff',
+                  borderRadius: '16px 16px 4px 16px',
+                  boxShadow: '0 6px 16px rgba(0,102,204,0.22)',
+                }
+              : {
+                  background: '#fff',
+                  color: 'var(--ink-2)',
+                  borderRadius: '16px 16px 16px 4px',
+                  border: '1px solid var(--line)',
+                  boxShadow: '0 4px 14px rgba(11,28,63,0.05)',
+                }
+          }
+        >
+          {text}
+        </div>
+        {cta && !isUser && (
+          <Link
+            to="/Contact"
+            data-cursor
+            className="cursor-pointer mt-2 inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-white rounded-full transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
+            style={{
+              background: 'linear-gradient(135deg, var(--blue-bright), var(--blue-deep))',
+              boxShadow: '0 8px 20px rgba(0,102,204,0.28)',
+            }}
+          >
+            <Sparkles size={14} strokeWidth={2.5} />
+            Demander un devis
+          </Link>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function ChatWidget() {
@@ -45,10 +152,18 @@ export default function ChatWidget() {
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages, typing, open]);
+  }, [messages, typing, open, showQuick]);
+
+  useEffect(() => {
+    if (open) {
+      const t = setTimeout(() => inputRef.current?.focus(), 320);
+      return () => clearTimeout(t);
+    }
+  }, [open]);
 
   const send = (text) => {
     const t = text.trim();
@@ -57,123 +172,203 @@ export default function ChatWidget() {
     setShowQuick(false);
     setInput('');
     setTyping(true);
+    const reply = answerFor(t);
     setTimeout(() => {
       setTyping(false);
-      setMessages((m) => [...m, { from: 'bot', text: answerFor(t) }]);
-    }, 900);
+      setMessages((m) => [...m, { from: 'bot', text: reply.a, cta: reply.cta }]);
+    }, 800);
   };
 
   return (
     <>
-      {/* Floating launcher button */}
-      <button
-        onClick={() => setOpen((v) => !v)}
-        aria-label="Assistant SPORT AIR EVENT"
-        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#0066CC] to-[#0052A3] rounded-full shadow-2xl flex items-center justify-center text-white transition-transform hover:scale-105"
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          {open ? (
-            <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
-              <X className="w-7 h-7" />
-            </motion.span>
-          ) : (
-            <motion.span key="c" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
-              <MessageCircle className="w-7 h-7" />
-            </motion.span>
+      {/* Floating launcher */}
+      <Magnetic strength={0.2} className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[60]">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Fermer l'assistant" : 'Ouvrir l’assistant SPORT AIR EVENT'}
+          aria-expanded={open}
+          data-cursor
+          className="cursor-pointer relative w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white transition-transform hover:scale-105 focus-visible:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, var(--blue-bright), var(--blue-deep))',
+            boxShadow: '0 14px 34px rgba(0,102,204,0.40)',
+          }}
+        >
+          {!open && (
+            <span
+              className="absolute inset-0 rounded-full"
+              style={{ boxShadow: '0 0 0 0 rgba(31,122,224,0.55)', animation: 'sae-ping 2.4s ease-out infinite' }}
+            />
           )}
-        </AnimatePresence>
-      </button>
+          <AnimatePresence mode="wait" initial={false}>
+            {open ? (
+              <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                <X className="w-6 h-6 sm:w-7 sm:h-7" />
+              </motion.span>
+            ) : (
+              <motion.span key="c" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                <MessageSquareText className="w-6 h-6 sm:w-7 sm:h-7" />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </button>
+      </Magnetic>
+
+      <style>{`@keyframes sae-ping{0%{box-shadow:0 0 0 0 rgba(31,122,224,0.45)}70%{box-shadow:0 0 0 16px rgba(31,122,224,0)}100%{box-shadow:0 0 0 0 rgba(31,122,224,0)}}`}</style>
 
       {/* Chat panel */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.95 }}
+            role="dialog"
+            aria-label="Assistant SPORT AIR EVENT"
+            initial={{ opacity: 0, y: 24, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 24, scale: 0.95 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-24 right-5 sm:right-6 z-50 flex flex-col bg-white overflow-hidden"
+            exit={{ opacity: 0, y: 24, scale: 0.96 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed bottom-24 right-4 sm:right-6 z-[60] flex flex-col overflow-hidden"
             style={{
-              width: 'min(380px, calc(100vw - 2.5rem))',
-              height: 'min(560px, calc(100vh - 8rem))',
-              borderRadius: 24,
-              boxShadow: '0 24px 64px rgba(0,0,0,0.24)',
+              width: 'min(384px, calc(100vw - 2rem))',
+              height: 'min(572px, calc(100vh - 8rem))',
+              borderRadius: 22,
+              background: 'var(--paper)',
+              border: '1px solid var(--line)',
+              boxShadow: '0 28px 70px rgba(6,36,95,0.28)',
             }}
           >
             {/* Header */}
-            <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-br from-[#0066CC] to-[#0052A3] text-white">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-                <MessageCircle className="w-5 h-5" />
+            <div
+              className="flex items-center gap-3 px-4 py-3.5 text-white"
+              style={{ background: 'radial-gradient(120% 140% at 15% 0%, var(--navy-2) 0%, var(--blue-deep) 60%, var(--blue) 100%)' }}
+            >
+              <div className="relative flex-shrink-0">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.28)' }}
+                >
+                  <MessageSquareText className="w-5 h-5" />
+                </div>
+                <span
+                  className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2"
+                  style={{ background: '#34d399', borderColor: 'var(--blue-deep)' }}
+                />
               </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-sm leading-tight">Assistant SPORT AIR EVENT</h3>
-                <p className="text-xs text-blue-100 flex items-center gap-1">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400" /> En ligne
+              <div className="flex-1 min-w-0">
+                <h3 className="font-display font-semibold text-[15px] leading-tight">Assistant SPORT AIR EVENT</h3>
+                <p className="text-[11.5px] text-white/80 flex items-center gap-1.5">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: '#34d399' }} />
+                  En ligne · réponse instantanée
                 </p>
               </div>
-              <button onClick={() => setOpen(false)} aria-label="Fermer" className="text-white/80 hover:text-white transition-colors">
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Fermer"
+                data-cursor
+                className="cursor-pointer text-white/75 hover:text-white transition-colors p-1 -mr-1 rounded-full"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-3 bg-gray-50">
+            <div
+              ref={scrollRef}
+              data-lenis-prevent
+              className="flex-1 overflow-y-auto overscroll-contain px-3.5 py-4 space-y-3"
+            >
               {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.from === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <p
-                    className={`max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed ${
-                      m.from === 'user'
-                        ? 'bg-[#0066CC] text-white rounded-2xl rounded-br-md'
-                        : 'bg-white text-gray-700 rounded-2xl rounded-bl-md shadow-sm'
-                    }`}
-                  >
-                    {m.text}
-                  </p>
-                </div>
+                <Bubble key={i} from={m.from} text={m.text} cta={m.cta} />
               ))}
-
-              {showQuick && (
-                <div className="space-y-2 pt-1">
-                  <p className="text-xs text-gray-400 font-medium">Questions fréquentes :</p>
-                  {QUICK_REPLIES.map((q) => (
-                    <button
-                      key={q}
-                      onClick={() => send(q)}
-                      className="block w-full text-left text-sm text-[#0066CC] bg-white border border-blue-100 hover:bg-blue-50 rounded-xl px-3.5 py-2.5 transition-colors"
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              )}
 
               {typing && (
                 <div className="flex justify-start">
-                  <div className="bg-white rounded-2xl rounded-bl-md shadow-sm px-4 py-3 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div
+                    className="px-4 py-3 flex items-center gap-1"
+                    style={{ background: '#fff', border: '1px solid var(--line)', borderRadius: '16px 16px 16px 4px' }}
+                  >
+                    {[0, 150, 300].map((d) => (
+                      <span
+                        key={d}
+                        className="w-1.5 h-1.5 rounded-full animate-bounce"
+                        style={{ background: 'var(--blue)', animationDelay: `${d}ms` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {showQuick && !typing && (
+                <div className="pt-1">
+                  <p className="text-[11px] uppercase tracking-wide font-semibold mb-2" style={{ color: 'var(--muted)' }}>
+                    Suggestions
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {QUICK_REPLIES.map((q) => (
+                      <span
+                        key={q}
+                        role="button"
+                        tabIndex={0}
+                        data-cursor
+                        onClick={() => send(q)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            send(q);
+                          }
+                        }}
+                        className="cursor-pointer select-none text-[12.5px] font-medium px-3 py-1.5 rounded-full transition-colors"
+                        style={{ background: '#fff', border: '1px solid var(--line)', color: 'var(--blue)' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--blue-soft)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = '#fff'; }}
+                      >
+                        {q}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Input */}
+            {/* Quick devis shortcut + input */}
+            <div className="px-3.5 pt-2.5 pb-1.5" style={{ borderTop: '1px solid var(--line)', background: '#fff' }}>
+              <Link
+                to="/Contact"
+                data-cursor
+                onClick={() => setOpen(false)}
+                className="cursor-pointer flex items-center justify-center gap-2 w-full py-2.5 text-[13.5px] font-semibold text-white rounded-full transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
+                style={{
+                  background: 'linear-gradient(135deg, var(--blue-bright), var(--blue-deep))',
+                  boxShadow: '0 10px 24px rgba(0,102,204,0.30)',
+                }}
+              >
+                <Check size={15} strokeWidth={3} />
+                Demander un devis gratuit
+              </Link>
+            </div>
+
             <form
               onSubmit={(e) => { e.preventDefault(); send(input); }}
-              className="flex items-center gap-2 p-3 border-t border-gray-100 bg-white"
+              className="flex items-center gap-2 px-3.5 pb-3 pt-1.5"
+              style={{ background: '#fff' }}
             >
               <input
+                ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Posez votre question..."
-                className="flex-1 px-3.5 py-2.5 rounded-full bg-gray-100 text-sm outline-none focus:ring-2 focus:ring-blue-100"
+                placeholder="Écrivez votre message…"
+                aria-label="Votre message"
+                className="flex-1 px-4 py-2.5 rounded-full text-[13.5px] outline-none transition-shadow"
+                style={{ background: 'var(--paper)', border: '1px solid var(--line)', color: 'var(--ink)' }}
+                onFocus={(e) => { e.currentTarget.style.boxShadow = '0 0 0 3px var(--blue-soft)'; e.currentTarget.style.borderColor = 'var(--blue)'; }}
+                onBlur={(e) => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = 'var(--line)'; }}
               />
               <button
                 type="submit"
                 disabled={!input.trim()}
                 aria-label="Envoyer"
-                className="w-10 h-10 flex-shrink-0 rounded-full bg-[#0066CC] text-white flex items-center justify-center disabled:opacity-40 hover:bg-[#0052A3] transition-colors"
+                data-cursor
+                className="cursor-pointer w-10 h-10 flex-shrink-0 rounded-full text-white flex items-center justify-center disabled:opacity-40 transition-transform hover:scale-105 focus-visible:scale-105"
+                style={{ background: 'linear-gradient(135deg, var(--blue-bright), var(--blue-deep))' }}
               >
                 <Send className="w-4 h-4" />
               </button>

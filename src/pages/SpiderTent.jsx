@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Check,
   ArrowRight,
@@ -106,104 +106,45 @@ const specs = [
   { icon: Maximize, label: 'Usage', value: 'Intérieur et extérieur' },
 ];
 
-// V71 — Liste scindée : rail de labels à gauche + grand panneau valeur à droite,
-// synchronisés. La valeur réelle de la spec active s'affiche en grand.
-function SpecSplitList() {
-  const [active, setActive] = useState(specs.findIndex((s) => s.feature) ?? 0);
-  const current = specs[active] ?? specs[0];
-  const ActiveIcon = current.icon;
-
+// Compact spec-card grid — icône + label, valeur réelle en évidence, petit
+// sous-titre. La spec signature (feature) garde un léger liseré bleu.
+function SpecCardGrid() {
   return (
-    <div
-      className="grid gap-2.5 md:gap-3.5"
-      style={{ gridTemplateColumns: 'minmax(150px, 0.85fr) 1.15fr' }}
-    >
-      {/* Left rail — selectable label list */}
-      <div className="self-start overflow-hidden rounded-[18px] border border-[var(--line)] bg-white">
-        {specs.map((s, i) => {
-          const on = i === active;
-          const RIcon = s.icon;
-          return (
-            <button
-              key={s.label}
-              type="button"
-              onClick={() => setActive(i)}
-              data-cursor
-              className="relative flex w-full cursor-pointer items-center gap-2.5 px-3 py-3 md:px-4 md:py-3.5 text-left transition-colors duration-200"
-              style={{
-                borderTop: i === 0 ? 'none' : '1px solid var(--line)',
-                background: on ? 'var(--blue-mist)' : 'transparent',
-              }}
-            >
-              {on && (
-                <motion.span
-                  layoutId="spider-spec-rail"
-                  className="absolute left-0 rounded-full"
-                  style={{ top: 6, bottom: 6, width: 3, background: 'var(--blue)' }}
-                />
+    <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-3.5">
+      {specs.map((s) => {
+        const Icon = s.icon;
+        return (
+          <motion.div
+            variants={staggerChild}
+            key={s.label}
+            className={`spider-spec-card flex flex-col rounded-2xl border bg-white p-4 md:p-5 transition-colors duration-200 ${
+              s.feature ? 'border-[var(--blue)]/40' : 'border-[var(--line)]'
+            }`}
+          >
+            <div className="mb-3.5 flex items-center justify-between gap-2">
+              <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[var(--blue-soft)] text-[var(--blue)]" style={{ width: 32, height: 32 }}>
+                <Icon className="w-4 h-4" strokeWidth={2.4} />
+              </span>
+              {s.feature && (
+                <span className="kicker text-[0.62rem]" style={{ color: 'var(--blue)' }}>Signature</span>
               )}
-              <span
-                className="inline-flex shrink-0 items-center justify-center rounded-lg transition-colors duration-200"
-                style={{
-                  width: 28,
-                  height: 28,
-                  background: on ? 'var(--blue)' : 'var(--blue-soft)',
-                  color: on ? '#fff' : 'var(--blue)',
-                }}
-              >
-                <RIcon className="w-[15px] h-[15px]" strokeWidth={2.4} />
-              </span>
-              <span
-                className="leading-tight"
-                style={{
-                  fontSize: '0.8rem',
-                  fontWeight: on ? 700 : 600,
-                  color: on ? 'var(--blue-deep)' : 'var(--ink-2)',
-                }}
-              >
-                {s.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Right — big detail panel for the active spec */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={active}
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -8 }}
-          transition={{ duration: 0.26 }}
-          className="rounded-[18px] border border-[var(--line)] p-5 md:p-8"
-          style={{ background: 'var(--blue-mist)' }}
-        >
-          <div className="mb-4 flex items-center justify-between">
-            <span className="inline-flex items-center justify-center rounded-[13px] border border-[var(--line)] bg-white text-[var(--blue)]" style={{ width: 46, height: 46 }}>
-              <ActiveIcon className="w-[22px] h-[22px]" strokeWidth={2.2} />
-            </span>
-            {current.feature && (
-              <span className="kicker" style={{ color: 'var(--blue)' }}>Signature design</span>
-            )}
-          </div>
-
-          <div className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--blue-deep)]">
-            {current.label}
-          </div>
-
-          <div className="font-display font-bold tracking-tightest text-ink leading-[0.98] mt-1.5 text-[clamp(1.8rem,4vw,2.75rem)]">
-            {current.value}
-          </div>
-
-          {current.note && (
-            <div className="mt-3 text-[0.9rem] leading-relaxed text-[var(--ink-2)] max-w-md">
-              {current.note}
             </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
-    </div>
+            <div className="text-[0.7rem] font-bold uppercase tracking-[0.1em] leading-tight text-[var(--blue-deep)]">
+              {s.label}
+            </div>
+            <div className="font-display font-bold tracking-tightest text-ink leading-[1.1] mt-1.5 text-[clamp(1.05rem,1.8vw,1.35rem)]">
+              {s.value}
+            </div>
+            {s.note && (
+              <div className="mt-2 text-[0.82rem] leading-relaxed text-[var(--muted)]">
+                {s.note}
+              </div>
+            )}
+          </motion.div>
+        );
+      })}
+      <style>{`.spider-spec-card:hover{border-color:rgba(0,102,204,0.4);background:var(--blue-mist);}`}</style>
+    </RevealStagger>
   );
 }
 
@@ -278,7 +219,6 @@ export default function SpiderTent() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-20">
             <div className="flex flex-col items-start max-w-2xl">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                <span className="text-xs font-semibold tabular-nums text-ink/30">01</span>
                 <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
                 <span className="kicker">Parfaite pour</span>
               </Reveal>
@@ -303,12 +243,6 @@ export default function SpiderTent() {
                 data-cursor
                 className="spider-uc-row relative flex items-center gap-3.5 md:gap-5 overflow-hidden bg-white border-b border-[var(--line)] px-3.5 py-4 md:px-6 md:py-6 transition-colors duration-200"
               >
-                <span
-                  className="font-display shrink-0 tabular-nums select-none text-lg md:text-2xl font-extrabold"
-                  style={{ width: 30, color: '#c2d2ea' }}
-                >
-                  0{i + 1}
-                </span>
                 <span className="flex items-center justify-center shrink-0 w-9 h-9 md:w-11 md:h-11 rounded-[11px] bg-[var(--blue-soft)] text-[var(--blue)]">
                   <Icon className="w-[18px] h-[18px] md:w-5 md:h-5" strokeWidth={2.2} />
                 </span>
@@ -400,13 +334,12 @@ export default function SpiderTent() {
         </RevealStagger>
       </section>
 
-      {/* ░░ CARACTÉRISTIQUES TECHNIQUES — editorial bento ░░ */}
+      {/* ░░ CARACTÉRISTIQUES TECHNIQUES — compact spec-card grid ░░ */}
       <section className="bg-paper py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-14 md:mb-16">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-9 md:mb-12">
             <div className="lg:col-span-7 flex flex-col items-start max-w-2xl">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                <span className="text-xs font-semibold tabular-nums text-ink/30">03</span>
                 <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
                 <span className="kicker">Fiche technique</span>
               </Reveal>
@@ -421,11 +354,8 @@ export default function SpiderTent() {
             </Rise>
           </div>
 
-          {/* Liste scindée (rail + détail) — rail de labels sélectionnables à
-              gauche, grand panneau valeur synchronisé à droite. */}
-          <Reveal>
-            <SpecSplitList />
-          </Reveal>
+          {/* Compact spec-card grid */}
+          <SpecCardGrid />
         </div>
       </section>
 

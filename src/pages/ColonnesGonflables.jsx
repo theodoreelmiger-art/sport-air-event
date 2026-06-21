@@ -1,25 +1,24 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ArrowUpRight, ArrowRight, MessageCircle, Layers, Ruler, Sparkles, Lightbulb,
   Timer, Anchor, Sun, ShieldCheck, Flag, DoorOpen, LayoutPanelTop, PartyPopper,
 } from 'lucide-react';
-import { Reveal, Rise, ClipReveal, MaskHeading, Magnetic } from '../lib/motion.jsx';
+import { Reveal, Rise, ClipReveal, MaskHeading, Magnetic, RevealStagger, staggerChild } from '../lib/motion.jsx';
 import ProductConfigurator from '../components/ProductConfigurator.jsx';
 import { CONFIGURATORS } from '../data/configurators.js';
 
-/* SPECS — real values preserved; `big`/`tail` = compact headline for the V71
-   detail panel, `badges` = quick descriptors derived from each real value. */
+/* SPECS — real label + full real value preserved verbatim. The compact card grid
+   renders the label and the value as the prominent line — no derived facts. */
 const SPECS = [
-  { icon: Layers, label: 'Matériau', value: 'PVC 650g/m² haute résistance', big: 'PVC', tail: '650g/m²', badges: ['650g/m²', 'Haute résistance'] },
-  { icon: Ruler, label: 'Hauteurs disponibles', value: '2.5m – 3m – 4m', big: '2.5–4', tail: 'm', badges: ['2.5m', '3m', '4m'] },
-  { icon: Sparkles, label: 'Impression', value: 'Sublimation HD 360° UV résistant', big: 'HD 360°', tail: 'UV', badges: ['Sublimation', '360°', 'Anti-UV'] },
-  { icon: Lightbulb, label: 'Éclairage', value: 'LED RGB intégré (option)', big: 'LED', tail: 'RGB', badges: ['LED RGB', 'Option'] },
-  { icon: Timer, label: 'Temps de montage', value: '3-5 minutes par colonne', big: '3-5', tail: 'min', badges: ['Par colonne', 'Montage rapide'] },
-  { icon: Anchor, label: 'Base de lestage', value: 'Base lestée incluse', big: 'Base', tail: 'lestée', badges: ['Incluse', 'Stable'] },
-  { icon: Sun, label: 'Usage', value: 'Intérieur et extérieur', big: 'Indoor', tail: 'outdoor', badges: ['Intérieur', 'Extérieur'] },
-  { icon: ShieldCheck, label: 'Garantie', value: '2 ans structure + 3 ans impression', big: '2-3', tail: 'ans', badges: ['Structure', 'Impression'] },
+  { icon: Layers, label: 'Matériau', value: 'PVC 650g/m² haute résistance' },
+  { icon: Ruler, label: 'Hauteurs disponibles', value: '2.5m – 3m – 4m' },
+  { icon: Sparkles, label: 'Impression', value: 'Sublimation HD 360° UV résistant' },
+  { icon: Lightbulb, label: 'Éclairage', value: 'LED RGB intégré (option)' },
+  { icon: Timer, label: 'Temps de montage', value: '3-5 minutes par colonne' },
+  { icon: Anchor, label: 'Base de lestage', value: 'Base lestée incluse' },
+  { icon: Sun, label: 'Usage', value: 'Intérieur et extérieur' },
+  { icon: ShieldCheck, label: 'Garantie', value: '2 ans structure + 3 ans impression' },
 ];
 
 const USAGES = [
@@ -29,103 +28,34 @@ const USAGES = [
   { n: '04', icon: PartyPopper, title: 'Soirées & événements', desc: 'Décoration lumineuse, ambiance unique' },
 ];
 
-/* ░░ V71 — rail de labels sélectionnables + grand panneau valeur synchronisé ░░ */
-function SpecRailDetail() {
-  const [active, setActive] = useState(0);
-  const s = SPECS[active];
-  const Icon = s.icon;
-
+/* ░░ Compact spec-card grid — icône + label, valeur réelle en évidence ░░ */
+function SpecCardGrid() {
   return (
-    <Reveal as="div" y={18}>
-      <div className="grid gap-3 md:gap-3.5" style={{ gridTemplateColumns: 'minmax(150px, 0.85fr) 1.15fr' }}>
-        {/* Left rail — selectable label list */}
-        <div className="self-start overflow-hidden rounded-3xl border border-[var(--line)] bg-white">
-          {SPECS.map((row, i) => {
-            const on = i === active;
-            const RIcon = row.icon;
-            return (
-              <button
-                key={row.label}
-                type="button"
-                onClick={() => setActive(i)}
-                data-cursor
-                className="cursor-pointer w-full flex items-center gap-2.5 sm:gap-3 text-left relative py-3 px-3 sm:px-4 transition-colors duration-200"
-                style={{
-                  borderTop: i === 0 ? 'none' : '1px solid var(--line)',
-                  background: on ? 'var(--blue-mist)' : 'transparent',
-                }}
-              >
-                {on && (
-                  <motion.span
-                    layoutId="spec-rail-indicator"
-                    className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full"
-                    style={{ background: 'var(--blue)' }}
-                  />
-                )}
-                <span
-                  className="inline-flex items-center justify-center shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-xl transition-colors duration-200"
-                  style={{
-                    background: on ? 'var(--blue)' : 'var(--blue-soft)',
-                    color: on ? '#fff' : 'var(--blue)',
-                  }}
-                >
-                  <RIcon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={2.4} />
-                </span>
-                <span
-                  className="text-[0.82rem] sm:text-[0.9rem] leading-tight"
-                  style={{
-                    fontWeight: on ? 700 : 600,
-                    color: on ? 'var(--blue-deep)' : 'var(--ink-2)',
-                  }}
-                >
-                  {row.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right — big detail panel for the active spec */}
-        <AnimatePresence mode="wait">
+    <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-3.5">
+      {SPECS.map((row) => {
+        const Icon = row.icon;
+        return (
           <motion.div
-            key={active}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -8 }}
-            transition={{ duration: 0.26 }}
-            className="rounded-3xl border border-[var(--line)] p-5 sm:p-7 md:p-8"
-            style={{ background: 'var(--blue-mist)' }}
+            variants={staggerChild}
+            key={row.label}
+            className="col-spec-card flex flex-col rounded-2xl border border-[var(--line)] bg-white p-4 md:p-5 transition-colors duration-200"
           >
-            <span className="inline-flex items-center justify-center mb-4 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white border border-[var(--line)] text-[var(--blue)]">
-              <Icon className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.2} />
-            </span>
-
-            <div className="kicker" style={{ color: 'var(--blue-deep)' }}>{s.label}</div>
-
-            <div className="font-display flex items-end gap-2 flex-wrap mt-1.5 tracking-tightest" style={{ lineHeight: 0.95 }}>
-              <span className="text-ink text-[clamp(1.9rem,6vw,3.2rem)]">{s.big}</span>
-              <span className="text-[var(--blue)] text-[clamp(1rem,3vw,1.6rem)] pb-1.5">{s.tail}</span>
+            <div className="flex items-center gap-2.5 mb-3.5">
+              <span className="inline-flex items-center justify-center shrink-0 w-8 h-8 rounded-xl bg-[var(--blue-soft)] text-[var(--blue)]">
+                <Icon className="w-4 h-4" strokeWidth={2.4} />
+              </span>
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.1em] leading-tight text-[var(--blue-deep)]">
+                {row.label}
+              </span>
             </div>
-
-            <div className="mt-3 text-[0.95rem] sm:text-[1.02rem] leading-relaxed text-[var(--ink-2)]">
-              {s.value}
-            </div>
-
-            <div className="flex flex-wrap gap-2 mt-5">
-              {s.badges.map((b, bi) => (
-                <span
-                  key={b}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-white py-1.5 px-3 text-[0.78rem] font-bold text-[var(--ink-2)]"
-                >
-                  {bi === 0 && <Icon className="w-3 h-3 text-[var(--blue)]" strokeWidth={2.6} />}
-                  {b}
-                </span>
-              ))}
+            <div className="font-display font-bold tracking-tightest text-ink leading-[1.1] text-[clamp(1.05rem,1.8vw,1.35rem)]">
+              {row.value}
             </div>
           </motion.div>
-        </AnimatePresence>
-      </div>
-    </Reveal>
+        );
+      })}
+      <style>{`.col-spec-card:hover{border-color:rgba(0,102,204,0.2);background:var(--blue-mist);}`}</style>
+    </RevealStagger>
   );
 }
 
@@ -158,10 +88,9 @@ export default function ColonnesGonflables() {
           {/* soft blue ambient wash */}
           <div className="pointer-events-none absolute -top-24 right-[6%] w-[36rem] h-[36rem] rounded-full" style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.08), transparent 70%)', filter: 'blur(40px)' }} />
           <div className="relative max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-9 md:mb-12">
               <div className="max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                  <span className="text-xs font-semibold tabular-nums text-ink/30">01</span>
                   <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
                   <span className="kicker">Fiche technique</span>
                 </Reveal>
@@ -176,8 +105,8 @@ export default function ColonnesGonflables() {
               </Rise>
             </div>
 
-            {/* V71 — Liste scindée (rail de labels + grand panneau détail synchronisé) */}
-            <SpecRailDetail />
+            {/* Compact spec-card grid */}
+            <SpecCardGrid />
           </div>
         </section>
 
@@ -187,7 +116,6 @@ export default function ColonnesGonflables() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
               <div className="max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                  <span className="text-xs font-semibold tabular-nums text-ink/30">02</span>
                   <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
                   <span className="kicker">Cas d'usage</span>
                 </Reveal>
@@ -220,9 +148,6 @@ export default function ColonnesGonflables() {
                       key={u.n}
                       className="uc73-row relative flex items-center gap-4 sm:gap-5 overflow-hidden bg-white border-b border-[var(--line)] py-5 sm:py-6 px-3 sm:px-5 transition-colors duration-200"
                     >
-                      <span className="font-display shrink-0 tabular-nums select-none font-extrabold text-[1.4rem] sm:text-[1.6rem] w-9 sm:w-12 text-[#c2d2ea]">
-                        {u.n}
-                      </span>
                       <span className="flex items-center justify-center shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[var(--blue-soft)] text-[var(--blue)]">
                         <Icon className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.2} />
                       </span>

@@ -1,41 +1,214 @@
-import { Link } from 'react-router-dom';
+import { useState, useMemo } from 'react';
 import {
-  ArrowRight, ArrowUpRight, Layers, Wind, Sparkles, Timer, ShieldCheck,
-  Feather, Sun, PartyPopper, Building2, Wine, Tent,
+  Check, Plus, Minus, ArrowRight, FileText, Tag, Sparkles,
+  Armchair, Table2, Wine, Layers,
 } from 'lucide-react';
 import {
-  Reveal, RevealStagger, Rise, ClipReveal, MaskHeading, Magnetic, staggerChild, motion,
+  Reveal, RevealStagger, staggerChild, Magnetic, motion,
 } from '../lib/motion.jsx';
-import ProductConfigurator from '../components/ProductConfigurator.jsx';
+import { AnimatePresence } from 'framer-motion';
+import SectionHeader from '../components/SectionHeader.jsx';
+import DevisModal from '../components/DevisModal.jsx';
 import { CONFIGURATORS } from '../data/configurators.js';
 
-/* Technical specs — label + prominent value, with an icon for the bento accent. */
-const SPECS = [
-  { icon: Layers, label: 'Matériau', value: 'PVC 0.6mm', sub: 'Soudé haute fréquence, étanche' },
-  { icon: Wind, label: 'Gonflage', value: 'Air permanent', sub: 'Souffleur silencieux fourni' },
-  { icon: Sparkles, label: 'Impression', value: 'HD 360°', sub: 'Sublimation résistante aux UV' },
-  { icon: Timer, label: 'Montage', value: '< 2 min', sub: 'Mise en place par une personne' },
-  { icon: Feather, label: 'Transport', value: 'Ultra-léger', sub: 'Plié dans un sac dédié' },
-  { icon: Sun, label: 'Usage', value: 'Indoor / Outdoor', sub: 'Intérieur comme extérieur' },
-  { icon: ShieldCheck, label: 'Garantie', value: '2 ans', sub: 'Structure + impression' },
-];
+const EASE = [0.16, 1, 0.3, 1];
+const fmt = (n) => '€ ' + n.toLocaleString('fr-FR');
 
-/* Use-cases — keep every word, only the design changes. */
-const USAGES = [
-  { n: '01', icon: PartyPopper, title: 'Lounges & espaces VIP', desc: 'Créez des zones de détente premium pour vos invités et partenaires.' },
-  { n: '02', icon: Building2, title: 'Salons & stands', desc: 'Habillez votre stand avec un mobilier aux couleurs de votre marque.' },
-  { n: '03', icon: Wine, title: 'Bars & réceptions', desc: 'Bars gonflables imprimés pour cocktails, lancements et soirées.' },
-  { n: '04', icon: Tent, title: 'Événements sportifs', desc: 'Assises et tables qui complètent vos arches et tentes Sport Air Event.' },
-];
+const DATA = CONFIGURATORS.mobilier;
+const CAT_ICON = { Assises: Armchair, Tables: Table2, Bars: Wine };
+
+/* No real per-furniture photo exists (the old site had a single render too), so each
+   item gets a clean on-brand inflatable illustration that swaps when you click a row. */
+const FURNITURE_KIND = {
+  'Pouf gonflable imprimé': 'pouf',
+  'Chaise basse': 'chaise',
+  'Sofa 1 place': 'sofa1',
+  'Sofa 2 places': 'sofa2',
+  'Table basse': 'tableBasse',
+  'Table haute': 'tableHaute',
+  'Bar gonflable droit': 'bar',
+  'Pompe 220 volts': 'pompe',
+};
+
+function FurnitureArt({ kind }) {
+  const F = 'var(--blue-soft)', S = 'var(--blue)', sw = 3.5;
+  const box = { fill: F, stroke: S, strokeWidth: sw, strokeLinejoin: 'round' };
+  const top = { fill: '#ffffff', stroke: S, strokeWidth: sw };
+  const seam = { stroke: S, strokeWidth: 2.2, opacity: 0.35, fill: 'none', strokeLinecap: 'round' };
+  const shadow = <ellipse cx="110" cy="183" rx="72" ry="9" fill="rgba(0,82,163,0.12)" />;
+  const SHAPES = {
+    pouf: (<>{shadow}
+      <rect x="60" y="96" width="100" height="72" rx="28" {...box} />
+      <ellipse cx="110" cy="96" rx="50" ry="17" {...top} />
+      <path d="M73 122 H147 M73 142 H147" {...seam} /></>),
+    chaise: (<>{shadow}
+      <rect x="64" y="72" width="92" height="42" rx="18" {...box} />
+      <rect x="56" y="106" width="108" height="58" rx="22" {...box} />
+      <path d="M56 134 H164" {...seam} /></>),
+    sofa1: (<>{shadow}
+      <rect x="58" y="82" width="104" height="42" rx="18" {...box} />
+      <rect x="50" y="104" width="120" height="58" rx="20" {...box} />
+      <rect x="46" y="98" width="24" height="64" rx="12" {...box} />
+      <rect x="150" y="98" width="24" height="64" rx="12" {...box} /></>),
+    sofa2: (<>{shadow}
+      <rect x="40" y="82" width="140" height="42" rx="18" {...box} />
+      <rect x="32" y="104" width="156" height="56" rx="20" {...box} />
+      <rect x="28" y="98" width="24" height="62" rx="12" {...box} />
+      <rect x="168" y="98" width="24" height="62" rx="12" {...box} />
+      <path d="M110 110 V152" {...seam} strokeWidth="2.5" opacity="0.4" /></>),
+    tableBasse: (<>{shadow}
+      <ellipse cx="110" cy="152" rx="40" ry="12" {...box} />
+      <rect x="98" y="104" width="24" height="50" rx="8" {...box} />
+      <ellipse cx="110" cy="100" rx="66" ry="20" {...top} /></>),
+    tableHaute: (<>{shadow}
+      <ellipse cx="110" cy="162" rx="36" ry="11" {...box} />
+      <rect x="100" y="78" width="20" height="86" rx="8" {...box} />
+      <ellipse cx="110" cy="74" rx="48" ry="15" {...top} /></>),
+    bar: (<>{shadow}
+      <rect x="52" y="90" width="116" height="78" rx="14" {...box} />
+      <rect x="44" y="82" width="132" height="20" rx="9" {...top} />
+      <path d="M78 112 V162 M110 112 V162 M142 112 V162" {...seam} /></>),
+    pompe: (<>{shadow}
+      <rect x="92" y="88" width="36" height="80" rx="12" {...box} />
+      <rect x="84" y="74" width="52" height="16" rx="8" {...top} />
+      <rect x="106" y="56" width="8" height="22" rx="4" fill={S} />
+      <path d="M128 150 q42 0 42 -30" fill="none" stroke={S} strokeWidth={sw} strokeLinecap="round" />
+      <circle cx="170" cy="116" r="6" fill={S} /></>),
+  };
+  return (
+    <svg viewBox="0 0 220 200" width="100%" style={{ maxWidth: 360, display: 'block' }} aria-hidden>
+      {SHAPES[kind] || SHAPES.pouf}
+    </svg>
+  );
+}
+
+/* ── Quantity stepper — shown only on a selected row ── */
+function Stepper({ qty, onInc, onDec }) {
+  const base = 'w-8 h-8 grid place-items-center rounded-full cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed';
+  const style = { border: '1px solid var(--line)', color: 'var(--blue)', background: 'var(--blue-mist)' };
+  const stop = (e) => e.stopPropagation();
+  return (
+    <div className="flex items-center gap-2" onClick={stop} onKeyDown={stop}>
+      <motion.button type="button" aria-label="Diminuer la quantité" whileTap={{ scale: 0.85 }}
+        onClick={onDec} disabled={qty <= 1} className={base} style={style}>
+        <Minus className="w-3.5 h-3.5" strokeWidth={2.5} />
+      </motion.button>
+      <div className="w-7 text-center font-display tabular-nums select-none" style={{ color: 'var(--blue-deep)', fontSize: '0.95rem' }} aria-live="polite">{qty}</div>
+      <motion.button type="button" aria-label="Augmenter la quantité" whileTap={{ scale: 0.85 }}
+        onClick={onInc} className={base} style={style}>
+        <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
+      </motion.button>
+    </div>
+  );
+}
+
+/* ── One selectable furniture row: whole row toggles, checkbox + qty stepper ── */
+function ItemRow({ it, on, active, qty, first, onToggle, onFocusRow, onInc, onDec }) {
+  const onKey = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } };
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-pressed={on}
+      data-cursor
+      onClick={onToggle}
+      onKeyDown={onKey}
+      onMouseEnter={onFocusRow}
+      className="cursor-pointer flex items-center gap-4 transition-colors"
+      style={{
+        padding: '15px 16px',
+        background: on || active ? 'var(--blue-mist)' : '#fff',
+        borderTop: first ? 'none' : '1px solid var(--line)',
+        boxShadow: active && !on ? 'inset 3px 0 0 var(--blue-bright)' : 'none',
+      }}
+    >
+      {/* Checkbox — 24px, fills blue with white Check when selected */}
+      <span
+        aria-hidden
+        className="grid place-items-center shrink-0 transition-colors"
+        style={{
+          width: 24, height: 24, borderRadius: 7,
+          background: on ? 'var(--blue)' : '#fff',
+          border: on ? '1px solid var(--blue)' : '1.5px solid var(--line)',
+          boxShadow: on ? '0 5px 12px -5px rgba(0,82,163,.55)' : 'none',
+        }}
+      >
+        <motion.span initial={false} animate={{ scale: on ? 1 : 0 }} transition={{ duration: 0.18, ease: EASE }} style={{ display: 'grid' }}>
+          <Check size={15} strokeWidth={3} style={{ color: '#fff' }} />
+        </motion.span>
+      </span>
+
+      <div className="flex-1 min-w-0">
+        <div className="leading-snug" style={{ fontSize: '0.92rem', fontWeight: on ? 600 : 500, color: on ? 'var(--ink)' : 'var(--ink-2)' }}>{it.name}</div>
+        {it.sub && <div style={{ fontSize: '0.74rem', color: 'var(--muted)', marginTop: 2 }}>{it.sub}</div>}
+      </div>
+
+      <AnimatePresence mode="wait" initial={false}>
+        {on ? (
+          <motion.div key="stepper" initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 8 }} transition={{ duration: 0.22, ease: EASE }} className="shrink-0">
+            <Stepper qty={qty} onInc={onInc} onDec={onDec} />
+          </motion.div>
+        ) : (
+          <motion.span key="price" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+            className="tabular-nums shrink-0 whitespace-nowrap" style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--blue)' }}>
+            {it.price}€
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function Mobilier() {
+  const { productName, image, groups, accessories, custom } = DATA;
+  const categories = groups.map((g) => g.category);
+
+  const [cat, setCat] = useState(categories[0]);          // active category filter
+  const [qtys, setQtys] = useState({});                   // key -> qty
+  const [activeKey, setActiveKey] = useState(`${categories[0]}-0`); // item shown on the image
+  const [open, setOpen] = useState(false);
+
+  const setQ = (k, v) => setQtys((m) => ({ ...m, [k]: Math.max(0, v) }));
+
+  // flat lookup of every item by key (across all categories + accessories)
+  const allItems = useMemo(() => {
+    const map = {};
+    groups.forEach((g) => g.items.forEach((it, i) => { map[`${g.category}-${i}`] = { ...it, group: g.label }; }));
+    accessories.items.forEach((it, i) => { map[`acc-${i}`] = { ...it, group: accessories.label }; });
+    return map;
+  }, [groups, accessories]);
+
+  const activeGroup = groups.find((g) => g.category === cat);
+
+  const total = useMemo(
+    () => Object.entries(qtys).reduce((t, [k, q]) => t + (q > 0 && allItems[k] ? allItems[k].price * q : 0), 0),
+    [qtys, allItems],
+  );
+
+  // selected lines for the modal + receipt
+  const selected = Object.entries(qtys)
+    .filter(([, q]) => q > 0)
+    .map(([k, q]) => ({ label: allItems[k].name, qty: q, unit: allItems[k].price }));
+
+  // image + caption react to the active item (fixes "quand je clique sur la chaise l'image n'apparaît pas")
+  const activeItem = allItems[activeKey] || allItems[`${cat}-0`];
+  const activeKind = FURNITURE_KIND[activeItem?.name] || 'pouf';
+
+  const RollPrice = ({ value, style }) => (
+    <span style={{ display: 'inline-flex', overflow: 'hidden', verticalAlign: 'bottom', ...style }}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span key={value} initial={{ y: '0.65em', opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: '-0.65em', opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 520, damping: 36 }} style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>{value}</motion.span>
+      </AnimatePresence>
+    </span>
+  );
+
   return (
     <main className="overflow-x-clip bg-paper">
-      {/* ░░ HERO (slim, no image, no configurator) ░░ */}
-      <section className="bg-deep text-white pt-32 md:pt-40 pb-16 md:pb-20">
+      {/* ░░ HERO ░░ */}
+      <section className="bg-deep text-white pt-32 md:pt-40 pb-14 md:pb-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
-          <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
-            <span className="text-xs font-semibold tabular-nums text-white/40">—</span>
+          <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
             <span className="h-px w-8" style={{ background: 'rgba(255,255,255,0.3)' }} />
             <span className="kicker" style={{ color: '#7db4f0' }}>Mobilier événementiel</span>
           </Reveal>
@@ -43,89 +216,277 @@ export default function Mobilier() {
             Mobilier Gonflable{' '}
             <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>sur mesure</span>
           </Reveal>
-          <Reveal as="p" delay={0.1} className="lead mt-6 max-w-lg" style={{ color: 'rgba(255,255,255,0.72)' }}>
+          <Reveal as="p" delay={0.1} className="lead mt-5 max-w-lg" style={{ color: 'rgba(255,255,255,0.72)' }}>
             Complétez vos structures avec notre mobilier personnalisé.
           </Reveal>
-          <Reveal as="div" delay={0.16} className="mt-7 inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/15">
+          <Reveal as="div" delay={0.16} className="mt-6 inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/15">
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#7db4f0' }} />
             <span className="text-[13px] font-medium text-white/85">Impression totale comprise</span>
           </Reveal>
         </div>
       </section>
 
-      {/* ░░ CONFIGURATEUR (shared component — sticky image, qty steppers on selected only) ░░ */}
-      <ProductConfigurator data={CONFIGURATORS.mobilier} />
+      {/* ░░ CONFIGURATEUR ░░ */}
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
+        <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-10 lg:gap-14">
+          {/* ── LEFT: sticky reactive image panel ── */}
+          <div>
+            <div className="lg:sticky lg:top-24">
+              <motion.div
+                className="relative rounded-[28px] bg-gradient-to-br from-[var(--blue-mist)] to-[var(--blue-soft)] border border-[var(--line)] overflow-hidden flex items-center justify-center p-10 md:p-12"
+                style={{ aspectRatio: '1 / 1' }}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: EASE }}
+              >
+                <div className="absolute w-2/3 h-2/3 rounded-full" style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.18), transparent 70%)', filter: 'blur(40px)' }} />
+                <motion.div
+                  className="relative w-[78%] max-w-[360px]"
+                  animate={{ y: [0, -12, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={activeKind}
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.94, y: -10 }}
+                      transition={{ duration: 0.3, ease: EASE }}
+                    >
+                      <FurnitureArt kind={activeKind} />
+                    </motion.div>
+                  </AnimatePresence>
+                </motion.div>
 
-      {/* ░░ CARACTÉRISTIQUES TECHNIQUES — bento spec grid ░░ */}
-      <section className="bg-paper py-12 md:py-16">
-        <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-14 md:mb-16">
-            <div className="lg:col-span-7">
-              <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                <span className="text-xs font-semibold tabular-nums text-ink/30">01</span>
-                <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Fiche technique</span>
-              </Reveal>
-              <h2 className="font-display font-bold text-ink tracking-tightest leading-[1.02]" style={{ fontSize: 'clamp(1.9rem,4.4vw,3.4rem)' }}>
-                <MaskHeading text="Caractéristiques" />
-                <br />
-                <span className="serif-accent text-[var(--blue)]/70" style={{ fontWeight: 500 }}><MaskHeading text="techniques" delay={0.18} /></span>
-              </h2>
+                {/* caption — updates to the currently selected/active item */}
+                <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 rounded-2xl bg-white/92 backdrop-blur-md border border-white/60 shadow-lg px-5 py-3.5">
+                  <div className="min-w-0">
+                    <div className="text-[10px] uppercase tracking-widest text-[var(--muted)]">{activeItem?.group}</div>
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.div
+                        key={activeItem?.name}
+                        initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: EASE }}
+                        className="font-display text-lg md:text-xl font-bold text-ink leading-tight truncate"
+                      >
+                        {activeItem?.name}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-[10px] uppercase tracking-widest text-[var(--blue)] font-semibold">À partir de</div>
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.div
+                        key={activeItem?.price}
+                        initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: EASE }}
+                        className="font-display text-xl font-bold text-[var(--blue-deep)] tabular-nums"
+                      >
+                        {activeItem?.price}€
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-            <Rise as="p" y={26} delay={0.1} className="lg:col-span-5 lead">
-              Un mobilier pensé pour l’événementiel : matériaux premium, impression haute définition
-              et une installation express, partout, en quelques minutes.
-            </Rise>
           </div>
 
-          {/* Bento grid: deep-blue hero panel + spec cards (no auto-rows-fr / row-span) */}
-          <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-            {/* Deep-blue accent panel — spans two columns on large screens for rhythm */}
-            <motion.div
-              variants={staggerChild}
-              data-cursor
-              whileHover={{ y: -6 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-              className="relative overflow-hidden cursor-pointer bg-deep text-white rounded-[28px] p-7 md:p-9 sm:col-span-2 lg:row-span-2 flex flex-col justify-between min-h-[220px] lg:min-h-full"
-            >
-              <div className="pointer-events-none absolute -top-16 -right-10 w-64 h-64 rounded-full" style={{ background: 'radial-gradient(circle, rgba(125,180,240,0.32), transparent 70%)', filter: 'blur(30px)' }} />
-              <div className="relative flex items-center justify-between">
-                <span className="inline-flex w-12 h-12 items-center justify-center rounded-2xl bg-white/10 border border-white/15">
-                  <Sparkles className="w-5 h-5 text-[#7db4f0]" />
-                </span>
-                <span className="kicker" style={{ color: '#7db4f0' }}>Sur mesure</span>
+          {/* ── RIGHT: controls ── */}
+          <div className="space-y-9">
+            {/* Catégorie filter */}
+            <Reveal y={28}>
+              <div className="mb-3 flex items-center gap-2 text-[var(--blue)]">
+                <Layers size={16} strokeWidth={2.4} />
+                <span className="kicker !text-[0.68rem]">Catégorie</span>
               </div>
-              <div className="relative mt-10">
-                <div className="font-display font-bold leading-none tracking-tightest" style={{ fontSize: 'clamp(2.6rem,5vw,4rem)' }}>
-                  100%
-                </div>
-                <div className="mt-3 font-display text-lg font-semibold text-white">Personnalisable</div>
-                <p className="mt-2 text-sm leading-relaxed text-white/55 max-w-xs">
-                  Formes, couleurs et logo : chaque pièce est imprimée aux couleurs de votre marque.
-                </p>
+              <div className="flex flex-wrap gap-2.5">
+                {groups.map((g) => {
+                  const on = g.category === cat;
+                  const Icon = CAT_ICON[g.category] || Layers;
+                  return (
+                    <button
+                      key={g.category}
+                      type="button"
+                      aria-pressed={on}
+                      data-cursor
+                      onClick={() => { setCat(g.category); setActiveKey(`${g.category}-0`); }}
+                      className="cursor-pointer inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors"
+                      style={{
+                        background: on ? 'var(--blue)' : '#fff',
+                        color: on ? '#fff' : 'var(--ink-2)',
+                        border: on ? '1px solid var(--blue)' : '1.5px solid var(--line)',
+                        boxShadow: on ? '0 10px 22px -12px rgba(0,82,163,.6)' : 'none',
+                      }}
+                    >
+                      <Icon size={15} strokeWidth={2.4} />
+                      {g.category}
+                      <span className="tabular-nums" style={{ opacity: on ? 0.8 : 0.5 }}>{g.items.length}</span>
+                    </button>
+                  );
+                })}
               </div>
-            </motion.div>
+            </Reveal>
 
-            {/* Spec cards */}
-            {SPECS.map((s, i) => (
+            {/* Type de mobilier — list for active category */}
+            <Reveal y={28} delay={0.05}>
+              <div className="flex items-end justify-between mb-1">
+                <h3 className="font-display" style={{ fontSize: '1.15rem', color: 'var(--ink)' }}>Type de mobilier</h3>
+                <span className="tabular-nums" style={{ fontSize: '0.72rem', color: '#8493a8', letterSpacing: '0.04em' }}>PRIX HT / UNITÉ</span>
+              </div>
+              <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 14 }}>Cliquez une ligne pour l’ajouter — l’aperçu se met à jour.</p>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={cat}
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22 }}
+                  className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--line)' }}
+                >
+                  {activeGroup.items.map((it, i) => {
+                    const k = `${cat}-${i}`; const q = qtys[k] || 0; const on = q > 0;
+                    return (
+                      <ItemRow
+                        key={it.name}
+                        it={it} on={on} active={activeKey === k} qty={q} first={i === 0}
+                        onToggle={() => { setActiveKey(k); setQ(k, on ? 0 : 1); }}
+                        onFocusRow={() => setActiveKey(k)}
+                        onInc={() => setQ(k, q + 1)}
+                        onDec={() => setQ(k, q - 1)}
+                      />
+                    );
+                  })}
+                </motion.div>
+              </AnimatePresence>
+            </Reveal>
+
+            {/* Accessoires */}
+            <Reveal y={28} delay={0.05}>
+              <h3 className="font-display mb-3" style={{ fontSize: '1.15rem', color: 'var(--ink)' }}>{accessories.label}</h3>
+              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--line)' }}>
+                {accessories.items.map((it, i) => {
+                  const k = `acc-${i}`; const q = qtys[k] || 0; const on = q > 0;
+                  return (
+                    <ItemRow
+                      key={it.name}
+                      it={it} on={on} active={activeKey === k} qty={q} first={i === 0}
+                      onToggle={() => { setActiveKey(k); setQ(k, on ? 0 : 1); }}
+                      onFocusRow={() => setActiveKey(k)}
+                      onInc={() => setQ(k, q + 1)}
+                      onDec={() => setQ(k, q - 1)}
+                    />
+                  );
+                })}
+              </div>
+            </Reveal>
+
+            {/* Personnalisation complète */}
+            <Reveal y={24}>
+              <div className="rounded-[22px] p-6 md:p-7" style={{ background: 'var(--blue-mist)', border: '1px solid var(--line)' }}>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Sparkles size={18} color="var(--blue)" strokeWidth={2.4} />
+                  <div className="kicker">Personnalisation complète</div>
+                </div>
+                <p style={{ fontSize: '0.9rem', color: 'var(--muted)', margin: '0 0 16px', maxWidth: '38ch' }}>
+                  Chaque élément de mobilier peut être entièrement personnalisé avec vos couleurs et votre logo.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {custom.map((label) => (
+                    <div key={label} className="inline-flex items-center gap-2.5 w-full"
+                      style={{ background: '#fff', border: '1px solid var(--line)', borderRadius: 9999, padding: '9px 16px 9px 10px', fontSize: '0.86rem', fontWeight: 600, color: 'var(--blue-deep)' }}>
+                      <span className="flex items-center justify-center shrink-0" style={{ width: 22, height: 22, borderRadius: 9999, background: 'var(--blue)', color: '#fff' }}>
+                        <Check size={13} strokeWidth={3} />
+                      </span>
+                      <span style={{ lineHeight: 1.25 }}>{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Prix HT + ONE Demander un devis */}
+            <Reveal y={20}>
+              <div style={{ borderRadius: 22, border: '1px solid var(--line)', background: '#fff', overflow: 'hidden', boxShadow: '0 14px 34px -22px rgba(11,28,63,.22)' }}>
+                {selected.length > 0 && (
+                  <div style={{ padding: '6px 20px 4px' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--blue)', padding: '14px 0 4px' }}>
+                      <Tag size={13} strokeWidth={2.4} />
+                      Récapitulatif · {selected.length} élément{selected.length > 1 ? 's' : ''}
+                    </div>
+                    {selected.map((r, i) => (
+                      <div key={`${r.label}-${i}`}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '11px 0' }}>
+                          <div style={{ minWidth: 0 }}>
+                            <div style={{ fontWeight: 600, color: 'var(--ink)', fontSize: 14.5 }}>{r.label}</div>
+                            <div style={{ fontSize: 12, color: 'var(--ink-2)', opacity: 0.8 }}>{fmt(r.unit)} / unité · ×{r.qty}</div>
+                          </div>
+                          <RollPrice value={fmt(r.unit * r.qty)} style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums', fontFamily: "'Schibsted Grotesk', sans-serif" }} />
+                        </div>
+                        {i < selected.length - 1 && <div className="hairline" />}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div style={{ background: 'var(--blue-mist)', borderTop: '1px solid var(--line)', padding: '16px 20px 18px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12 }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: 'var(--ink-2)' }}>
+                      <Sparkles size={14} strokeWidth={2.2} style={{ color: 'var(--blue)' }} />
+                      Prix HT
+                    </div>
+                    <RollPrice value={fmt(total)} style={{ fontSize: 32, fontWeight: 700, color: 'var(--blue-deep)', lineHeight: 1, fontVariantNumeric: 'tabular-nums', fontFamily: "'Schibsted Grotesk', sans-serif" }} />
+                  </div>
+
+                  <Magnetic className="block">
+                    <motion.button
+                      type="button"
+                      onClick={() => setOpen(true)}
+                      data-cursor
+                      whileTap={{ scale: 0.97 }}
+                      whileHover={{ y: -1 }}
+                      style={{
+                        marginTop: 16, width: '100%', border: 'none', cursor: 'pointer', borderRadius: 14, padding: '14px 18px',
+                        background: 'linear-gradient(135deg, var(--blue-bright), var(--blue-deep))', color: '#fff', fontWeight: 700,
+                        fontSize: 15, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 9,
+                        boxShadow: '0 12px 26px -12px rgba(0,82,163,.55)',
+                      }}
+                    >
+                      <FileText size={17} strokeWidth={2.2} />
+                      Demander un devis
+                      <ArrowRight size={17} strokeWidth={2.4} />
+                    </motion.button>
+                  </Magnetic>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ░░ CARACTÉRISTIQUES ░░ */}
+      <section className="bg-paper py-12 md:py-16 border-t border-[var(--line)]">
+        <div className="max-w-content mx-auto px-5 sm:px-8">
+          <SectionHeader
+            kicker="Fiche technique"
+            title="Un mobilier pensé pour l’événementiel"
+            lead="Matériaux premium, impression haute définition et une installation express, partout, en quelques minutes."
+            className="mb-9 md:mb-12"
+          />
+          <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+            {[
+              { label: 'Matériau', value: 'PVC premium', sub: 'Soudé, étanche et résistant' },
+              { label: 'Impression', value: 'HD 360°', sub: 'Sublimation résistante aux UV' },
+              { label: 'Montage', value: '< 2 min', sub: 'Mise en place par une personne' },
+              { label: 'Usage', value: 'Indoor / Outdoor', sub: 'Intérieur comme extérieur' },
+            ].map((s) => (
               <motion.div
                 key={s.label}
                 variants={staggerChild}
                 data-cursor
-                whileHover={{ y: -6 }}
+                whileHover={{ y: -5 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                className="group relative cursor-pointer rounded-[22px] bg-white border border-[var(--line)] hover:border-[var(--blue)] p-6 md:p-7 transition-colors duration-300 hover:shadow-[0_18px_40px_-12px_rgba(0,102,204,0.28)]"
+                className="cursor-pointer rounded-[22px] bg-white border border-[var(--line)] hover:border-[var(--blue)] p-6 transition-colors duration-300 hover:shadow-[0_18px_40px_-12px_rgba(0,102,204,0.24)]"
               >
-                <div className="flex items-center justify-between mb-7">
-                  <span className="inline-flex w-11 h-11 items-center justify-center rounded-xl bg-[var(--blue-mist)] border border-[var(--line)] group-hover:bg-[var(--blue-soft)] transition-colors">
-                    <s.icon className="w-5 h-5 text-[var(--blue)]" />
-                  </span>
-                  <span className="text-xs font-semibold tabular-nums text-ink/20">0{i + 1}</span>
-                </div>
                 <div className="kicker mb-2" style={{ color: 'var(--muted)' }}>{s.label}</div>
-                <div className="font-display font-bold text-ink tracking-tight leading-none" style={{ fontSize: 'clamp(1.4rem,2.4vw,1.9rem)' }}>
-                  {s.value}
-                </div>
+                <div className="font-display font-bold text-ink tracking-tight leading-none" style={{ fontSize: 'clamp(1.4rem,2.4vw,1.85rem)' }}>{s.value}</div>
                 <p className="mt-2.5 text-[13px] leading-relaxed text-[var(--muted)]">{s.sub}</p>
               </motion.div>
             ))}
@@ -133,89 +494,15 @@ export default function Mobilier() {
         </div>
       </section>
 
-      {/* ░░ PARFAITE POUR — premium use-case cards ░░ */}
-      <section className="bg-[var(--blue-mist)] border-y border-[var(--line)] py-12 md:py-16">
-        <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
-            <div className="max-w-xl">
-              <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
-                <span className="text-xs font-semibold tabular-nums text-ink/30">02</span>
-                <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Cas d’usage</span>
-              </Reveal>
-              <h2 className="font-display font-bold text-ink tracking-tightest leading-[1.02]" style={{ fontSize: 'clamp(1.9rem,4.4vw,3.4rem)' }}>
-                <MaskHeading text="Parfait pour" />
-                <br />
-                <MaskHeading text="vos événements" delay={0.16} />
-              </h2>
-            </div>
-            <Reveal as="div" delay={0.1} className="md:pb-2">
-              <Magnetic>
-                <Link
-                  to="/Contact"
-                  data-cursor
-                  className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-[var(--blue)]/25 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors"
-                >
-                  Demander un devis <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </Link>
-              </Magnetic>
-            </Reveal>
-          </div>
-
-          <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
-            {USAGES.map((u) => (
-              <motion.div
-                key={u.n}
-                variants={staggerChild}
-                data-cursor
-                whileHover={{ y: -6 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                className="group relative overflow-hidden cursor-pointer rounded-[28px] bg-white border border-[var(--line)] hover:border-[var(--blue)] p-7 md:p-9 transition-colors duration-300 hover:shadow-[0_24px_50px_-16px_rgba(0,102,204,0.30)]"
-              >
-                <div className="pointer-events-none absolute -bottom-16 -right-12 w-48 h-48 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.14), transparent 70%)', filter: 'blur(24px)' }} />
-                <div className="relative flex items-start justify-between mb-10">
-                  <span className="inline-flex w-14 h-14 items-center justify-center rounded-2xl bg-[var(--blue-mist)] border border-[var(--line)] group-hover:bg-[var(--blue-soft)] group-hover:scale-105 transition-all duration-300">
-                    <u.icon className="w-6 h-6 text-[var(--blue)]" />
-                  </span>
-                  <span className="font-display text-3xl font-bold text-[var(--blue)]/12 tabular-nums select-none group-hover:text-[var(--blue)]/25 transition-colors">{u.n}</span>
-                </div>
-                <div className="relative font-display text-xl md:text-2xl font-semibold text-ink tracking-tight mb-2.5 group-hover:text-[var(--blue)] transition-colors">{u.title}</div>
-                <p className="relative text-[15px] leading-relaxed text-[var(--muted)] max-w-sm">{u.desc}</p>
-                <div className="relative mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--blue)] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                  En savoir plus <ArrowRight className="w-4 h-4" />
-                </div>
-              </motion.div>
-            ))}
-          </RevealStagger>
-        </div>
-      </section>
-
-      {/* ░░ CTA ░░ */}
-      <section className="px-5 sm:px-8 py-12 md:py-16">
-        <ClipReveal className="rounded-[28px]" scaleFrom={1.1}>
-          <div className="relative overflow-hidden bg-deep text-white rounded-[28px] flex items-center justify-center" style={{ minHeight: 360 }}>
-            <div className="pointer-events-none absolute -top-20 left-1/4 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(70,150,255,0.30), transparent 70%)', filter: 'blur(50px)' }} />
-            <div className="relative z-10 text-center px-6 py-20 max-w-2xl">
-              <Reveal as="div" y={14} className="flex justify-center mb-5">
-                <span className="kicker" style={{ color: 'rgba(255,255,255,0.85)' }}>Prêt à démarrer</span>
-              </Reveal>
-              <h2 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2rem,5vw,3.6rem)', lineHeight: 1.0 }}>
-                <MaskHeading text="Composons votre mobilier." />
-              </h2>
-              <Rise as="p" y={22} delay={0.1} className="mt-5 text-white/75 text-lg">
-                Conception Suisse. Impression totale comprise. Livraison France et Europe.
-              </Rise>
-              <Reveal delay={0.2} className="mt-9">
-                <Magnetic>
-                  <Link to="/Contact" data-cursor className="inline-flex items-center gap-2 bg-white text-[var(--blue)] font-semibold rounded-full px-8 py-4 text-[15px] hover:bg-white/90 transition-colors">
-                    Demander un devis gratuit <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Magnetic>
-              </Reveal>
-            </div>
-          </div>
-        </ClipReveal>
-      </section>
+      <DevisModal
+        open={open}
+        onClose={() => setOpen(false)}
+        productName={productName}
+        groupLabel={null}
+        lines={[]}
+        extras={selected}
+        total={total}
+      />
     </main>
   );
 }
