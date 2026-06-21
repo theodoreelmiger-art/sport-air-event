@@ -4,16 +4,22 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['Hanken Grotesk', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['Schibsted Grotesk', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       colors: {
+        ink: '#0b0d12',
+        paper: '#faf9f6',
         primary: {
-          DEFAULT: '#1a56db',
-          dark: '#1240a8',
+          DEFAULT: '#0066cc',
+          dark: '#0052a3',
         },
       },
       maxWidth: {
-        content: '1200px',
+        content: '1240px',
+      },
+      letterSpacing: {
+        tightest: '-0.04em',
       },
     },
   },

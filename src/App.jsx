@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
+import SmoothScroll from './lib/SmoothScroll.jsx';
 
 import Home from './pages/Home.jsx';
 import About from './pages/About.jsx';
@@ -23,6 +24,7 @@ import NotFound from './pages/NotFound.jsx';
 
 export default function App() {
   return (
+    <SmoothScroll>
     <Layout>
       <Routes>
         <Route path="/" element={<Navigate to="/Home" replace />} />
@@ -47,5 +49,6 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
+    </SmoothScroll>
   );
 }

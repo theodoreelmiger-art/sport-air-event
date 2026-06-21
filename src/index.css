@@ -3,62 +3,102 @@
 @tailwind utilities;
 
 :root {
-  --primary: #1a56db;
-  --primary-dark: #1240a8;
-  --text-primary: #0a0a0a;
-  --text-secondary: #6b7280;
-  --bg-white: #ffffff;
-  --bg-subtle: #f8fafc;
-  --bg-dark: #0f172a;
-  --border: rgba(0, 0, 0, 0.08);
-  --glass-light: rgba(255, 255, 255, 0.82);
-  --glass-dark: rgba(0, 0, 0, 0.28);
-  --glass-blur: blur(24px);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.14);
-  --shadow-glass: 0 4px 24px rgba(0, 0, 0, 0.08);
-  --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 28px;
-  --radius-full: 9999px;
-  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-  --section-padding: 96px;
-  --section-padding-mobile: 64px;
-  --max-width: 1200px;
+  /* Brand */
+  --blue: #0066cc;
+  --blue-deep: #0052a3;
+  --blue-soft: #eaf2fc;
+
+  /* Editorial neutrals — warm, not pure black/white (less "AI default") */
+  --ink: #0b0d12;
+  --ink-2: #2a2f3a;
+  --muted: #6b7280;
+  --line: #e7e5df;
+  --paper: #faf9f6;
+  --paper-2: #f3f1ea;
+  --white: #ffffff;
+
+  --primary: #0066cc; /* legacy alias kept for existing markup */
+  --primary-dark: #0052a3;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius: 14px;
+  --radius-lg: 22px;
+  --maxw: 1240px;
 }
 
 * {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html {
   scroll-behavior: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--bg-white);
-  color: var(--text-primary);
-  -webkit-font-smoothing: antialiased;
+  background: var(--paper);
+  color: var(--ink);
+  font-feature-settings: 'ss01', 'cv01';
 }
 
-/* Iridescent border animation */
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
+/* Editorial display type applied globally to real headings */
+h1, h2, h3, h4, .font-display {
+  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.022em;
+  font-weight: 700;
 }
-@keyframes rotate-border {
-  to {
-    --angle: 360deg;
-  }
+h1, .font-display-xl {
+  letter-spacing: -0.035em;
+  line-height: 0.98;
 }
+
+/* Editorial helpers */
+.kicker {
+  font-family: 'Hanken Grotesk', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+.lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.serif-accent {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Animated link underline */
+.u-line {
+  background-image: linear-gradient(var(--blue), var(--blue));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.4s var(--ease);
+}
+.u-line:hover { background-size: 100% 1.5px; }
+
+/* Premium CTA — replaces the rainbow rotating border (kept class name for existing markup) */
 .cta-iridescent {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--primary), var(--primary)) padding-box,
-    conic-gradient(from var(--angle), #a78bfa, #818cf8, #38bdf8, #34d399, #fbbf24, #f472b6, #a78bfa) border-box;
-  animation: rotate-border 3s linear infinite;
+  position: relative;
+  background: var(--ink);
+  color: #fff;
+  border: 1px solid var(--ink);
+  border-radius: 9999px;
+  overflow: hidden;
+  transition: transform 0.4s var(--ease), background 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 8px 24px rgba(11, 13, 18, 0.14);
+}
+.cta-iridescent:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  box-shadow: 0 12px 30px rgba(0, 102, 204, 0.28);
+  transform: translateY(-1px);
 }
 
 /* Nav dropdown */
@@ -66,7 +106,7 @@ body {
   opacity: 0;
   visibility: hidden;
   transform: translateY(8px);
-  transition: opacity 0.2s var(--ease-smooth), transform 0.2s var(--ease-smooth), visibility 0.2s;
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), visibility 0.25s;
 }
 .nav-item:hover .nav-dropdown {
   opacity: 1;
@@ -76,17 +116,13 @@ body {
 
 /* Logo marquee */
 @keyframes scroll-logos {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-33.333%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
 }
 .logo-track {
   display: flex;
   width: max-content;
-  animation: scroll-logos 22s linear infinite;
+  animation: scroll-logos 32s linear infinite;
   align-items: center;
 }
 .logo-item {
@@ -94,41 +130,44 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 48px;
-  height: 48px;
+  margin: 0 44px;
+  height: 44px;
 }
 .logo-item img {
-  max-width: 120px !important;
-  max-height: 40px !important;
+  max-width: 110px !important;
+  max-height: 34px !important;
   width: auto;
   height: auto;
   object-fit: contain !important;
-  display: block;
-  filter: none;
-  opacity: 1;
+  filter: grayscale(1);
+  opacity: 0.55;
   mix-blend-mode: multiply;
+  transition: opacity 0.4s var(--ease), filter 0.4s var(--ease);
 }
+.logo-item img:hover { filter: grayscale(0); opacity: 1; }
 @media (max-width: 768px) {
-  .logo-item img {
-    max-width: 80px;
-    max-height: 30px;
-  }
-  .logo-item {
-    margin: 0 24px;
-  }
+  .logo-item img { max-width: 84px; max-height: 28px; }
+  .logo-item { margin: 0 22px; }
 }
 
-/* Focus visible */
+/* Subtle grain/precision divider */
+.hairline { height: 1px; background: var(--line); }
+
 *:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 
-/* Remove duplicate nav pseudo-elements */
-nav::before,
-nav::after,
-header::before,
-header::after {
+nav::before, nav::after, header::before, header::after {
   display: none !important;
   content: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
