@@ -269,7 +269,7 @@ export default function Contact() {
       <section className="bg-paper pt-28 md:pt-36 pb-20 md:pb-28">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
           {/* Editorial intro */}
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 md:mb-20">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-9 md:mb-12">
             <div className="lg:col-span-7">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
                 <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
@@ -615,7 +615,7 @@ export default function Contact() {
 
       {/* ░░ REVIEWS (dark) ░░ */}
       <section className="bg-deep text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
             <SectionHeader light kicker="Témoignages" index="01" title={<>Ils nous font<br />confiance</>} />
             <Reveal as="div" delay={0.1} className="flex items-center gap-4 md:pb-2">
@@ -735,7 +735,7 @@ export default function Contact() {
       </section>
 
       {/* ░░ FAQ ░░ */}
-      <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
           <SectionHeader align="center" kicker="Questions fréquentes" index="02" className="mb-12" title="Tout ce que vous devez savoir" />
           {/* V57 — Accordéon hairline : liste sobre séparée par des filets bleus, chevron qui pivote, ouverture unique */}

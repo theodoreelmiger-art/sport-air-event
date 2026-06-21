@@ -43,7 +43,7 @@ export default function ArchesSurMesure() {
       {/* ░░ HERO ░░ */}
       <section className="bg-paper pt-28 md:pt-36 pb-16 md:pb-24">
         <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-6">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
                 <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
@@ -98,9 +98,9 @@ export default function ArchesSurMesure() {
       </section>
 
       {/* ░░ DIMENSIONS + INCLUS ░░ */}
-      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             <div className="lg:col-span-5">
               <SectionHeader
                 kicker="Dimensions personnalisées"
@@ -136,7 +136,7 @@ export default function ArchesSurMesure() {
       </section>
 
       {/* ░░ POURQUOI (dark) ░░ */}
-      <section className="bg-deep text-white py-20 md:py-28">
+      <section className="bg-deep text-white py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="max-w-2xl mb-14 md:mb-16">
             <SectionHeader
@@ -162,7 +162,7 @@ export default function ArchesSurMesure() {
       </section>
 
       {/* ░░ PROCESS ░░ */}
-      <section className="bg-paper py-20 md:py-28">
+      <section className="bg-paper py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="max-w-2xl mb-14 md:mb-16">
             <SectionHeader
@@ -192,7 +192,7 @@ export default function ArchesSurMesure() {
       </section>
 
       {/* ░░ CTA ░░ */}
-      <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <Reveal className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-7">
             <div>

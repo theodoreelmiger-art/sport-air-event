@@ -113,8 +113,8 @@ export default function Process() {
       </section>
 
       {/* ░░ STEPS — editorial numbered rows ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 md:mb-24">
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-9 md:mb-12">
           <SectionHeader kicker="Le déroulé" index="01" title={<>Six étapes,<br />de l&apos;échange à l&apos;événement</>} />
           <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
             <Clock className="w-4 h-4 text-[var(--blue)]" />
@@ -160,8 +160,8 @@ export default function Process() {
 
       {/* ░░ DÉLAIS (dark) ░░ */}
       <section className="bg-deep text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-14 md:mb-16">
             <div className="lg:col-span-7">
               <SectionHeader light kicker="Calendrier" index="02"
                 title={<>Délais de<br /><span className="serif-accent text-white/55">réalisation</span></>} />
@@ -188,7 +188,7 @@ export default function Process() {
       </section>
 
       {/* ░░ CTA ░░ */}
-      <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
           <SectionHeader kicker="Prêt à démarrer" title={<>Lançons votre projet<br />ensemble.</>} lead="Conception Suisse. Livraison France et Europe." />
           <Reveal delay={0.1}>

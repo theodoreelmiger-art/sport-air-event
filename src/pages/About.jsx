@@ -86,8 +86,8 @@ export default function About() {
       </section>
 
       {/* ░░ MISSION ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-12 md:py-16">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           <div className="lg:col-span-5">
             <SectionHeader kicker="Notre raison d'être" index="01" title="Notre mission" />
           </div>
@@ -104,7 +104,7 @@ export default function About() {
 
       {/* ░░ VALUES (dark) ░░ */}
       <section className="bg-deep text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-12 md:py-16">
           <div className="mb-14 md:mb-20">
             <SectionHeader light kicker="Ce qui nous guide au quotidien" index="02"
               title={<>Nos <span className="serif-accent text-white/55">valeurs</span></>} />
@@ -125,7 +125,7 @@ export default function About() {
       </section>
 
       {/* ░░ WHY US ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-12 md:py-16">
         <div className="mb-14 md:mb-16">
           <SectionHeader kicker="Nos engagements" index="03" title={<>Pourquoi nous<br />choisir ?</>} />
         </div>

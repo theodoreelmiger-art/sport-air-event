@@ -100,7 +100,7 @@ export default function ColonnesSurMesure() {
       </section>
 
       {/* ░░ DIMENSIONS + INCLUS ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-12 md:py-16">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Dimensions */}
           <div className="lg:col-span-5">
@@ -151,7 +151,7 @@ export default function ColonnesSurMesure() {
 
       {/* ░░ POURQUOI PERSONNALISER (dark) ░░ */}
       <section className="bg-deep text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-12 md:py-16">
           <SectionHeader
             light
             kicker="Sur mesure"
@@ -174,7 +174,7 @@ export default function ColonnesSurMesure() {
       </section>
 
       {/* ░░ DE L'IDÉE À LA RÉALITÉ ░░ */}
-      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
           <SectionHeader
             kicker="Notre process"
@@ -198,7 +198,7 @@ export default function ColonnesSurMesure() {
       </section>
 
       {/* ░░ CTA ░░ */}
-      <section className="px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+      <section className="px-5 sm:px-8 lg:px-16 py-12 md:py-16">
         <div className="max-w-content mx-auto">
           <Reveal className="rounded-[var(--radius-lg)] bg-paper-2 border border-[var(--line)] p-8 md:p-14 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="max-w-xl">

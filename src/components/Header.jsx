@@ -147,8 +147,8 @@ export default function Header() {
                     transition={{ duration: 0.18, ease: EASE }}
                     role="menu"
                     aria-label="Produits"
-                    className="absolute top-full left-1/2 z-30 pt-3"
-                    style={{ width: 268, transform: 'translateX(-50%)' }}
+                    className="absolute top-full left-0 z-30 pt-3"
+                    style={{ width: 268 }}
                   >
                     <div
                       className="rounded-[22px] overflow-hidden"
@@ -158,17 +158,18 @@ export default function Header() {
                         boxShadow: '0 18px 50px -22px rgba(11,28,63,0.28)',
                       }}
                     >
-                      {/* little caret */}
+                      {/* little caret — directly under the "Produits" label */}
                       <div
-                        className="absolute left-1/2 -translate-x-1/2"
+                        className="absolute"
                         style={{
                           top: 6,
+                          left: 34,
                           width: 14,
                           height: 14,
                           background: '#fff',
                           borderTop: '1px solid var(--line)',
                           borderLeft: '1px solid var(--line)',
-                          transform: 'translateX(-50%) rotate(45deg)',
+                          transform: 'rotate(45deg)',
                         }}
                       />
                       <div

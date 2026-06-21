@@ -66,7 +66,7 @@ export default function ArchesGonflables() {
 
       {/* ░░ SPECS — V71 split list (rail + synced detail) ░░ */}
       <section className="bg-white border-t border-[var(--line)]">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12 md:mb-16">
             <div className="max-w-2xl">
@@ -198,7 +198,7 @@ export default function ArchesGonflables() {
 
       {/* ░░ PARFAITE POUR — V73 editorial filet rows (non-interactive) ░░ */}
       <section className="bg-[var(--blue-mist)] border-t border-[var(--line)]">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14 md:mb-16">
             <div className="max-w-2xl">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">

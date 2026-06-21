@@ -108,9 +108,9 @@ export default function ModernProducts() {
       </section>
 
       {/* ░░ PRODUCTS — alternating showcase ░░ */}
-      <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 md:mb-24">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-9 md:mb-12">
             <SectionHeader kicker="Nos solutions" index="01" title={<>Trois structures.<br />Une exigence commune.</>} />
             <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
@@ -118,7 +118,7 @@ export default function ModernProducts() {
             </Reveal>
           </div>
 
-          <div className="space-y-20 md:space-y-28">
+          <div className="space-y-12 md:space-y-16">
             {products.map((product, i) => (
               <Reveal key={product.title} y={40} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
                 <div className={`relative ${product.reverse ? 'md:order-2' : ''}`}>
@@ -187,8 +187,8 @@ export default function ModernProducts() {
 
       {/* ░░ CTA (dark) ░░ */}
       <section className="bg-deep text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end">
             <div className="lg:col-span-8">
               <SectionHeader
                 light

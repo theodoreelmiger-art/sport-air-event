@@ -136,7 +136,7 @@ export default function Cgv() {
 
       {/* ░░ ARTICLES ░░ */}
       <section className="bg-white border-b border-[var(--line)]">
-        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-12 md:py-16">
           <div className="space-y-16 md:space-y-24">
             {articles.map((a) => (
               <Reveal key={a.n} y={36} className="grid md:grid-cols-12 gap-6 md:gap-12">
@@ -180,8 +180,8 @@ export default function Cgv() {
       </section>
 
       {/* ░░ CONTACT / CTA ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
+      <section className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-12 md:py-16">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end">
           <div className="lg:col-span-7">
             <SectionHeader
               kicker="Une question sur nos conditions"

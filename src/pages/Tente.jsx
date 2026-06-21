@@ -213,9 +213,9 @@ export default function Tente() {
         <ProductConfigurator data={CONFIGURATORS.tente} />
 
         {/* ░░ SPECS — split rail + detail panel (V71) ░░ */}
-        <section className="bg-paper py-20 md:py-28">
+        <section className="bg-paper py-12 md:py-16">
           <div className="max-w-content mx-auto px-5 sm:px-8">
-            <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16">
+            <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-14 md:mb-16">
               <div className="lg:col-span-7 flex flex-col items-start max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                   <span className="text-xs font-semibold tabular-nums text-ink/30">01</span>
@@ -240,7 +240,7 @@ export default function Tente() {
         </section>
 
         {/* ░░ PARFAITE POUR — éditorial rangées à filets (V73, non-interactif) ░░ */}
-        <section className="bg-white border-t border-[var(--line)] py-20 md:py-28">
+        <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
           <div className="max-w-content mx-auto px-5 sm:px-8">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
               <div className="flex flex-col items-start max-w-2xl">

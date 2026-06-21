@@ -87,7 +87,7 @@ export default function Customization() {
     <div className="overflow-x-clip bg-paper pt-20">
       {/* ░░ HERO (dark) ░░ */}
       <section className="relative bg-deep text-white overflow-hidden">
-        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-12 md:py-16">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
@@ -133,11 +133,11 @@ export default function Customization() {
       </section>
 
       {/* ░░ POSSIBILITÉS — feature cards ░░ */}
-      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <SectionHeader
             align="center"
-            className="mb-16 md:mb-20"
+            className="mb-9 md:mb-12"
             kicker="Possibilités infinies"
             index="01"
             title="Possibilités infinies"
@@ -168,9 +168,9 @@ export default function Customization() {
       </section>
 
       {/* ░░ PROCESSUS — editorial timeline ░░ */}
-      <section className="bg-deep text-white py-20 md:py-28">
+      <section className="bg-deep text-white py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 md:mb-20">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-9 md:mb-12">
             <div className="lg:col-span-7">
               <SectionHeader
                 light
@@ -208,7 +208,7 @@ export default function Customization() {
       </section>
 
       {/* ░░ IMPACT VISUEL ░░ */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
             <Reveal y={40}>

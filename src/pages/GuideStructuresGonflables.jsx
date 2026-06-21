@@ -38,7 +38,7 @@ export default function GuideStructuresGonflables() {
       {/* ░░ HERO ░░ */}
       <section className="border-b border-[var(--line)]">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-32 md:pt-40 pb-16 md:pb-24">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end">
             <div className="lg:col-span-8">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
                 <span className="text-xs font-semibold tabular-nums text-ink/30">—</span>
@@ -58,8 +58,8 @@ export default function GuideStructuresGonflables() {
       </section>
 
       {/* ░░ DÉFINITION ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader kicker="Les fondamentaux" index="01"
               title={<>Qu'est-ce qu'une structure<br />gonflable événementielle ?</>} />
@@ -72,7 +72,7 @@ export default function GuideStructuresGonflables() {
       </section>
 
       {/* ░░ TYPES — alternating editorial rows ░░ */}
-      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <SectionHeader kicker="La gamme" index="02"
             title={<>Les différents types de<br />structures gonflables</>}
@@ -93,8 +93,8 @@ export default function GuideStructuresGonflables() {
 
       {/* ░░ AVANTAGES — dark manifesto ░░ */}
       <section className="bg-deep text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 md:mb-20">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-9 md:mb-12">
             <div className="lg:col-span-7">
               <SectionHeader light kicker="Les avantages" index="03"
                 title={<>Pourquoi choisir des structures<br /><span className="serif-accent text-white/55">gonflables pour vos événements ?</span></>} />
@@ -120,8 +120,8 @@ export default function GuideStructuresGonflables() {
       </section>
 
       {/* ░░ ÉVÉNEMENTS ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader kicker="Cas d'usage" index="04"
               title={<>Pour quels<br />événements ?</>} />

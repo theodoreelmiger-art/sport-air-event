@@ -57,9 +57,9 @@ export default function Mobilier() {
       <ProductConfigurator data={CONFIGURATORS.mobilier} />
 
       {/* ░░ CARACTÉRISTIQUES TECHNIQUES — bento spec grid ░░ */}
-      <section className="bg-paper py-20 md:py-28">
+      <section className="bg-paper py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-14 md:mb-16">
             <div className="lg:col-span-7">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                 <span className="text-xs font-semibold tabular-nums text-ink/30">01</span>
@@ -134,7 +134,7 @@ export default function Mobilier() {
       </section>
 
       {/* ░░ PARFAITE POUR — premium use-case cards ░░ */}
-      <section className="bg-[var(--blue-mist)] border-y border-[var(--line)] py-20 md:py-28">
+      <section className="bg-[var(--blue-mist)] border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
             <div className="max-w-xl">
@@ -191,7 +191,7 @@ export default function Mobilier() {
       </section>
 
       {/* ░░ CTA ░░ */}
-      <section className="px-5 sm:px-8 py-20 md:py-28">
+      <section className="px-5 sm:px-8 py-12 md:py-16">
         <ClipReveal className="rounded-[28px]" scaleFrom={1.1}>
           <div className="relative overflow-hidden bg-deep text-white rounded-[28px] flex items-center justify-center" style={{ minHeight: 360 }}>
             <div className="pointer-events-none absolute -top-20 left-1/4 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(70,150,255,0.30), transparent 70%)', filter: 'blur(50px)' }} />

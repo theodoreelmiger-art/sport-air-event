@@ -157,7 +157,7 @@ export default function ColonnesGonflables() {
         <section className="bg-paper relative overflow-hidden">
           {/* soft blue ambient wash */}
           <div className="pointer-events-none absolute -top-24 right-[6%] w-[36rem] h-[36rem] rounded-full" style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.08), transparent 70%)', filter: 'blur(40px)' }} />
-          <div className="relative max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+          <div className="relative max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
               <div className="max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
@@ -183,7 +183,7 @@ export default function ColonnesGonflables() {
 
         {/* ░░ USAGES ░░ */}
         <section className="bg-white border-t border-[var(--line)]">
-          <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+          <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-16">
               <div className="max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">

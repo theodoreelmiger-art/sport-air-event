@@ -92,7 +92,7 @@ export default function Quality() {
       </section>
 
       {/* ░░ DURABILITÉ — editorial split ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <Reveal y={40} className="relative order-2 lg:order-1">
             <div className="relative rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line)]">
@@ -137,7 +137,7 @@ export default function Quality() {
 
       {/* ░░ SWISS MADE (dark) ░░ */}
       <section className="bg-deep text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
           <SectionHeader
             light
             align="center"
@@ -145,7 +145,7 @@ export default function Quality() {
             index="02"
             title={<>Swiss Made Excellence</>}
             lead="La précision suisse dans chaque produit"
-            className="mb-16 md:mb-20"
+            className="mb-9 md:mb-12"
           />
           <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {swissCards.map(({ Icon, title, text }, i) => (
@@ -163,7 +163,7 @@ export default function Quality() {
       </section>
 
       {/* ░░ STATS ░░ */}
-      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+      <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <SectionHeader
             kicker="En chiffres"
@@ -191,7 +191,7 @@ export default function Quality() {
       </section>
 
       {/* ░░ CERTIFICATIONS — editorial split ░░ */}
-      <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+      <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
             <SectionHeader
@@ -227,7 +227,7 @@ export default function Quality() {
 
       {/* ░░ CTA (dark) ░░ */}
       <section className="bg-deep text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
             <SectionHeader
               light
