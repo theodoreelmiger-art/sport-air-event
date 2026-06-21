@@ -21,8 +21,19 @@ import Quality from './pages/Quality.jsx';
 import Cgv from './pages/Cgv.jsx';
 import GuideStructuresGonflables from './pages/GuideStructuresGonflables.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Lab from './pages/Lab.jsx';
 
 export default function App() {
+  return (
+    <Routes>
+      {/* Isolated widget lab — no Layout / cursor / Lenis */}
+      <Route path="/lab" element={<Lab />} />
+      <Route path="/*" element={<Site />} />
+    </Routes>
+  );
+}
+
+function Site() {
   return (
     <SmoothScroll>
     <Layout>
