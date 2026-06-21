@@ -1,5 +1,32 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useScroll, useInView, useTransform } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
+import { motion, AnimatePresence, useMotionValue, useSpring, useScroll, useInView, useTransform } from 'framer-motion';
+
+/* ── Page transition: a sleek blue panel reveal on every route change ── */
+export function PageTransition() {
+  const { pathname } = useLocation();
+  const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return null;
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={pathname}
+        className="fixed inset-0 z-[1300] pointer-events-none bg-deep flex items-center justify-center"
+        initial={{ clipPath: 'inset(0 0 0 0)' }}
+        animate={{ clipPath: 'inset(0 0 100% 0)' }}
+        transition={{ duration: 0.6, ease: [0.7, 0, 0.3, 1], delay: 0.05 }}
+      >
+        <motion.span
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: [0, 1, 0], y: 0 }}
+          transition={{ duration: 0.55, times: [0, 0.4, 1] }}
+          className="font-display text-white/90 font-bold tracking-tightest text-2xl"
+        >
+          Sport Air Event
+        </motion.span>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 /* ── Custom cursor: a fast dot + a lagging ring that grows over interactive elements ── */
 export function CustomCursor() {

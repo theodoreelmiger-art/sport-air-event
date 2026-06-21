@@ -4,7 +4,7 @@ import Header from './Header.jsx';
 import Footer from './Footer.jsx';
 import CookieBanner from './CookieBanner.jsx';
 import ChatWidget from './ChatWidget.jsx';
-import { CustomCursor, ScrollProgress } from '../lib/interactions.jsx';
+import { CustomCursor, ScrollProgress, PageTransition } from '../lib/interactions.jsx';
 import { PAGE_TITLES, DEFAULT_TITLE, PAGE_DESCRIPTIONS, DEFAULT_DESCRIPTION } from '../lib/seo.js';
 
 function ScrollToTop() {
@@ -28,6 +28,7 @@ export default function Layout({ children }) {
   return (
     <>
       <ScrollProgress />
+      <PageTransition />
       <CustomCursor />
       <ScrollToTop />
       <Header />
