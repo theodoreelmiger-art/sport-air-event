@@ -214,7 +214,7 @@ export default function ArchesGonflables() {
                           setDevisOpen(true);
                         }
                       }}
-                      className="group relative rounded-[var(--radius)] p-5 md:p-6 bg-ink text-white cursor-pointer transition-colors hover:bg-[var(--blue)]"
+                      className="group relative rounded-[var(--radius)] p-5 md:p-6 bg-deep text-white cursor-pointer transition-colors hover:bg-[var(--blue)]"
                       tabIndex={0}
                     >
                       <div className="relative flex items-center justify-between gap-4">
@@ -281,7 +281,7 @@ export default function ArchesGonflables() {
               </div>
 
               {/* Desktop price + CTA */}
-              <div className="hidden md:block sticky bottom-6 rounded-[var(--radius-lg)] bg-ink text-white p-6">
+              <div className="hidden md:block sticky bottom-6 rounded-[var(--radius-lg)] bg-deep text-white p-6">
                 <div className="flex items-end justify-between gap-6">
                   <div>
                     <div className="kicker mb-1" style={{ color: '#7db4f0' }}>Prix HT</div>
@@ -311,7 +311,7 @@ export default function ArchesGonflables() {
         className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden"
         style={{ background: 'linear-gradient(to top, rgba(250, 249, 246, 0.98) 70%, transparent)' }}
       >
-        <div className="rounded-[var(--radius)] bg-ink text-white">
+        <div className="rounded-[var(--radius)] bg-deep text-white">
           <div className="flex items-center justify-between gap-4 p-4">
             <div>
               <div className="text-[11px] uppercase tracking-[0.16em] font-semibold text-white/55">Prix HT</div>
@@ -331,7 +331,7 @@ export default function ArchesGonflables() {
       </div>
 
       {/* ░░ SPECS (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <SectionHeader
             light

@@ -186,7 +186,7 @@ export default function ModernProducts() {
       </section>
 
       {/* ░░ CTA (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
             <div className="lg:col-span-8">

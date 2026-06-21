@@ -53,7 +53,7 @@ export default function Mobilier() {
   return (
     <main className="overflow-x-hidden bg-paper">
       {/* ░░ HERO ░░ */}
-      <section className="bg-ink text-white pt-32 md:pt-40 pb-16 md:pb-20">
+      <section className="bg-deep text-white pt-32 md:pt-40 pb-16 md:pb-20">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
             <div className="lg:col-span-7">
@@ -129,7 +129,7 @@ export default function Mobilier() {
                       onClick={() => setCategory(c.id)}
                       aria-pressed={active}
                       tabIndex={0}
-                      className={`group rounded-[var(--radius)] p-4 md:p-6 text-left transition-colors ${active ? 'bg-ink text-white border border-ink' : 'bg-white text-ink border border-[var(--line)] hover:border-ink/15'}`}
+                      className={`group rounded-[var(--radius)] p-4 md:p-6 text-left transition-colors ${active ? 'bg-deep text-white border border-ink' : 'bg-white text-ink border border-[var(--line)] hover:border-ink/15'}`}
                     >
                       <div className="flex items-center justify-between mb-6 md:mb-8">
                         <Icon className={`w-5 h-5 ${active ? 'text-[#7db4f0]' : 'text-[var(--blue)]'}`} />
@@ -240,7 +240,7 @@ export default function Mobilier() {
 
             {/* Prix HT card (desktop) */}
             <div className="hidden md:block sticky bottom-6 mt-8">
-              <div className="rounded-[var(--radius-lg)] bg-ink text-white p-6 md:p-7">
+              <div className="rounded-[var(--radius-lg)] bg-deep text-white p-6 md:p-7">
                 <div className="flex items-center justify-between gap-6">
                   <div>
                     <div className="kicker mb-1" style={{ color: '#7db4f0' }}>Prix HT</div>
@@ -267,7 +267,7 @@ export default function Mobilier() {
 
       {/* Sticky price bar (mobile) */}
       <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden" style={{ background: 'linear-gradient(to top, var(--paper) 70%, transparent)' }}>
-        <div className="rounded-[var(--radius-lg)] bg-ink text-white border border-ink">
+        <div className="rounded-[var(--radius-lg)] bg-deep text-white border border-ink">
           <div className="flex items-center justify-between gap-4 p-4">
             <div>
               <div className="text-[11px] uppercase tracking-[0.16em] font-semibold text-white/45">Prix HT</div>

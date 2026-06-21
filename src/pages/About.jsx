@@ -103,7 +103,7 @@ export default function About() {
       </section>
 
       {/* ░░ VALUES (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
           <div className="mb-14 md:mb-20">
             <SectionHeader light kicker="Ce qui nous guide au quotidien" index="02"
@@ -111,7 +111,7 @@ export default function About() {
           </div>
           <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {values.map(({ Icon, title, text }, i) => (
-              <motion.div variants={staggerChild} key={title} className="bg-ink p-7 md:p-9">
+              <motion.div variants={staggerChild} key={title} className="bg-deep p-7 md:p-9">
                 <div className="flex items-center justify-between mb-8">
                   <Icon className="w-5 h-5 text-[#5aa2f0]" />
                   <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
@@ -148,7 +148,7 @@ export default function About() {
 
       {/* ░░ CTA ░░ */}
       <section className="px-5 sm:px-8 pb-20">
-        <div className="relative max-w-content mx-auto rounded-[28px] overflow-hidden flex items-center justify-center bg-ink" style={{ minHeight: 360 }}>
+        <div className="relative max-w-content mx-auto rounded-[28px] overflow-hidden flex items-center justify-center bg-deep" style={{ minHeight: 360 }}>
           <div className="relative z-10 text-center px-6 py-24 max-w-2xl">
             <Reveal as="div" y={14} className="flex justify-center mb-5">
               <span className="kicker" style={{ color: 'rgba(255,255,255,0.85)' }}>Prêt à démarrer</span>

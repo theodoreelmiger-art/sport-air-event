@@ -153,7 +153,7 @@ export default function SpiderTent() {
       </section>
 
       {/* ░░ FEATURES (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <SectionHeader light kicker="Caractéristiques principales" index="01"
             title={<>Conçue pour l'efficacité<br /><span className="serif-accent text-white/55">et l'impact visuel.</span></>}
@@ -161,7 +161,7 @@ export default function SpiderTent() {
 
           <RevealStagger className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {features.map(({ Icon, title, desc }, i) => (
-              <motion.div variants={staggerChild} key={title} className="bg-ink p-6 md:p-8">
+              <motion.div variants={staggerChild} key={title} className="bg-deep p-6 md:p-8">
                 <div className="flex items-center justify-between mb-8">
                   <Icon className="w-5 h-5 text-[#5aa2f0]" />
                   <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
@@ -231,7 +231,7 @@ export default function SpiderTent() {
                       <button
                         className={`w-full py-3 text-[15px] font-semibold rounded-full transition-colors ${
                           isSelected
-                            ? 'bg-ink text-white hover:bg-[var(--blue)]'
+                            ? 'bg-deep text-white hover:bg-[var(--blue)]'
                             : 'bg-transparent text-ink border border-[var(--line)] hover:border-ink/30'
                         }`}
                         tabIndex={0}
@@ -271,7 +271,7 @@ export default function SpiderTent() {
 
       {/* ░░ CTA ░░ */}
       <section className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-        <Reveal className="rounded-[var(--radius-lg)] bg-ink text-white px-6 sm:px-12 py-16 md:py-20 text-center">
+        <Reveal className="rounded-[var(--radius-lg)] bg-deep text-white px-6 sm:px-12 py-16 md:py-20 text-center">
           <span className="kicker" style={{ color: '#7db4f0' }}>Prêt à démarrer</span>
           <h2 className="font-display font-bold tracking-tightest mt-5" style={{ fontSize: 'clamp(2rem,4.6vw,3.4rem)', lineHeight: 1.02 }}>
             Prêt à commander votre Tente Spider ?

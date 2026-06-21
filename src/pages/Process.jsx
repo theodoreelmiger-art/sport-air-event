@@ -80,7 +80,7 @@ export default function Process() {
   return (
     <div className="overflow-x-hidden bg-paper">
       {/* ░░ HERO ░░ */}
-      <section className="relative bg-ink text-white overflow-hidden">
+      <section className="relative bg-deep text-white overflow-hidden">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-36 md:pt-44 pb-20 md:pb-28">
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
             <span className="h-px w-10 bg-white/50" />
@@ -159,7 +159,7 @@ export default function Process() {
       </section>
 
       {/* ░░ DÉLAIS (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16">
             <div className="lg:col-span-7">
@@ -174,7 +174,7 @@ export default function Process() {
 
           <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {delais.map((item, i) => (
-              <motion.div variants={staggerChild} key={item.title} className="bg-ink p-7 md:p-9">
+              <motion.div variants={staggerChild} key={item.title} className="bg-deep p-7 md:p-9">
                 <div className="flex items-center justify-between mb-8">
                   <span className="kicker" style={{ color: '#7db4f0' }}>{item.title}</span>
                   <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>

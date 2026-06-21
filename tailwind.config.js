@@ -8,19 +8,16 @@ export default {
         display: ['Schibsted Grotesk', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       colors: {
-        ink: '#0b0d12',
-        paper: '#faf9f6',
+        ink: '#0b1c3f', // deep navy (no black)
+        paper: '#f6faff', // cool blue-white
+        navy: '#06245f',
         primary: {
           DEFAULT: '#0066cc',
           dark: '#0052a3',
         },
       },
-      maxWidth: {
-        content: '1240px',
-      },
-      letterSpacing: {
-        tightest: '-0.04em',
-      },
+      maxWidth: { content: '1240px' },
+      letterSpacing: { tightest: '-0.04em' },
     },
   },
   plugins: [],

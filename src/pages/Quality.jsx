@@ -59,7 +59,7 @@ export default function Quality() {
   return (
     <div className="overflow-x-hidden bg-paper">
       {/* ░░ HERO (dark) ░░ */}
-      <section className="relative bg-ink text-white overflow-hidden">
+      <section className="relative bg-deep text-white overflow-hidden">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16" style={{ paddingTop: 'clamp(140px,18vw,200px)', paddingBottom: 'clamp(80px,12vw,140px)' }}>
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
             <span className="h-px w-10 bg-white/40" />
@@ -136,7 +136,7 @@ export default function Quality() {
       </section>
 
       {/* ░░ SWISS MADE (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <SectionHeader
             light
@@ -149,7 +149,7 @@ export default function Quality() {
           />
           <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {swissCards.map(({ Icon, title, text }, i) => (
-              <motion.div variants={staggerChild} key={i} className="bg-ink p-8 md:p-10">
+              <motion.div variants={staggerChild} key={i} className="bg-deep p-8 md:p-10">
                 <div className="flex items-center justify-between mb-8">
                   <Icon className="w-6 h-6 text-[#5aa2f0]" />
                   <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
@@ -226,7 +226,7 @@ export default function Quality() {
       </section>
 
       {/* ░░ CTA (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
             <SectionHeader

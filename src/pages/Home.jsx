@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, ChevronDown, Clock, Shield, Sparkles, Truck, Star } from 'lucide-react';
 import { Reveal, RevealStagger, WordsReveal, Magnetic, staggerChild } from '../lib/motion.jsx';
+import { Counter, MouseGlow } from '../lib/interactions.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 
 const logos = [
@@ -32,7 +33,7 @@ const products = [
     specs: ['5m à 10m de large', 'Impression totale', 'Installation 15 min'], price: 'Dès 1 490€',
   },
   {
-    n: '02', to: '/Tente', img: 'images/03_330206aa0_ChatGPTImage17janv202613_32_29.png', alt: 'Tente Spider', featured: true,
+    n: '02', to: '/Tente', img: 'images/03_330206aa0_ChatGPTImage17janv202613_32_29.png', alt: 'Tente Spider',
     kicker: 'Notre produit phare', title: 'Tente Spider',
     desc: 'Architecture moderne avec pieds courbes. De 3×3m à 5×5m, montage en 2 minutes. Design 100% personnalisable.',
     specs: ['3×3m à 5×5m', 'Montage 2 min', 'Usage indoor/outdoor'], price: 'Dès 1 180€',
@@ -67,77 +68,167 @@ const Stars = ({ size }) => (
   <>{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`${size} fill-amber-400 text-amber-400`} />)}</>
 );
 
-export default function Home() {
-  const [openFaq, setOpenFaq] = useState(null);
-  const { scrollYProgress } = useScroll();
-  const heroY = useTransform(scrollYProgress, [0, 0.25], ['0%', '14%']);
-
+/* Sticky scrollytelling product showcase (desktop) + stacked (mobile) */
+function ProductBlock({ p, i, setActive, last }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { amount: 0.55, margin: '-20% 0px -20% 0px' });
+  useEffect(() => { if (inView) setActive(i); }, [inView, i, setActive]);
   return (
-    <div className="overflow-x-hidden bg-paper">
-      {/* ░░ HERO ░░ */}
-      <section className="relative flex flex-col justify-end overflow-hidden" style={{ minHeight: '100svh' }}>
-        <motion.div className="absolute inset-0" style={{ y: heroY }}>
-          <motion.img
-            src="images/01_352cf8bae_WhatsAppImage2026-01-17at132722.jpg"
-            alt="Sport Air Event – Structures gonflables événementielles"
-            className="w-full h-[114%] object-cover object-center"
-            fetchpriority="high"
-            initial={{ scale: 1.14 }} animate={{ scale: 1 }} transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-          />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg,rgba(11,13,18,0.30) 0%,rgba(11,13,18,0.18) 38%,rgba(11,13,18,0.86) 100%)' }} />
-        </motion.div>
+    <div ref={ref} className={`min-h-[78vh] flex flex-col justify-center ${!last ? 'border-b border-[var(--line)]' : ''}`}>
+      <div className="flex items-center gap-4 mb-5">
+        <span className="font-display text-5xl font-bold text-[var(--blue)]/15">{p.n}</span>
+        <span className="kicker">{p.kicker}</span>
+      </div>
+      <h3 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2rem,3.4vw,3rem)', lineHeight: 1.0 }}>{p.title}</h3>
+      <p className="lead mt-5 max-w-md">{p.desc}</p>
+      <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2.5">
+        {p.specs.map((s) => (
+          <li key={s} className="flex items-center gap-2 text-sm text-ink/75"><span className="w-1 h-1 rounded-full" style={{ background: 'var(--blue)' }} />{s}</li>
+        ))}
+      </ul>
+      <div className="mt-9 flex items-center gap-7">
+        <span className="font-display text-2xl font-bold text-ink">{p.price}</span>
+        <Magnetic>
+          <Link to={p.to} data-cursor className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-[var(--blue)]/20 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors">
+            Découvrir <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Link>
+        </Magnetic>
+      </div>
+    </div>
+  );
+}
 
-        {/* vertical signature label */}
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden lg:block z-10">
-          <div className="text-white/40 text-[11px] font-semibold tracking-[0.34em] uppercase" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
-            Structures gonflables · Suisse
+function ProductShowcase() {
+  const [active, setActive] = useState(0);
+  return (
+    <section id="structures" className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+        <SectionHeader kicker="Nos solutions" index="01" title={<>Des structures pensées<br />pour tous vos événements</>} />
+        <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
+          <Sparkles className="w-4 h-4 text-[var(--blue)]" />
+          Chaque produit disponible en version <span className="text-ink font-medium">Sur Mesure</span>
+        </Reveal>
+      </div>
+
+      {/* Desktop: sticky image + scrolling info */}
+      <div className="hidden lg:grid grid-cols-2 gap-16">
+        <div>
+          <div className="sticky top-28 h-[74vh] rounded-[var(--radius-lg)] bg-[var(--blue-mist)] border border-[var(--line)] overflow-hidden flex items-center justify-center p-12">
+            <div className="absolute top-6 left-6 flex gap-1.5">
+              {products.map((_, i) => (
+                <span key={i} className="h-1 rounded-full transition-all duration-500" style={{ width: i === active ? 28 : 10, background: i === active ? 'var(--blue)' : 'rgba(0,102,204,0.2)' }} />
+              ))}
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={active} src={products[active].img} alt={products[active].alt}
+                className="max-h-[70%] object-contain" style={{ mixBlendMode: 'multiply' }}
+                initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: -16 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              />
+            </AnimatePresence>
           </div>
         </div>
-
-        <div className="relative z-10 w-full max-w-content mx-auto px-5 sm:px-8 lg:px-16 pb-14 md:pb-20" style={{ paddingTop: 'clamp(120px,18vw,180px)' }}>
-          <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
-            <span className="h-px w-10 bg-white/50" />
-            <span className="kicker" style={{ color: 'rgba(255,255,255,0.92)' }}>🇨🇭 Conception Suisse · Swiss Quality</span>
-          </Reveal>
-
-          <h1 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,7.5vw,6.4rem)', lineHeight: 0.95, maxWidth: '16ch' }}>
-            <WordsReveal text="Structures gonflables" />{' '}
-            <WordsReveal text="événementielles" delay={0.16} />{' '}
-            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>
-              <WordsReveal text="pour professionnels" delay={0.4} />
-            </span>
-          </h1>
-
-          <Reveal as="p" delay={0.55} y={18} className="lead mt-7 max-w-xl" style={{ color: 'rgba(255,255,255,0.78)' }}>
-            Tentes gonflables, arches publicitaires, dômes événementiels et mobilier gonflable personnalisé.
-            Conception Suisse, installation rapide 2 minutes.
-          </Reveal>
-
-          <Reveal as="div" delay={0.66} className="mt-9 flex flex-col sm:flex-row gap-3">
-            <Magnetic>
-              <Link to="/Contact" className="cta-iridescent inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px]">
-                Obtenir un devis <ArrowRight className="w-4 h-4" />
-              </Link>
-            </Magnetic>
-            <Link to="/Tente" className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-white border border-white/30 hover:bg-white/10 transition-colors backdrop-blur-sm">
-              Découvrir nos solutions
-            </Link>
-          </Reveal>
-
-          <Reveal as="div" delay={0.8} className="mt-12 md:mt-16 flex items-stretch gap-6 sm:gap-10">
-            {[['20', 'ans', "D'expérience"], ['2', 'min', 'Installation'], ['100', '%', 'Conception Suisse']].map(([n, u, l], i) => (
-              <div key={i} className="flex items-stretch gap-6 sm:gap-10">
-                {i > 0 && <span className="w-px self-stretch bg-white/20" />}
-                <div>
-                  <div className="font-display text-white font-bold leading-none flex items-baseline gap-0.5" style={{ fontSize: 'clamp(1.8rem,3.6vw,2.7rem)', letterSpacing: '-0.03em' }}>
-                    {n}<span className="text-white/55 text-[0.55em] font-semibold">{u}</span>
-                  </div>
-                  <div className="text-white/55 text-xs font-medium mt-1.5">{l}</div>
-                </div>
-              </div>
-            ))}
-          </Reveal>
+        <div>
+          {products.map((p, i) => <ProductBlock key={p.to} p={p} i={i} setActive={setActive} last={i === products.length - 1} />)}
         </div>
+      </div>
+
+      {/* Mobile: stacked cards */}
+      <div className="lg:hidden space-y-12">
+        {products.map((p) => (
+          <Reveal key={p.to} y={36}>
+            <div className="rounded-[var(--radius-lg)] bg-[var(--blue-mist)] border border-[var(--line)] flex items-center justify-center p-10 mb-6" style={{ aspectRatio: '4/3' }}>
+              <img src={p.img} alt={p.alt} className="max-h-[78%] object-contain" style={{ mixBlendMode: 'multiply' }} loading="lazy" />
+            </div>
+            <div className="kicker mb-3">{p.kicker}</div>
+            <h3 className="font-display font-bold text-ink text-2xl">{p.title}</h3>
+            <p className="lead mt-4">{p.desc}</p>
+            <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+              {p.specs.map((s) => <li key={s} className="flex items-center gap-2 text-sm text-ink/75"><span className="w-1 h-1 rounded-full" style={{ background: 'var(--blue)' }} />{s}</li>)}
+            </ul>
+            <div className="mt-6 flex items-center gap-6">
+              <span className="font-display text-xl font-bold text-ink">{p.price}</span>
+              <Link to={p.to} className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--blue)]">Découvrir <ArrowUpRight className="w-4 h-4" /></Link>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+
+      <Reveal className="mt-16 pt-12 border-t border-[var(--line)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <p className="font-display text-xl md:text-2xl font-semibold text-ink max-w-md tracking-tight">Un projet sur mesure ? Parlons-en.</p>
+        <Magnetic>
+          <Link to="/Contact" data-cursor className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
+            Demander un devis <ArrowRight className="w-4 h-4" />
+          </Link>
+        </Magnetic>
+      </Reveal>
+    </section>
+  );
+}
+
+export default function Home() {
+  const [openFaq, setOpenFaq] = useState(null);
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '22%']);
+  const orb1Y = useTransform(scrollYProgress, [0, 1], ['0%', '-40%']);
+  const orb2Y = useTransform(scrollYProgress, [0, 1], ['0%', '60%']);
+  const heroFade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  return (
+    <div className="overflow-x-hidden bg-white">
+      {/* ░░ HERO ░░ */}
+      <section ref={heroRef} className="relative flex flex-col justify-end overflow-hidden" style={{ minHeight: '100svh' }}>
+        <motion.div className="absolute inset-0" style={{ y: imgY }}>
+          <motion.img src="images/01_352cf8bae_WhatsAppImage2026-01-17at132722.jpg" alt="Sport Air Event – Structures gonflables événementielles"
+            className="w-full h-[124%] object-cover object-center" fetchpriority="high"
+            initial={{ scale: 1.16 }} animate={{ scale: 1 }} transition={{ duration: 1.9, ease: [0.16, 1, 0.3, 1] }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(175deg, rgba(6,36,95,0.30) 0%, rgba(0,102,204,0.20) 36%, rgba(4,23,63,0.90) 100%)' }} />
+        </motion.div>
+        <MouseGlow color="rgba(70,150,255,0.40)" size={620} />
+        <motion.div style={{ y: orb1Y }} className="absolute -top-10 right-[12%] w-72 h-72 rounded-full pointer-events-none" />
+        <motion.div style={{ y: orb2Y, background: 'radial-gradient(circle, rgba(31,122,224,0.5), transparent 70%)', filter: 'blur(40px)' }} className="absolute top-1/4 left-[8%] w-80 h-80 rounded-full pointer-events-none" />
+
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden lg:block z-10">
+          <div className="text-white/40 text-[11px] font-semibold tracking-[0.34em] uppercase" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>Structures gonflables · Suisse</div>
+        </div>
+
+        <motion.div style={{ opacity: heroFade }} className="relative z-10 w-full max-w-content mx-auto px-5 sm:px-8 lg:px-16 pb-14 md:pb-20" >
+          <div style={{ paddingTop: 'clamp(120px,18vw,180px)' }}>
+            <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
+              <span className="h-px w-10 bg-white/50" />
+              <span className="kicker" style={{ color: 'rgba(255,255,255,0.92)' }}>🇨🇭 Conception Suisse · Swiss Quality</span>
+            </Reveal>
+            <h1 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,7.5vw,6.4rem)', lineHeight: 0.95, maxWidth: '16ch' }}>
+              <WordsReveal text="Structures gonflables" />{' '}
+              <WordsReveal text="événementielles" delay={0.16} />{' '}
+              <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}><WordsReveal text="pour professionnels" delay={0.4} /></span>
+            </h1>
+            <Reveal as="p" delay={0.55} y={18} className="lead mt-7 max-w-xl" style={{ color: 'rgba(255,255,255,0.78)' }}>
+              Tentes gonflables, arches publicitaires, dômes événementiels et mobilier gonflable personnalisé. Conception Suisse, installation rapide 2 minutes.
+            </Reveal>
+            <Reveal as="div" delay={0.66} className="mt-9 flex flex-col sm:flex-row gap-3">
+              <Magnetic>
+                <Link to="/Contact" data-cursor className="cta-iridescent inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px]">Obtenir un devis <ArrowRight className="w-4 h-4" /></Link>
+              </Magnetic>
+              <Link to="/Tente" data-cursor className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-white border border-white/30 hover:bg-white/10 transition-colors backdrop-blur-sm">Découvrir nos solutions</Link>
+            </Reveal>
+            <Reveal as="div" delay={0.8} className="mt-12 md:mt-16 flex items-stretch gap-6 sm:gap-10">
+              {[[20, '', 'ans', "D'expérience", 0], [2, '', 'min', 'Installation', 0], [100, '%', '', 'Conception Suisse', 0]].map(([num, suf, unit, label], i) => (
+                <div key={i} className="flex items-stretch gap-6 sm:gap-10">
+                  {i > 0 && <span className="w-px self-stretch bg-white/20" />}
+                  <div>
+                    <div className="font-display text-white font-bold leading-none flex items-baseline gap-0.5" style={{ fontSize: 'clamp(1.8rem,3.6vw,2.7rem)', letterSpacing: '-0.03em' }}>
+                      <Counter to={num} suffix={suf} />{unit && <span className="text-white/55 text-[0.55em] font-semibold ml-0.5">{unit}</span>}
+                    </div>
+                    <div className="text-white/55 text-xs font-medium mt-1.5">{label}</div>
+                  </div>
+                </div>
+              ))}
+            </Reveal>
+          </div>
+        </motion.div>
         <div className="absolute bottom-6 right-6 hidden sm:flex items-center gap-2 text-white/45 text-xs z-10">
           <span className="uppercase tracking-[0.2em]">Scroll</span>
           <motion.span animate={{ y: [0, 5, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}><ChevronDown className="w-4 h-4" /></motion.span>
@@ -150,36 +241,26 @@ export default function Home() {
         <div className="relative">
           <div className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right,#fff,transparent)' }} />
           <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left,#fff,transparent)' }} />
-          <div className="logo-track">
-            {[...logos, ...logos, ...logos].map((logo, i) => (
-              <div className="logo-item" key={i}><img src={logo.src} alt={logo.alt} loading="eager" width="120" height="40" /></div>
-            ))}
-          </div>
+          <div className="logo-track">{[...logos, ...logos, ...logos].map((logo, i) => (<div className="logo-item" key={i}><img src={logo.src} alt={logo.alt} loading="eager" width="120" height="40" /></div>))}</div>
         </div>
       </section>
 
-      {/* ░░ MANIFESTO (dark) ░░ */}
-      <section className="bg-ink text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
+      {/* ░░ MANIFESTO (deep blue) ░░ */}
+      <section className="bg-deep text-white relative overflow-hidden">
+        <MouseGlow color="rgba(70,150,255,0.22)" size={680} />
+        <div className="relative max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 md:mb-20">
             <div className="lg:col-span-7">
-              <SectionHeader light kicker="Pourquoi Sport Air Event" index="—"
-                title={<>Conçues en Suisse.<br />Montées en deux minutes.<br /><span className="serif-accent text-white/55">Pensées pour votre marque.</span></>} />
+              <SectionHeader light kicker="Pourquoi Sport Air Event" index="—" title={<>Conçues en Suisse.<br />Montées en deux minutes.<br /><span className="serif-accent text-white/55">Pensées pour votre marque.</span></>} />
             </div>
             <Reveal as="p" delay={0.1} className="lg:col-span-5 text-white/65 leading-relaxed">
-              Depuis 20 ans, nous fabriquons des structures gonflables événementielles haut de gamme :
-              impact visuel maximal, durabilité et personnalisation complète, pour les marques et les
-              événements les plus exigeants.
+              Depuis 20 ans, nous fabriquons des structures gonflables événementielles haut de gamme : impact visuel maximal, durabilité et personnalisation complète, pour les marques et les événements les plus exigeants.
             </Reveal>
           </div>
-
           <RevealStagger className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {features.map((f, i) => (
-              <motion.div variants={staggerChild} key={i} className="bg-ink p-6 md:p-8">
-                <div className="flex items-center justify-between mb-8">
-                  <f.icon className="w-5 h-5 text-[#5aa2f0]" />
-                  <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>
-                </div>
+              <motion.div variants={staggerChild} key={i} className="bg-[#06245f] p-6 md:p-8" data-cursor>
+                <div className="flex items-center justify-between mb-8"><f.icon className="w-5 h-5 text-[#7db4f0]" /><span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span></div>
                 <div className="font-display font-semibold text-[15px] mb-1.5">{f.title}</div>
                 <div className="text-[13px] text-white/50 leading-relaxed">{f.desc}</div>
               </motion.div>
@@ -188,64 +269,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ░░ PRODUCTS — alternating showcase ░░ */}
-      <section id="structures" className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 md:mb-24">
-          <SectionHeader kicker="Nos solutions" index="01" title={<>Des structures pensées<br />pour tous vos événements</>} />
-          <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
-            <Sparkles className="w-4 h-4 text-[var(--blue)]" />
-            Chaque produit disponible en version <span className="text-ink font-medium">Sur Mesure</span>
-          </Reveal>
-        </div>
-
-        <div className="space-y-20 md:space-y-28">
-          {products.map((p, i) => (
-            <Reveal key={p.to} y={40} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
-              <div className={`relative ${i % 2 ? 'md:order-2' : ''}`}>
-                <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--paper-2)] flex items-center justify-center p-10 md:p-14" style={{ aspectRatio: '4 / 3' }}>
-                  <span className="absolute top-5 left-6 font-display text-[5rem] md:text-[7rem] font-bold leading-none text-ink/[0.04] select-none">{p.n}</span>
-                  {p.featured && (
-                    <span className="absolute top-5 right-5 z-10 flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-semibold" style={{ background: 'var(--blue)' }}>⭐ Produit phare</span>
-                  )}
-                  <motion.img src={p.img} alt={p.alt} loading="lazy" className="relative max-h-[78%] object-contain" style={{ mixBlendMode: 'multiply' }} whileHover={{ scale: 1.04 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} />
-                </div>
-              </div>
-              <div className={`${i % 2 ? 'md:order-1' : ''}`}>
-                <div className="kicker mb-4">{p.kicker}</div>
-                <h3 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(1.8rem,3.2vw,2.8rem)', lineHeight: 1.02 }}>{p.title}</h3>
-                <p className="lead mt-5 max-w-md">{p.desc}</p>
-                <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2.5">
-                  {p.specs.map((s) => (
-                    <li key={s} className="flex items-center gap-2 text-sm text-ink/75">
-                      <span className="w-1 h-1 rounded-full" style={{ background: 'var(--blue)' }} />{s}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-9 flex items-center gap-7">
-                  <span className="font-display text-2xl font-bold text-ink">{p.price}</span>
-                  <Magnetic>
-                    <Link to={p.to} className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-ink/15 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors">
-                      Découvrir <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
-                  </Magnetic>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal className="mt-20 pt-12 border-t border-[var(--line)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <p className="font-display text-xl md:text-2xl font-semibold text-ink max-w-md tracking-tight">Un projet sur mesure ? Parlons-en.</p>
-          <Magnetic>
-            <Link to="/Contact" className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
-              Demander un devis <ArrowRight className="w-4 h-4" />
-            </Link>
-          </Magnetic>
-        </Reveal>
-      </section>
+      {/* ░░ PRODUCTS — sticky scrollytelling ░░ */}
+      <ProductShowcase />
 
       {/* ░░ REVIEWS ░░ */}
-      <section className="bg-white border-y border-[var(--line)] py-20 md:py-28">
+      <section className="bg-[var(--blue-mist)] border-y border-[var(--line)] py-20 md:py-28">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
             <SectionHeader kicker="Témoignages" index="02" title={<>Ils nous font<br />confiance</>} />
@@ -258,24 +286,21 @@ export default function Home() {
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
                 <div className="flex items-center gap-1"><Stars size="w-4 h-4" /></div>
-                <span className="font-display text-xl font-bold text-ink ml-1">4.9</span>
+                <span className="font-display text-xl font-bold text-ink ml-1"><Counter to={4.9} decimals={1} /></span>
               </div>
-              <span className="text-sm text-[var(--muted)]">Basé sur <strong className="text-ink/70">127</strong> avis</span>
+              <span className="text-sm text-[var(--muted)]">Basé sur <strong className="text-ink/70"><Counter to={127} /></strong> avis</span>
             </Reveal>
           </div>
           <RevealStagger className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             {reviews.map((r) => (
-              <motion.div key={r.ini} variants={staggerChild} className="flex flex-col p-7 rounded-[var(--radius-lg)] bg-[var(--paper)] border border-[var(--line)] hover:border-ink/15 transition-colors">
+              <motion.div key={r.ini} variants={staggerChild} data-cursor className="flex flex-col p-7 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] hover:border-[var(--blue)]/30 hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style={{ background: r.grad }}>{r.ini}</div>
                   <div><div className="font-semibold text-sm text-ink">{r.name}</div><div className="text-xs text-[var(--muted)]">{r.role}</div></div>
                 </div>
                 <div className="flex items-center gap-0.5 mb-3"><Stars size="w-3.5 h-3.5" /></div>
                 <p className="text-sm text-ink/70 leading-relaxed flex-1">{r.text}</p>
-                <div className="mt-5 pt-4 border-t border-[var(--line)] flex items-center justify-between">
-                  <span className="text-xs text-[var(--muted)]">{r.date}</span>
-                  <span className="text-xs text-[var(--muted)]">Publié sur Google</span>
-                </div>
+                <div className="mt-5 pt-4 border-t border-[var(--line)] flex items-center justify-between"><span className="text-xs text-[var(--muted)]">{r.date}</span><span className="text-xs text-[var(--muted)]">Publié sur Google</span></div>
               </motion.div>
             ))}
           </RevealStagger>
@@ -291,11 +316,9 @@ export default function Home() {
               const isOpen = openFaq === i;
               return (
                 <motion.div key={i} variants={staggerChild} className="border-b border-[var(--line)]">
-                  <button onClick={() => setOpenFaq(isOpen ? null : i)} aria-expanded={isOpen} className="w-full flex items-center justify-between gap-4 text-left py-6 group">
+                  <button onClick={() => setOpenFaq(isOpen ? null : i)} aria-expanded={isOpen} data-cursor className="w-full flex items-center justify-between gap-4 text-left py-6 group">
                     <h3 className="font-display text-[17px] md:text-lg font-semibold text-ink group-hover:text-[var(--blue)] transition-colors">{q}</h3>
-                    <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[var(--line)]">
-                      <ChevronDown className="w-4 h-4 text-[var(--muted)]" />
-                    </motion.div>
+                    <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[var(--line)]"><ChevronDown className="w-4 h-4 text-[var(--muted)]" /></motion.div>
                   </button>
                   <AnimatePresence initial={false}>
                     {isOpen && (
@@ -313,18 +336,15 @@ export default function Home() {
 
       {/* ░░ CTA ░░ */}
       <section className="px-5 sm:px-8 pb-20">
-        <div className="relative max-w-content mx-auto rounded-[28px] overflow-hidden flex items-center justify-center" style={{ minHeight: 380 }}>
-          <img src="images/01_352cf8bae_WhatsAppImage2026-01-17at132722.jpg" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg,rgba(0,102,204,0.9),rgba(11,13,18,0.82))' }} />
+        <div className="relative max-w-content mx-auto rounded-[28px] overflow-hidden flex items-center justify-center bg-deep" style={{ minHeight: 380 }}>
+          <MouseGlow color="rgba(70,150,255,0.3)" size={560} />
           <div className="relative z-10 text-center px-6 py-24 max-w-2xl">
             <Reveal as="div" y={14} className="flex justify-center mb-5"><span className="kicker" style={{ color: 'rgba(255,255,255,0.85)' }}>Prêt à démarrer</span></Reveal>
             <Reveal as="h2" delay={0.05} className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.1rem,5vw,4rem)', lineHeight: 1.0 }}>Prêt à marquer les esprits ?</Reveal>
             <Reveal as="p" delay={0.12} className="mt-5 text-white/75 text-lg">Conception Suisse. Livraison France et Europe.</Reveal>
             <Reveal delay={0.2} className="mt-9">
               <Magnetic>
-                <Link to="/Contact" className="inline-flex items-center gap-2 bg-white text-ink font-semibold rounded-full px-8 py-4 text-[15px] hover:bg-white/90 transition-colors">
-                  Demander un devis gratuit <ArrowRight className="w-4 h-4" />
-                </Link>
+                <Link to="/Contact" data-cursor className="inline-flex items-center gap-2 bg-white text-[var(--blue)] font-semibold rounded-full px-8 py-4 text-[15px] hover:bg-white/90 transition-colors">Demander un devis gratuit <ArrowRight className="w-4 h-4" /></Link>
               </Magnetic>
             </Reveal>
           </div>

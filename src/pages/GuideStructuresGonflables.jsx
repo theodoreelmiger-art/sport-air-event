@@ -92,7 +92,7 @@ export default function GuideStructuresGonflables() {
       </section>
 
       {/* ░░ AVANTAGES — dark manifesto ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 md:mb-20">
             <div className="lg:col-span-7">
@@ -106,7 +106,7 @@ export default function GuideStructuresGonflables() {
 
           <RevealStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {advantages.map((a, i) => (
-              <motion.div variants={staggerChild} key={a.t} className="bg-ink p-7 md:p-8">
+              <motion.div variants={staggerChild} key={a.t} className="bg-deep p-7 md:p-8">
                 <div className="flex items-center justify-between mb-8">
                   <span className="w-6 h-px bg-[#5aa2f0]" />
                   <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>

@@ -3,7 +3,7 @@ import { LOGO, CONTACT, FOOTER_NAV, FOOTER_PRODUCTS } from '../data/site.js';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f172a]">
+    <footer className="bg-deep">
       <div className="text-white">
         <div className="max-w-6xl mx-auto px-6 lg:px-8 py-16 md:py-20">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 text-center sm:text-left">

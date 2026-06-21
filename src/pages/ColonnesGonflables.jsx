@@ -217,7 +217,7 @@ export default function ColonnesGonflables() {
                                 e.stopPropagation();
                                 setQuantity((q) => q + 1);
                               }}
-                              className="w-7 h-7 rounded-[10px] bg-ink hover:bg-[var(--blue)] text-white flex items-center justify-center transition-colors"
+                              className="w-7 h-7 rounded-[10px] bg-deep hover:bg-[var(--blue)] text-white flex items-center justify-center transition-colors"
                             >
                               <Plus className="w-3 h-3" />
                             </button>
@@ -262,7 +262,7 @@ export default function ColonnesGonflables() {
                       <div
                         onClick={() => navigate('/ColonnesSurMesure')}
                         role="button"
-                        className="group relative overflow-hidden rounded-[var(--radius-lg)] p-5 md:p-6 bg-ink text-white cursor-pointer"
+                        className="group relative overflow-hidden rounded-[var(--radius-lg)] p-5 md:p-6 bg-deep text-white cursor-pointer"
                         tabIndex={0}
                       >
                         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0">
@@ -426,7 +426,7 @@ export default function ColonnesGonflables() {
         </section>
 
         {/* ░░ SPECS (dark) ░░ */}
-        <section className="bg-ink text-white">
+        <section className="bg-deep text-white">
           <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
             <SectionHeader
               light
@@ -495,7 +495,7 @@ export default function ColonnesGonflables() {
         target="_blank"
         rel="noopener noreferrer"
         whileHover={{ scale: 1.05 }}
-        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-ink rounded-full shadow-[0_12px_30px_rgba(11,13,18,0.28)] flex items-center justify-center text-white"
+        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-deep rounded-full shadow-[0_12px_30px_rgba(11,13,18,0.28)] flex items-center justify-center text-white"
         tabIndex={0}
       >
         <MessageCircle className="w-7 h-7" />

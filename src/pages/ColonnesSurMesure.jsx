@@ -42,7 +42,7 @@ export default function ColonnesSurMesure() {
   return (
     <div className="overflow-x-hidden bg-paper">
       {/* ░░ HERO — editorial split ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-28 md:pt-36 pb-20 md:pb-28">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6">
@@ -150,7 +150,7 @@ export default function ColonnesSurMesure() {
       </section>
 
       {/* ░░ POURQUOI PERSONNALISER (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
           <SectionHeader
             light
@@ -160,7 +160,7 @@ export default function ColonnesSurMesure() {
           />
           <RevealStagger className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {whyCustom.map((f, i) => (
-              <motion.div variants={staggerChild} key={f.title} className="bg-ink p-6 md:p-8">
+              <motion.div variants={staggerChild} key={f.title} className="bg-deep p-6 md:p-8">
                 <div className="flex items-center justify-between mb-8">
                   <Check className="w-5 h-5" style={{ color: '#5aa2f0' }} />
                   <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>

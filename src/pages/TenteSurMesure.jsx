@@ -106,7 +106,7 @@ export default function TenteSurMesure() {
 
             {/* Pourquoi — dark premium section */}
             <section className="relative -mx-5 sm:-mx-8 lg:mx-0">
-              <div className="bg-ink text-white rounded-[var(--radius-lg)] px-6 sm:px-8 md:px-10 py-12 md:py-14">
+              <div className="bg-deep text-white rounded-[var(--radius-lg)] px-6 sm:px-8 md:px-10 py-12 md:py-14">
                 <SectionHeader
                   light
                   kicker="Le choix sur mesure"
@@ -115,7 +115,7 @@ export default function TenteSurMesure() {
                 />
                 <RevealStagger className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
                   {reasons.map((r, i) => (
-                    <motion.div variants={staggerChild} key={r.title} className="bg-ink p-6 md:p-7">
+                    <motion.div variants={staggerChild} key={r.title} className="bg-deep p-6 md:p-7">
                       <div className="flex items-center justify-between mb-6">
                         <Check className="w-5 h-5 text-[#5aa2f0]" />
                         <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>

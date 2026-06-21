@@ -136,7 +136,7 @@ export default function ArchesSurMesure() {
       </section>
 
       {/* ░░ POURQUOI (dark) ░░ */}
-      <section className="bg-ink text-white py-20 md:py-28">
+      <section className="bg-deep text-white py-20 md:py-28">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="max-w-2xl mb-14 md:mb-16">
             <SectionHeader
@@ -148,7 +148,7 @@ export default function ArchesSurMesure() {
           </div>
           <RevealStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {reasons.map((r, i) => (
-              <motion.div variants={staggerChild} key={r.title} className="bg-ink p-6 md:p-8">
+              <motion.div variants={staggerChild} key={r.title} className="bg-deep p-6 md:p-8">
                 <div className="flex items-center justify-between mb-8">
                   <Check className="w-5 h-5 text-[#5aa2f0]" />
                   <span className="text-xs font-semibold text-white/25 tabular-nums">0{i + 1}</span>

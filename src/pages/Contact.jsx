@@ -323,7 +323,7 @@ export default function Contact() {
                               <div
                                 className={`w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-colors ${
                                   reached
-                                    ? 'bg-ink text-white'
+                                    ? 'bg-deep text-white'
                                     : 'bg-paper text-[var(--muted)] border border-[var(--line)]'
                                 }`}
                               >
@@ -435,7 +435,7 @@ export default function Contact() {
                                   onClick={() => setForm((f) => ({ ...f, structure: type }))}
                                   className={`py-3 px-3 rounded-[14px] border text-sm md:text-base font-semibold transition-colors ${
                                     active
-                                      ? 'border-ink bg-ink text-white'
+                                      ? 'border-ink bg-deep text-white'
                                       : 'border-[var(--line)] bg-white text-ink hover:border-ink/20'
                                   }`}
                                 >
@@ -570,7 +570,7 @@ export default function Contact() {
       </section>
 
       {/* ░░ REVIEWS (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
             <SectionHeader light kicker="Témoignages" index="01" title={<>Ils nous font<br />confiance</>} />
@@ -595,7 +595,7 @@ export default function Contact() {
 
           <RevealStagger className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {reviews.map((r) => (
-              <motion.div key={r.initials} variants={staggerChild} className="flex flex-col bg-ink p-7">
+              <motion.div key={r.initials} variants={staggerChild} className="flex flex-col bg-deep p-7">
                 <div className="flex items-center gap-3 mb-5">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"

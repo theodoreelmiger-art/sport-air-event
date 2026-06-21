@@ -76,7 +76,7 @@ export default function Products() {
   return (
     <div className="overflow-x-hidden bg-paper pt-20">
       {/* ░░ HERO ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-24 md:py-32">
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
             <span className="h-px w-10 bg-white/40" />
@@ -139,7 +139,7 @@ export default function Products() {
                   />
                   <span className="absolute top-5 left-6 font-display text-[5rem] md:text-[7rem] font-bold leading-none text-white/15 select-none">{p.n}</span>
                   <div className="absolute bottom-6 left-6">
-                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-ink text-white text-sm font-semibold">
+                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-deep text-white text-sm font-semibold">
                       <p.icon className="w-4 h-4 text-[#5aa2f0]" />
                       <span>{p.category}</span>
                     </div>
@@ -185,7 +185,7 @@ export default function Products() {
       </section>
 
       {/* ░░ CTA ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
             <div className="lg:col-span-7">

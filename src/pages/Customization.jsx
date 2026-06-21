@@ -86,7 +86,7 @@ export default function Customization() {
   return (
     <div className="overflow-x-hidden bg-paper pt-20">
       {/* ░░ HERO (dark) ░░ */}
-      <section className="relative bg-ink text-white overflow-hidden">
+      <section className="relative bg-deep text-white overflow-hidden">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6">
@@ -168,7 +168,7 @@ export default function Customization() {
       </section>
 
       {/* ░░ PROCESSUS — editorial timeline ░░ */}
-      <section className="bg-ink text-white py-20 md:py-28">
+      <section className="bg-deep text-white py-20 md:py-28">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 md:mb-20">
             <div className="lg:col-span-7">
@@ -186,7 +186,7 @@ export default function Customization() {
 
           <RevealStagger className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
             {steps.map((s) => (
-              <motion.div variants={staggerChild} key={s.title} className="bg-ink p-7 md:p-9">
+              <motion.div variants={staggerChild} key={s.title} className="bg-deep p-7 md:p-9">
                 <div className="flex items-center justify-between mb-8">
                   <div className="w-12 h-12 rounded-[14px] bg-white/[0.04] border border-white/10 flex items-center justify-center">
                     <s.Icon className="w-5 h-5 text-[#5aa2f0]" />

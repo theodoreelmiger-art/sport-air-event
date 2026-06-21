@@ -231,7 +231,7 @@ export default function Tente() {
                       <div
                         onClick={() => navigate('/TenteSurMesure')}
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/TenteSurMesure'); } }}
-                        className="group relative overflow-hidden rounded-[var(--radius-lg)] p-5 md:p-6 bg-ink text-white cursor-pointer transition-colors"
+                        className="group relative overflow-hidden rounded-[var(--radius-lg)] p-5 md:p-6 bg-deep text-white cursor-pointer transition-colors"
                         tabIndex={0}
                       >
                         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0">
@@ -406,7 +406,7 @@ export default function Tente() {
                 </div>
 
                 {/* Sticky price — desktop */}
-                <div className="hidden md:block sticky bottom-6 mt-4 rounded-[var(--radius-lg)] bg-ink text-white border border-ink">
+                <div className="hidden md:block sticky bottom-6 mt-4 rounded-[var(--radius-lg)] bg-deep text-white border border-ink">
                   <div className="p-6 flex items-center justify-between gap-6">
                     <div>
                       <div className="text-xs uppercase tracking-[0.16em] text-white/45 font-semibold mb-1">Prix HT</div>
@@ -432,7 +432,7 @@ export default function Tente() {
 
         {/* Sticky price — mobile */}
         <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden">
-          <div className="rounded-[var(--radius-lg)] bg-ink text-white border border-ink shadow-[0_-8px_30px_rgba(11,13,18,0.18)]">
+          <div className="rounded-[var(--radius-lg)] bg-deep text-white border border-ink shadow-[0_-8px_30px_rgba(11,13,18,0.18)]">
             <div className="flex items-center justify-between gap-4 p-4">
               <div>
                 <div className="text-[10px] uppercase tracking-[0.16em] text-white/45 font-semibold">Prix HT</div>
@@ -451,7 +451,7 @@ export default function Tente() {
         </div>
 
         {/* ░░ SPECS (dark) ░░ */}
-        <section className="bg-ink text-white">
+        <section className="bg-deep text-white">
           <div className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
             <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16">
               <div className="lg:col-span-7">

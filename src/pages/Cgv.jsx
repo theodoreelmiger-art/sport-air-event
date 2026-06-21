@@ -108,7 +108,7 @@ export default function Cgv() {
   return (
     <div className="overflow-x-hidden bg-paper">
       {/* ░░ HEADER (dark) ░░ */}
-      <section className="bg-ink text-white">
+      <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-36 md:pt-44 pb-20 md:pb-28">
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
             <span className="h-px w-10 bg-white/30" />
