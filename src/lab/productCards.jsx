@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight, ArrowUpRight, Check, Plus, Minus, Star, Ruler, Clock, Layers,
-  Sparkles, Eye, ChevronRight, Tag, Package,
+  ArrowRight, ArrowUpRight, ArrowLeft, Check, Plus, Minus, Star, Ruler, Clock, Layers,
+  Sparkles, Eye, ChevronRight, ChevronLeft, Tag, Package,
 } from 'lucide-react';
 import { PRODUCTS } from './data.js';
 
@@ -17,6 +17,15 @@ const FEATHER =
   'radial-gradient(130% 130% at 50% 48%, #000 60%, transparent 92%)';
 const IMG_STYLE = {
   mixBlendMode: 'multiply',
+  WebkitMaskImage: FEATHER,
+  maskImage: FEATHER,
+  clipPath: 'inset(0.5% 2.2% 0.5% 0.5%)',
+};
+
+/* Framed treatment: show the REAL photo (no multiply blend → no color tint),
+   keep the soft feathered radial mask so edges dissolve instead of reading as
+   a hard square, and the same right-edge crop. No box/drop shadow. */
+const FRAME_STYLE = {
   WebkitMaskImage: FEATHER,
   maskImage: FEATHER,
   clipPath: 'inset(0.5% 2.2% 0.5% 0.5%)',
@@ -265,13 +274,36 @@ function V37() {
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   V38 — OVERLAY ON IMAGE. A single large hero card with a carousel of the
-   products. The render fills a blue field; kicker/title/specs/price sit on a
-   bottom legibility wash. Dots switch product, Découvrir is a real button.
+   V38 — OVERLAY ON IMAGE. A single large hero card that AUTO-SCROLLS through
+   the products like a carousel (autoplay ~3.2s, paused on hover). The REAL
+   photo shows on a soft light stage — no blue tint — cleanly framed with a
+   feathered edge. Left/right arrows step prev/next; dots also switch product;
+   kicker/title/specs/price sit on a bottom legibility wash.
    ════════════════════════════════════════════════════════════════════════ */
 function V38() {
   const [idx, setIdx] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [paused, setPaused] = useState(false);
   const p = PRODUCTS[idx];
+
+  const go = (next) => {
+    setDir(next > idx || (idx === PRODUCTS.length - 1 && next === 0) ? 1 : -1);
+    setIdx((next + PRODUCTS.length) % PRODUCTS.length);
+  };
+  const step = (delta) => {
+    setDir(delta);
+    setIdx((v) => (v + delta + PRODUCTS.length) % PRODUCTS.length);
+  };
+
+  /* autoplay carousel — advances every 3.2s, pauses on hover/focus */
+  useEffect(() => {
+    if (paused) return undefined;
+    const t = setTimeout(() => {
+      setDir(1);
+      setIdx((v) => (v + 1) % PRODUCTS.length);
+    }, 3200);
+    return () => clearTimeout(t);
+  }, [idx, paused]);
 
   return (
     <div className="w-full">
@@ -288,22 +320,28 @@ function V38() {
           aspectRatio: '4 / 5',
           background: 'linear-gradient(168deg, var(--blue-bright) 0%, var(--blue) 42%, var(--blue-deep) 100%)',
         }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocusCapture={() => setPaused(true)}
+        onBlurCapture={() => setPaused(false)}
       >
-        {/* soft light core to keep the render legible on the deep field */}
+        {/* clean light stage so the real photo reads — soft feathered frame,
+            no multiply blend → no blue tint on the product */}
         <div
-          className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{ width: '92%', height: '70%', background: 'radial-gradient(circle, rgba(255,255,255,.6), rgba(255,255,255,.1) 52%, transparent 74%)', filter: 'blur(18px)' }}
+          className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ width: '86%', height: '64%', background: 'radial-gradient(circle, #fff 38%, rgba(255,255,255,.55) 62%, transparent 78%)', filter: 'blur(6px)' }}
         />
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="popLayout" custom={dir}>
           <motion.img
             key={p.n}
             src={SRC(p.img)} alt={p.alt} loading="lazy"
-            className="absolute left-1/2 top-[36%] w-[80%] -translate-x-1/2 -translate-y-1/2 object-contain pointer-events-none select-none"
-            style={IMG_STYLE}
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.94 }}
-            transition={{ duration: 0.45, ease: EASE }}
+            className="absolute left-1/2 top-[36%] w-[78%] -translate-x-1/2 -translate-y-1/2 object-contain pointer-events-none select-none"
+            style={FRAME_STYLE}
+            custom={dir}
+            initial={{ opacity: 0, x: dir * 48, scale: 0.94 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: dir * -48, scale: 0.94 }}
+            transition={{ duration: 0.5, ease: EASE }}
           />
         </AnimatePresence>
 
@@ -312,6 +350,28 @@ function V38() {
             <Star className="w-3 h-3 fill-current" /> Best-seller
           </span>
         )}
+
+        {/* prev / next arrows */}
+        <motion.button
+          type="button"
+          aria-label="Produit précédent"
+          onClick={() => step(-1)}
+          whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }}
+          className="absolute left-3 top-[36%] -translate-y-1/2 z-10 inline-flex items-center justify-center rounded-full cursor-pointer"
+          style={{ width: 38, height: 38, background: 'rgba(255,255,255,.92)', color: 'var(--blue)', border: '1px solid rgba(255,255,255,.6)' }}
+        >
+          <ChevronLeft className="w-5 h-5" strokeWidth={2.4} />
+        </motion.button>
+        <motion.button
+          type="button"
+          aria-label="Produit suivant"
+          onClick={() => step(1)}
+          whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }}
+          className="absolute right-3 top-[36%] -translate-y-1/2 z-10 inline-flex items-center justify-center rounded-full cursor-pointer"
+          style={{ width: 38, height: 38, background: 'rgba(255,255,255,.92)', color: 'var(--blue)', border: '1px solid rgba(255,255,255,.6)' }}
+        >
+          <ChevronRight className="w-5 h-5" strokeWidth={2.4} />
+        </motion.button>
 
         {/* bottom legibility wash + overlay content */}
         <div className="absolute inset-x-0 bottom-0 h-[58%]" style={{ background: 'linear-gradient(180deg, transparent, rgba(0,82,163,.9))' }} />
@@ -358,7 +418,7 @@ function V38() {
                 type="button"
                 aria-label={'Voir ' + q.title}
                 aria-pressed={qi === idx}
-                onClick={() => setIdx(qi)}
+                onClick={() => go(qi)}
                 className="cursor-pointer rounded-full transition-all"
                 style={{
                   height: 6,
@@ -488,12 +548,12 @@ function V39() {
 
 /* ════════════════════════════════════════════════════════════════════════
    V40 — HORIZONTAL strips. Compact left-image / right-content rows with a
-   prominent price block. Selecting expands a spec strip + stepper inline.
+   prominent price block. Cards only link to product pages — no quantity —
+   so selecting expands a spec strip with a Découvrir affordance. Images are
+   cleanly framed (real photo, soft feathered edge, no shadow).
    ════════════════════════════════════════════════════════════════════════ */
 function V40() {
   const [sel, setSel] = useState(PRODUCTS[2].n);
-  const [qty, setQty] = useState({});
-  const setQ = (n, v) => setQty((m) => ({ ...m, [n]: v }));
 
   return (
     <div className="w-full">
@@ -505,7 +565,6 @@ function V40() {
       <div className="grid gap-2.5">
         {PRODUCTS.map((p) => {
           const active = sel === p.n;
-          const q = qty[p.n] || 1;
           return (
             <motion.div
               key={p.n}
@@ -529,7 +588,7 @@ function V40() {
                   <motion.img
                     src={SRC(p.img)} alt={p.alt} loading="lazy"
                     className="absolute left-1/2 top-1/2 w-[90%] -translate-x-1/2 -translate-y-1/2 object-contain pointer-events-none select-none"
-                    style={IMG_STYLE}
+                    style={FRAME_STYLE}
                     animate={{ scale: active ? 1.06 : 1 }}
                     transition={{ duration: 0.5, ease: EASE }}
                   />
@@ -571,7 +630,13 @@ function V40() {
                           <span key={s} className="rounded-full px-2 py-0.5 text-[10px] font-medium" style={{ background: 'var(--blue-mist)', color: 'var(--ink-2)' }}>{s}</span>
                         ))}
                       </div>
-                      <Stepper qty={q} setQty={(v) => setQ(p.n, v)} />
+                      <motion.span
+                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold"
+                        style={{ background: 'var(--blue)', color: '#fff' }}
+                        whileHover={{ x: 2 }}
+                      >
+                        Découvrir <ArrowRight className="w-3.5 h-3.5" />
+                      </motion.span>
                     </div>
                   </motion.div>
                 )}
@@ -699,6 +764,6 @@ export const variants = [
   { n: 37, label: 'Lignes alternées', note: 'Rangées en zig-zag image/texte, barre d’accent bleue et stepper sur la ligne active', Component: V37 },
   { n: 38, label: 'Overlay image', note: 'Grande carte héro plein cadre bleu, infos en surimpression et points de navigation', Component: V38 },
   { n: 39, label: 'Bento', note: 'Grille asymétrique : tuile vedette + petites tuiles cliquables qui prennent la vedette', Component: V39 },
-  { n: 40, label: 'Horizontal', note: 'Bandeaux compacts image/contenu avec bloc prix, dépliage des specs + stepper', Component: V40 },
+  { n: 40, label: 'Horizontal', note: 'Bandeaux compacts image/contenu avec bloc prix, dépliage des specs + lien Découvrir', Component: V40 },
   { n: 41, label: 'Survol révélation', note: 'Cartes sobres ; au survol/clic un panneau bleu remonte avec specs et bouton Découvrir', Component: V41 },
 ];

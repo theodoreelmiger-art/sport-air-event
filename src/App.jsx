@@ -22,12 +22,14 @@ import Cgv from './pages/Cgv.jsx';
 import GuideStructuresGonflables from './pages/GuideStructuresGonflables.jsx';
 import NotFound from './pages/NotFound.jsx';
 import Lab from './pages/Lab.jsx';
+import LabImages from './pages/LabImages.jsx';
 
 export default function App() {
   return (
     <Routes>
-      {/* Isolated widget lab — no Layout / cursor / Lenis */}
+      {/* Isolated widget labs — no Layout / cursor / Lenis */}
       <Route path="/lab" element={<Lab />} />
+      <Route path="/lab-images" element={<LabImages />} />
       <Route path="/*" element={<Site />} />
     </Routes>
   );

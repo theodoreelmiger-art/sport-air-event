@@ -6,8 +6,6 @@ import {
   Music,
   Store,
   Check,
-  Plus,
-  Minus,
   ArrowRight,
   ArrowUpRight,
   Sparkles,
@@ -154,118 +152,70 @@ function V72() {
 }
 
 /* =====================================================================
-   V73 — Liste-rangées + stepper
-   Rangées éditoriales à filets : numéro fantôme à gauche, icône, titre.
-   La rangée sélectionnée tinte, révèle un marqueur bleu et un stepper de
-   quantité (stands à prévoir) — stepper UNIQUEMENT sur l'élément choisi.
-   Une puce de total vivante en haut.
+   V73 — Liste-rangées éditoriales (informatif)
+   Rangées à filets : numéro fantôme à gauche, chip d'icône, titre + desc.
+   Purement informatif — aucune sélection, aucune quantité. Survol discret
+   (la rangée se teinte légèrement) sans état persistant.
    ===================================================================== */
 function V73() {
-  const [sel, setSel] = useState(0);
-  const [qty, setQty] = useState(() => USECASES.map(() => 1));
-  const total = qty.reduce((a, b) => a + b, 0);
-
-  const setQ = (i, d) =>
-    setQty((q) =>
-      q.map((v, idx) => (idx === i ? Math.max(1, Math.min(9, v + d)) : v))
-    );
-  const keyNav = (e, i) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setSel(i);
-    }
-  };
-
   return (
     <div style={{ color: INK }}>
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <div className="kicker" style={{ color: BLUE }}>
-            Parfaite pour
-          </div>
-          <h3
-            className="font-display"
-            style={{ fontSize: '1.35rem', lineHeight: 1.05, marginTop: 4 }}
-          >
-            Choisissez vos terrains
-          </h3>
+      <div className="mb-4">
+        <div className="kicker" style={{ color: BLUE }}>
+          Parfaite pour
         </div>
-        <motion.div
-          key={total}
-          initial={{ scale: 0.82, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+        <h3
           className="font-display"
-          style={{
-            background: BLUE_SOFT,
-            color: BLUE_DEEP,
-            borderRadius: 9999,
-            padding: '6px 14px',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            whiteSpace: 'nowrap',
-          }}
+          style={{ fontSize: '1.35rem', lineHeight: 1.05, marginTop: 4 }}
         >
-          {total} stands
-        </motion.div>
+          Vos terrains de jeu
+        </h3>
       </div>
 
       <div style={{ borderTop: `1px solid ${LINE}` }}>
         {USECASES.map((u, i) => {
           const Icon = iconAt(i);
-          const on = sel === i;
           return (
             <div
               key={u.n}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSel(i)}
-              onKeyDown={(e) => keyNav(e, i)}
-              className="cursor-pointer relative flex items-center gap-3.5 overflow-hidden"
+              className="uc73-row relative flex items-center gap-3.5 overflow-hidden"
               style={{
                 borderBottom: `1px solid ${LINE}`,
-                background: on ? BLUE_MIST : '#ffffff',
+                background: '#ffffff',
                 padding: '14px 12px 14px 14px',
                 transition: 'background .22s',
               }}
             >
-              {on && (
-                <motion.span
-                  layoutId="uc73-bar"
-                  className="absolute left-0 top-0 bottom-0"
-                  style={{ width: 3, background: BLUE }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
               <span
                 className="font-display shrink-0 tabular-nums select-none"
                 style={{
                   fontSize: '1.05rem',
                   fontWeight: 800,
                   width: 30,
-                  color: on ? BLUE : '#c2d2ea',
-                  transition: 'color .22s',
+                  color: '#c2d2ea',
                 }}
               >
                 {u.n}
               </span>
-              <motion.span
-                animate={{
-                  background: on ? BLUE : BLUE_SOFT,
-                  color: on ? '#ffffff' : BLUE,
-                }}
+              <span
                 className="flex items-center justify-center shrink-0"
-                style={{ width: 36, height: 36, borderRadius: 11 }}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 11,
+                  background: BLUE_SOFT,
+                  color: BLUE,
+                }}
               >
                 <Icon size={18} strokeWidth={2.2} />
-              </motion.span>
+              </span>
               <span className="min-w-0 flex-1">
                 <span
                   className="block"
                   style={{
                     fontSize: '0.95rem',
                     lineHeight: 1.2,
-                    fontWeight: on ? 700 : 600,
+                    fontWeight: 600,
                     color: INK,
                   }}
                 >
@@ -283,68 +233,12 @@ function V73() {
                   {u.desc}
                 </span>
               </span>
-
-              <AnimatePresence initial={false}>
-                {on && (
-                  <motion.div
-                    key="step"
-                    initial={{ opacity: 0, width: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, width: 'auto', scale: 1 }}
-                    exit={{ opacity: 0, width: 0, scale: 0.9 }}
-                    transition={{ duration: 0.22 }}
-                    className="flex items-center gap-1.5 shrink-0 overflow-hidden"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setQ(i, -1)}
-                      aria-label="Diminuer"
-                      className="cursor-pointer flex items-center justify-center"
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: 9,
-                        border: `1px solid ${LINE}`,
-                        background: '#ffffff',
-                        color: BLUE,
-                      }}
-                    >
-                      <Minus size={14} strokeWidth={2.6} />
-                    </button>
-                    <span
-                      className="font-display tabular-nums text-center"
-                      style={{
-                        minWidth: 18,
-                        fontSize: '0.95rem',
-                        fontWeight: 700,
-                        color: INK,
-                      }}
-                    >
-                      {qty[i]}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setQ(i, 1)}
-                      aria-label="Augmenter"
-                      className="cursor-pointer flex items-center justify-center"
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: 9,
-                        border: `1px solid ${BLUE}`,
-                        background: BLUE,
-                        color: '#ffffff',
-                      }}
-                    >
-                      <Plus size={14} strokeWidth={2.6} />
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
           );
         })}
       </div>
+
+      <style>{`.uc73-row:hover{background:${BLUE_MIST};}`}</style>
     </div>
   );
 }
@@ -816,8 +710,8 @@ export const variants = [
   },
   {
     n: 73,
-    label: 'Rangées + stepper',
-    note: 'Rangées à filets avec marqueur bleu et stepper de quantité uniquement sur le cas sélectionné.',
+    label: 'Rangées éditoriales',
+    note: 'Rangées à filets purement informatives : numéro fantôme, chip d’icône, titre et description. Survol discret, sans sélection.',
     Component: V73,
   },
   {

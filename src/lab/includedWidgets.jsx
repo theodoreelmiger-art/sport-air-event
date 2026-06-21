@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Check,
   Sparkles,
@@ -25,17 +23,12 @@ const INK = '#15294a'; // deep blue-ink used instead of black for text
 const ICONS = [Printer, Layers, Sparkles, Box, Shield, Truck];
 
 /* =====================================================================
-   V15 — Checkmark grid
-   Soft 2-col grid of tiles; each tile reveals a check that the owner
-   can "tick off" (toggle) as a tactile little interaction. A running
-   counter at the top reacts to how many are confirmed.
+   V15 — Checkmark grid (display-only)
+   Soft 2-col grid of tiles, each showing an included line with a static
+   blue check. Pure read-only confirmation of what the base price covers —
+   nothing here is selectable or toggleable.
    ===================================================================== */
 function V15() {
-  const [checked, setChecked] = useState(() => INCLUDED.map(() => true));
-  const toggle = (i) =>
-    setChecked((c) => c.map((v, idx) => (idx === i ? !v : v)));
-  const count = checked.filter(Boolean).length;
-
   return (
     <div style={{ color: INK }}>
       <div className="flex items-center justify-between mb-4">
@@ -50,11 +43,7 @@ function V15() {
             Tout est compris
           </h3>
         </div>
-        <motion.div
-          key={count}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+        <div
           className="font-display"
           style={{
             background: BLUE_SOFT,
@@ -66,95 +55,59 @@ function V15() {
             whiteSpace: 'nowrap',
           }}
         >
-          {count}/{INCLUDED.length}
-        </motion.div>
+          {INCLUDED.length}/{INCLUDED.length}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {INCLUDED.map((label, i) => {
-          const Icon = ICONS[i % ICONS.length];
-          const on = checked[i];
-          return (
-            <motion.button
-              key={label}
-              type="button"
-              onClick={() => toggle(i)}
-              whileTap={{ scale: 0.97 }}
-              className="cursor-pointer text-left flex items-start gap-3"
+        {INCLUDED.map((label) => (
+          <div
+            key={label}
+            className="text-left flex items-start gap-3"
+            style={{
+              border: `1px solid ${BLUE}`,
+              background: BLUE_MIST,
+              borderRadius: 18,
+              padding: '13px 14px',
+            }}
+          >
+            <span
+              className="flex items-center justify-center shrink-0"
               style={{
-                border: `1px solid ${on ? BLUE : LINE}`,
-                background: on ? BLUE_MIST : '#ffffff',
-                borderRadius: 18,
-                padding: '13px 14px',
-                transition: 'background .2s, border-color .2s',
+                width: 26,
+                height: 26,
+                borderRadius: 9999,
+                background: BLUE,
+                color: '#ffffff',
+                marginTop: 1,
               }}
             >
-              <motion.span
-                animate={{
-                  background: on ? BLUE : '#ffffff',
-                  borderColor: on ? BLUE : LINE,
-                  color: on ? '#ffffff' : '#9fb6d6',
-                }}
-                className="flex items-center justify-center shrink-0"
-                style={{
-                  width: 26,
-                  height: 26,
-                  borderRadius: 9999,
-                  border: `1px solid ${LINE}`,
-                  marginTop: 1,
-                }}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  {on ? (
-                    <motion.span
-                      key="on"
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <Check size={15} strokeWidth={3} />
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="off"
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <Icon size={14} strokeWidth={2.2} />
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.span>
-              <span
-                style={{
-                  fontSize: '0.9rem',
-                  lineHeight: 1.3,
-                  fontWeight: on ? 600 : 500,
-                  color: on ? INK : '#5b6f8e',
-                }}
-              >
-                {label}
-              </span>
-            </motion.button>
-          );
-        })}
+              <Check size={15} strokeWidth={3} />
+            </span>
+            <span
+              style={{
+                fontSize: '0.9rem',
+                lineHeight: 1.3,
+                fontWeight: 600,
+                color: INK,
+              }}
+            >
+              {label}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
 /* =====================================================================
-   V16 — Soft badge cloud
-   Pill-shaped badges flowing like a cloud. Hovering / selecting a pill
-   "pins" it (filled blue) and surfaces it into a highlighted strip,
-   giving a playful, airy way to read what's included.
+   V16 — Soft badge grid (display-only)
+   Pill-shaped badges laid out on a tidy, evenly-spaced grid — uniform
+   sizing, aligned rows, no random wrap. Pure read-only listing of what
+   is always included; nothing is hoverable or selectable.
    ===================================================================== */
 function V16() {
-  const [active, setActive] = useState(null);
-
   return (
     <div style={{ color: INK }}>
       <div className="flex items-center gap-2 mb-1">
@@ -170,45 +123,36 @@ function V16() {
         Le standard, sans supplément
       </h3>
 
-      <div className="flex flex-wrap gap-2.5">
-        {INCLUDED.map((label, i) => {
-          const on = active === i;
-          return (
-            <motion.button
-              key={label}
-              type="button"
-              onClick={() => setActive(on ? null : i)}
-              onMouseEnter={() => setActive(i)}
-              whileTap={{ scale: 0.95 }}
-              animate={{
-                background: on ? BLUE : BLUE_MIST,
-                borderColor: on ? BLUE : LINE,
-                color: on ? '#ffffff' : BLUE_DEEP,
-              }}
-              transition={{ duration: 0.2 }}
-              className="cursor-pointer inline-flex items-center gap-2"
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        {INCLUDED.map((label) => (
+          <div
+            key={label}
+            className="inline-flex items-center gap-2.5 w-full"
+            style={{
+              background: BLUE_MIST,
+              border: `1px solid ${LINE}`,
+              borderRadius: 9999,
+              padding: '9px 16px 9px 10px',
+              fontSize: '0.86rem',
+              fontWeight: 600,
+              color: BLUE_DEEP,
+            }}
+          >
+            <span
+              className="flex items-center justify-center shrink-0"
               style={{
-                border: `1px solid ${LINE}`,
+                width: 22,
+                height: 22,
                 borderRadius: 9999,
-                padding: '9px 15px 9px 11px',
-                fontSize: '0.86rem',
-                fontWeight: 600,
+                background: BLUE,
+                color: '#ffffff',
               }}
             >
-              <motion.span
-                animate={{
-                  background: on ? 'rgba(255,255,255,.22)' : '#ffffff',
-                  color: on ? '#ffffff' : BLUE,
-                }}
-                className="flex items-center justify-center shrink-0"
-                style={{ width: 20, height: 20, borderRadius: 9999 }}
-              >
-                <Check size={13} strokeWidth={3} />
-              </motion.span>
-              {label}
-            </motion.button>
-          );
-        })}
+              <Check size={13} strokeWidth={3} />
+            </span>
+            <span style={{ lineHeight: 1.25 }}>{label}</span>
+          </div>
+        ))}
       </div>
 
       <div
@@ -219,40 +163,23 @@ function V16() {
         }}
       >
         <Sparkles size={16} color={BLUE} />
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.p
-            key={active === null ? 'idle' : active}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.2 }}
-            style={{ fontSize: '0.85rem', color: '#5b6f8e', margin: 0 }}
-          >
-            {active === null
-              ? 'Survolez un badge pour le mettre en avant — tout est déjà compris.'
-              : INCLUDED[active]}
-          </motion.p>
-        </AnimatePresence>
+        <p
+          style={{ fontSize: '0.85rem', color: '#5b6f8e', margin: 0 }}
+        >
+          Tout est déjà compris dans le prix de base.
+        </p>
       </div>
     </div>
   );
 }
 
 /* =====================================================================
-   V17 — 2-col feature list with icon chips
-   A refined 2-column list: each row is a rounded icon "chip" + label,
-   selectable to expand a thin highlight bar. Footer reaffirms the
-   example price so the owner sees the value framing.
+   V17 — 2-col feature list with icon chips (display-only)
+   A refined 2-column list: each row is a rounded icon "chip" + label
+   with a static blue check. Read-only confirmation — no selection,
+   keyboard nav, or highlight state. Footer reaffirms the example price.
    ===================================================================== */
 function V17() {
-  const [sel, setSel] = useState(0);
-  const keyNav = (e, i) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setSel(i);
-    }
-  };
-
   return (
     <div style={{ color: INK }}>
       <div className="mb-4">
@@ -270,55 +197,44 @@ function V17() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-2.5">
         {INCLUDED.map((label, i) => {
           const Icon = ICONS[i % ICONS.length];
-          const on = sel === i;
           return (
             <div
               key={label}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSel(i)}
-              onKeyDown={(e) => keyNav(e, i)}
-              className="cursor-pointer relative flex items-center gap-3 overflow-hidden"
+              className="relative flex items-center gap-3 overflow-hidden"
               style={{
-                border: `1px solid ${on ? BLUE : LINE}`,
-                background: on ? BLUE_MIST : '#ffffff',
+                border: `1px solid ${LINE}`,
+                background: BLUE_MIST,
                 borderRadius: 16,
                 padding: '11px 13px',
-                transition: 'background .2s, border-color .2s',
               }}
             >
-              {on && (
-                <motion.span
-                  layoutId="inc-bar"
-                  className="absolute left-0 top-0 bottom-0"
-                  style={{ width: 3, background: BLUE, borderRadius: 9999 }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
-              <motion.span
-                whileTap={{ scale: 0.9 }}
-                animate={{
-                  background: on ? BLUE : BLUE_SOFT,
-                  color: on ? '#ffffff' : BLUE,
-                }}
+              <span
+                className="absolute left-0 top-0 bottom-0"
+                style={{ width: 3, background: BLUE, borderRadius: 9999 }}
+              />
+              <span
                 className="flex items-center justify-center shrink-0"
-                style={{ width: 34, height: 34, borderRadius: 11 }}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 11,
+                  background: BLUE,
+                  color: '#ffffff',
+                }}
               >
                 <Icon size={17} strokeWidth={2.2} />
-              </motion.span>
+              </span>
               <span
                 style={{
                   fontSize: '0.84rem',
                   lineHeight: 1.25,
-                  fontWeight: on ? 650 : 540,
-                  color: on ? INK : '#5b6f8e',
+                  fontWeight: 600,
+                  color: INK,
                 }}
               >
                 {label}
               </span>
-              <motion.span
-                animate={{ opacity: on ? 1 : 0, scale: on ? 1 : 0.6 }}
-                transition={{ duration: 0.18 }}
+              <span
                 className="ml-auto flex items-center justify-center shrink-0"
                 style={{
                   width: 20,
@@ -329,7 +245,7 @@ function V17() {
                 }}
               >
                 <Check size={12} strokeWidth={3.2} />
-              </motion.span>
+              </span>
             </div>
           );
         })}
@@ -359,19 +275,19 @@ export const variants = [
   {
     n: 15,
     label: 'Grille cochée',
-    note: 'Grille 2 colonnes avec coches que l’on peut activer, compteur vivant.',
+    note: 'Grille 2 colonnes en lecture seule, coches bleues statiques.',
     Component: V15,
   },
   {
     n: 16,
-    label: 'Nuage de badges',
-    note: 'Pastilles aériennes qui s’épinglent au survol, ligne de détail animée.',
+    label: 'Grille de badges',
+    note: 'Pastilles alignées sur une grille nette et régulière, affichage statique.',
     Component: V16,
   },
   {
     n: 17,
     label: 'Liste à chips',
-    note: 'Liste 2 colonnes avec chips d’icône, barre de surlignage et rappel prix.',
+    note: 'Liste 2 colonnes avec chips d’icône en lecture seule et rappel prix.',
     Component: V17,
   },
 ];

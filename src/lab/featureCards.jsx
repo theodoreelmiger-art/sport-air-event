@@ -1,15 +1,10 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Clock,
   Shield,
   Sparkles,
   Truck,
-  Check,
-  ArrowRight,
   ArrowUpRight,
-  Plus,
-  Minus,
 } from 'lucide-react';
 import { FEATURES } from './data.js';
 
@@ -28,20 +23,12 @@ const iconFor = (name) => ICON_MAP[name] || Sparkles;
 
 /* =====================================================================
    V42 — Hairline divided rows w/ index
-   A precise, editorial list: each atout is a single row separated by a
-   hairline, prefixed with a two-digit index. Selecting a row slides a
-   blue marker, tints the row and reveals a soft arrow. Restrained,
-   Swiss-grid feel.
+   A precise, editorial list: each atout (a brand commitment) is a single
+   row separated by a hairline, prefixed with a two-digit index. Title and
+   description always shown. A restrained hover tint keeps it Swiss-grid.
+   Display only — no quantity, no selection.
    ===================================================================== */
 function V42() {
-  const [sel, setSel] = useState(0);
-  const keyNav = (e, i) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setSel(i);
-    }
-  };
-
   return (
     <div style={{ color: INK }}>
       <div className="mb-4">
@@ -59,89 +46,57 @@ function V42() {
       <div style={{ borderTop: `1px solid ${LINE}` }}>
         {FEATURES.map((f, i) => {
           const Icon = iconFor(f.icon);
-          const on = sel === i;
           return (
             <div
               key={f.title}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSel(i)}
-              onKeyDown={(e) => keyNav(e, i)}
-              className="cursor-pointer relative flex items-center gap-4 overflow-hidden"
+              className="group relative flex items-center gap-4 overflow-hidden"
               style={{
                 borderBottom: `1px solid ${LINE}`,
-                background: on ? BLUE_MIST : '#ffffff',
                 padding: '15px 14px 15px 12px',
                 transition: 'background .22s',
               }}
             >
-              {on && (
-                <motion.span
-                  layoutId="feat42-bar"
-                  className="absolute left-0 top-0 bottom-0"
-                  style={{ width: 3, background: BLUE }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
               <span
                 className="font-display shrink-0 tabular-nums"
                 style={{
                   fontSize: '0.95rem',
                   fontWeight: 700,
                   width: 26,
-                  color: on ? BLUE : '#a9bcd8',
-                  transition: 'color .22s',
+                  color: '#a9bcd8',
                 }}
               >
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <motion.span
-                animate={{ color: on ? BLUE : '#a9bcd8' }}
+              <span
                 className="flex items-center justify-center shrink-0"
+                style={{ color: BLUE }}
               >
                 <Icon size={20} strokeWidth={2.1} />
-              </motion.span>
+              </span>
               <span className="min-w-0">
                 <span
                   className="block"
                   style={{
                     fontSize: '0.96rem',
                     lineHeight: 1.2,
-                    fontWeight: on ? 700 : 600,
+                    fontWeight: 600,
                     color: INK,
                   }}
                 >
                   {f.title}
                 </span>
-                <AnimatePresence initial={false}>
-                  {on && (
-                    <motion.span
-                      key="d"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.22 }}
-                      className="block overflow-hidden"
-                      style={{
-                        fontSize: '0.82rem',
-                        lineHeight: 1.35,
-                        color: MUTE,
-                        marginTop: 3,
-                      }}
-                    >
-                      {f.desc}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                <span
+                  className="block"
+                  style={{
+                    fontSize: '0.82rem',
+                    lineHeight: 1.35,
+                    color: MUTE,
+                    marginTop: 3,
+                  }}
+                >
+                  {f.desc}
+                </span>
               </span>
-              <motion.span
-                animate={{ opacity: on ? 1 : 0, x: on ? 0 : -6 }}
-                transition={{ duration: 0.2 }}
-                className="ml-auto flex items-center justify-center shrink-0"
-                style={{ color: BLUE }}
-              >
-                <ArrowRight size={18} strokeWidth={2.4} />
-              </motion.span>
             </div>
           );
         })}
@@ -152,19 +107,11 @@ function V42() {
 
 /* =====================================================================
    V43 — Icon-chip cards (2-col)
-   Four soft cards, each led by a rounded icon "chip". Selecting a card
-   lifts it, fills the chip blue and confirms with a check. A tactile,
-   product-tile presentation of the four atouts.
+   Four soft cards, each led by a rounded icon "chip". A tasteful hover
+   lifts the card and warms the chip. A tactile, product-tile presentation
+   of the four brand commitments. Display only.
    ===================================================================== */
 function V43() {
-  const [sel, setSel] = useState(2);
-  const keyNav = (e, i) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setSel(i);
-    }
-  };
-
   return (
     <div style={{ color: INK }}>
       <div className="flex items-center gap-2 mb-1">
@@ -181,53 +128,32 @@ function V43() {
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {FEATURES.map((f, i) => {
+        {FEATURES.map((f) => {
           const Icon = iconFor(f.icon);
-          const on = sel === i;
           return (
             <motion.div
               key={f.title}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSel(i)}
-              onKeyDown={(e) => keyNav(e, i)}
               whileHover={{ y: -3 }}
-              whileTap={{ scale: 0.98 }}
-              className="cursor-pointer relative"
+              className="relative"
               style={{
-                border: `1px solid ${on ? BLUE : LINE}`,
-                background: on ? BLUE_MIST : '#ffffff',
+                border: `1px solid ${LINE}`,
+                background: '#ffffff',
                 borderRadius: 18,
                 padding: '15px 15px 16px',
-                transition: 'background .22s, border-color .22s',
               }}
             >
-              <div className="flex items-start justify-between">
-                <motion.span
-                  animate={{
-                    background: on ? BLUE : BLUE_SOFT,
-                    color: on ? '#ffffff' : BLUE,
-                  }}
-                  className="flex items-center justify-center shrink-0"
-                  style={{ width: 40, height: 40, borderRadius: 13 }}
-                >
-                  <Icon size={20} strokeWidth={2.2} />
-                </motion.span>
-                <motion.span
-                  animate={{ opacity: on ? 1 : 0, scale: on ? 1 : 0.5 }}
-                  transition={{ duration: 0.18 }}
-                  className="flex items-center justify-center shrink-0"
-                  style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: 9999,
-                    background: BLUE,
-                    color: '#ffffff',
-                  }}
-                >
-                  <Check size={13} strokeWidth={3.2} />
-                </motion.span>
-              </div>
+              <span
+                className="flex items-center justify-center shrink-0"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 13,
+                  background: BLUE_SOFT,
+                  color: BLUE,
+                }}
+              >
+                <Icon size={20} strokeWidth={2.2} />
+              </span>
               <div
                 className="font-display"
                 style={{
@@ -259,111 +185,67 @@ function V43() {
 }
 
 /* =====================================================================
-   V44 — Numbered list w/ qty stepper
-   A clean numbered list framed as "engagements". The selected line
-   reveals a small quantity stepper (the qty stepper appears ONLY on the
-   selected item) — e.g. how many units of that benefit you want priced
-   in — driving a live little summary chip at the top.
+   V44 — Numbered list of engagements
+   A clean numbered list framed as "engagements". Each line shows its
+   number, icon, title and description. A tasteful hover shifts the row
+   subtly. Display only — no quantity steppers, no selection.
    ===================================================================== */
 function V44() {
-  const [sel, setSel] = useState(0);
-  const [qty, setQty] = useState(() => FEATURES.map(() => 1));
-  const total = qty.reduce((a, b) => a + b, 0);
-
-  const setQ = (i, d) =>
-    setQty((q) =>
-      q.map((v, idx) => (idx === i ? Math.max(1, Math.min(9, v + d)) : v))
-    );
-  const keyNav = (e, i) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setSel(i);
-    }
-  };
-
   return (
     <div style={{ color: INK }}>
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <div className="kicker" style={{ color: BLUE }}>
-            Nos engagements
-          </div>
-          <h3
-            className="font-display"
-            style={{ fontSize: '1.35rem', lineHeight: 1.05, marginTop: 4 }}
-          >
-            Ce qui fait la différence
-          </h3>
+      <div className="mb-4">
+        <div className="kicker" style={{ color: BLUE }}>
+          Nos engagements
         </div>
-        <motion.div
-          key={total}
-          initial={{ scale: 0.82, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+        <h3
           className="font-display"
-          style={{
-            background: BLUE_SOFT,
-            color: BLUE_DEEP,
-            borderRadius: 9999,
-            padding: '6px 14px',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            whiteSpace: 'nowrap',
-          }}
+          style={{ fontSize: '1.35rem', lineHeight: 1.05, marginTop: 4 }}
         >
-          {total} pts
-        </motion.div>
+          Ce qui fait la différence
+        </h3>
       </div>
 
       <div className="flex flex-col gap-2.5">
         {FEATURES.map((f, i) => {
           const Icon = iconFor(f.icon);
-          const on = sel === i;
           return (
-            <div
+            <motion.div
               key={f.title}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSel(i)}
-              onKeyDown={(e) => keyNav(e, i)}
-              className="cursor-pointer flex items-center gap-3.5"
+              whileHover={{ x: 3 }}
+              className="flex items-center gap-3.5"
               style={{
-                border: `1px solid ${on ? BLUE : LINE}`,
-                background: on ? BLUE_MIST : '#ffffff',
+                border: `1px solid ${LINE}`,
+                background: '#ffffff',
                 borderRadius: 16,
                 padding: '12px 13px',
-                transition: 'background .22s, border-color .22s',
               }}
             >
-              <motion.span
-                animate={{
-                  background: on ? BLUE : '#ffffff',
-                  color: on ? '#ffffff' : BLUE,
-                  borderColor: on ? BLUE : LINE,
-                }}
+              <span
                 className="font-display flex items-center justify-center shrink-0 tabular-nums"
                 style={{
                   width: 32,
                   height: 32,
                   borderRadius: 11,
                   border: `1px solid ${LINE}`,
+                  background: '#ffffff',
+                  color: BLUE,
                   fontSize: '0.92rem',
                   fontWeight: 700,
                 }}
               >
                 {i + 1}
-              </motion.span>
+              </span>
               <span className="min-w-0 flex-1">
                 <span
                   className="flex items-center gap-2"
                   style={{
                     fontSize: '0.94rem',
                     lineHeight: 1.2,
-                    fontWeight: on ? 700 : 600,
+                    fontWeight: 600,
                     color: INK,
                   }}
                 >
-                  <Icon size={15} strokeWidth={2.2} color={on ? BLUE : '#a9bcd8'} />
+                  <Icon size={15} strokeWidth={2.2} color={BLUE} />
                   {f.title}
                 </span>
                 <span
@@ -378,65 +260,7 @@ function V44() {
                   {f.desc}
                 </span>
               </span>
-
-              <AnimatePresence initial={false}>
-                {on && (
-                  <motion.div
-                    key="step"
-                    initial={{ opacity: 0, width: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, width: 'auto', scale: 1 }}
-                    exit={{ opacity: 0, width: 0, scale: 0.9 }}
-                    transition={{ duration: 0.22 }}
-                    className="flex items-center gap-1.5 shrink-0 overflow-hidden"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setQ(i, -1)}
-                      aria-label="Diminuer"
-                      className="cursor-pointer flex items-center justify-center"
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: 9,
-                        border: `1px solid ${LINE}`,
-                        background: '#ffffff',
-                        color: BLUE,
-                      }}
-                    >
-                      <Minus size={14} strokeWidth={2.6} />
-                    </button>
-                    <span
-                      className="font-display tabular-nums text-center"
-                      style={{
-                        minWidth: 18,
-                        fontSize: '0.95rem',
-                        fontWeight: 700,
-                        color: INK,
-                      }}
-                    >
-                      {qty[i]}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setQ(i, 1)}
-                      aria-label="Augmenter"
-                      className="cursor-pointer flex items-center justify-center"
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: 9,
-                        border: `1px solid ${BLUE}`,
-                        background: BLUE,
-                        color: '#ffffff',
-                      }}
-                    >
-                      <Plus size={14} strokeWidth={2.6} />
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            </motion.div>
           );
         })}
       </div>
@@ -446,19 +270,14 @@ function V44() {
 
 /* =====================================================================
    V45 — Bento
-   An asymmetric bento: the selected atout expands into a featured deep-
-   blue tile (bg-deep) while the others stay as compact white cells.
-   A spatial, modern way to spotlight one benefit at a time.
+   An asymmetric bento: the first commitment leads in a featured deep-blue
+   tile, the remaining three sit as compact white cells. A spatial, modern
+   way to present the atouts at a glance. Display only — no selection.
    ===================================================================== */
 function V45() {
-  const [sel, setSel] = useState(0);
-  const keyNav = (e, i) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setSel(i);
-    }
-  };
-  const FeatIcon = iconFor(FEATURES[sel].icon);
+  const Lead = FEATURES[0];
+  const LeadIcon = iconFor(Lead.icon);
+  const rest = FEATURES.slice(1);
 
   return (
     <div style={{ color: INK }}>
@@ -476,50 +295,39 @@ function V45() {
 
       <div className="grid grid-cols-2 gap-2.5">
         {/* Featured deep-blue tile */}
-        <motion.div
-          layout
+        <div
           className="bg-deep col-span-2 relative overflow-hidden"
           style={{ borderRadius: 22, padding: '20px 20px 22px', color: '#ffffff' }}
         >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={sel}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-            >
-              <span
-                className="flex items-center justify-center"
-                style={{
-                  width: 46,
-                  height: 46,
-                  borderRadius: 14,
-                  background: 'rgba(255,255,255,.14)',
-                  color: '#ffffff',
-                }}
-              >
-                <FeatIcon size={24} strokeWidth={2.1} />
-              </span>
-              <div
-                className="font-display"
-                style={{ fontSize: '1.3rem', lineHeight: 1.1, fontWeight: 700, marginTop: 14 }}
-              >
-                {FEATURES[sel].title}
-              </div>
-              <p
-                style={{
-                  fontSize: '0.88rem',
-                  lineHeight: 1.45,
-                  color: 'rgba(255,255,255,.78)',
-                  margin: '6px 0 0',
-                  maxWidth: '92%',
-                }}
-              >
-                {FEATURES[sel].desc}
-              </p>
-            </motion.div>
-          </AnimatePresence>
+          <span
+            className="flex items-center justify-center"
+            style={{
+              width: 46,
+              height: 46,
+              borderRadius: 14,
+              background: 'rgba(255,255,255,.14)',
+              color: '#ffffff',
+            }}
+          >
+            <LeadIcon size={24} strokeWidth={2.1} />
+          </span>
+          <div
+            className="font-display"
+            style={{ fontSize: '1.3rem', lineHeight: 1.1, fontWeight: 700, marginTop: 14 }}
+          >
+            {Lead.title}
+          </div>
+          <p
+            style={{
+              fontSize: '0.88rem',
+              lineHeight: 1.45,
+              color: 'rgba(255,255,255,.78)',
+              margin: '6px 0 0',
+              maxWidth: '92%',
+            }}
+          >
+            {Lead.desc}
+          </p>
           <span
             className="font-display absolute tabular-nums"
             style={{
@@ -530,73 +338,67 @@ function V45() {
               color: 'rgba(255,255,255,.42)',
             }}
           >
-            {String(sel + 1).padStart(2, '0')}
+            01
           </span>
-        </motion.div>
+        </div>
 
-        {/* Compact selector cells */}
-        {FEATURES.map((f, i) => {
+        {/* Compact cells */}
+        {rest.map((f, i) => {
           const Icon = iconFor(f.icon);
-          const on = sel === i;
           return (
             <motion.div
               key={f.title}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSel(i)}
-              onKeyDown={(e) => keyNav(e, i)}
-              whileTap={{ scale: 0.97 }}
-              className="cursor-pointer relative flex flex-col gap-2"
+              whileHover={{ y: -2 }}
+              className="relative flex flex-col gap-2"
               style={{
-                border: `1px solid ${on ? BLUE : LINE}`,
-                background: on ? BLUE_MIST : '#ffffff',
+                border: `1px solid ${LINE}`,
+                background: '#ffffff',
                 borderRadius: 16,
                 padding: '13px 13px 14px',
-                transition: 'background .2s, border-color .2s',
               }}
             >
-              <span className="flex items-center justify-between">
-                <motion.span
-                  animate={{
-                    background: on ? BLUE : BLUE_SOFT,
-                    color: on ? '#ffffff' : BLUE,
-                  }}
-                  className="flex items-center justify-center shrink-0"
-                  style={{ width: 32, height: 32, borderRadius: 10 }}
-                >
-                  <Icon size={17} strokeWidth={2.2} />
-                </motion.span>
-                <AnimatePresence>
-                  {on && (
-                    <motion.span
-                      key="dot"
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      transition={{ duration: 0.16 }}
-                      className="flex items-center justify-center shrink-0"
-                      style={{
-                        width: 18,
-                        height: 18,
-                        borderRadius: 9999,
-                        background: BLUE,
-                        color: '#ffffff',
-                      }}
-                    >
-                      <Check size={11} strokeWidth={3.4} />
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+              <span
+                className="flex items-center justify-center shrink-0"
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 10,
+                  background: BLUE_SOFT,
+                  color: BLUE,
+                }}
+              >
+                <Icon size={17} strokeWidth={2.2} />
               </span>
               <span
                 style={{
                   fontSize: '0.86rem',
                   lineHeight: 1.2,
-                  fontWeight: on ? 700 : 600,
-                  color: on ? INK : '#3b4f73',
+                  fontWeight: 600,
+                  color: INK,
                 }}
               >
                 {f.title}
+              </span>
+              <span
+                style={{
+                  fontSize: '0.76rem',
+                  lineHeight: 1.35,
+                  color: MUTE,
+                }}
+              >
+                {f.desc}
+              </span>
+              <span
+                className="font-display absolute tabular-nums"
+                style={{
+                  right: 12,
+                  top: 11,
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  color: '#c2d2ea',
+                }}
+              >
+                {String(i + 2).padStart(2, '0')}
               </span>
             </motion.div>
           );
@@ -609,14 +411,11 @@ function V45() {
 /* =====================================================================
    V46 — Marquee strip
    A continuously scrolling marquee of atout chips (duplicated for a
-   seamless loop). Pausing on hover and clicking a chip pins it into a
-   detail panel below — kinetic but controllable.
+   seamless loop), pausing on hover. Below, the four commitments are laid
+   out in full. Kinetic but display only — no click-to-select.
    ===================================================================== */
 function V46() {
-  const [paused, setPaused] = useState(false);
-  const [sel, setSel] = useState(0);
   const loop = [...FEATURES, ...FEATURES];
-  const Active = iconFor(FEATURES[sel].icon);
 
   return (
     <div style={{ color: INK }}>
@@ -634,9 +433,7 @@ function V46() {
       </h3>
 
       <div
-        className="relative overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        className="relative overflow-hidden group"
         style={{
           borderTop: `1px solid ${LINE}`,
           borderBottom: `1px solid ${LINE}`,
@@ -648,30 +445,24 @@ function V46() {
         }}
       >
         <motion.div
-          className="flex items-stretch gap-2.5 w-max"
-          animate={{ x: paused ? undefined : ['0%', '-50%'] }}
+          className="flex items-stretch gap-2.5 w-max group-hover:[animation-play-state:paused]"
+          animate={{ x: ['0%', '-50%'] }}
           transition={{ duration: 16, ease: 'linear', repeat: Infinity }}
         >
           {loop.map((f, i) => {
             const Icon = iconFor(f.icon);
-            const idx = i % FEATURES.length;
-            const on = sel === idx;
             return (
-              <motion.button
+              <span
                 key={i}
-                type="button"
-                onClick={() => setSel(idx)}
-                whileTap={{ scale: 0.95 }}
-                className="cursor-pointer inline-flex items-center gap-2.5 shrink-0"
+                className="inline-flex items-center gap-2.5 shrink-0"
                 style={{
-                  border: `1px solid ${on ? BLUE : LINE}`,
-                  background: on ? BLUE : BLUE_MIST,
-                  color: on ? '#ffffff' : BLUE_DEEP,
+                  border: `1px solid ${LINE}`,
+                  background: BLUE_MIST,
+                  color: BLUE_DEEP,
                   borderRadius: 9999,
                   padding: '9px 16px 9px 10px',
                   fontSize: '0.86rem',
                   fontWeight: 600,
-                  transition: 'background .2s, border-color .2s, color .2s',
                 }}
               >
                 <span
@@ -680,56 +471,57 @@ function V46() {
                     width: 26,
                     height: 26,
                     borderRadius: 9999,
-                    background: on ? 'rgba(255,255,255,.2)' : '#ffffff',
-                    color: on ? '#ffffff' : BLUE,
+                    background: '#ffffff',
+                    color: BLUE,
                   }}
                 >
                   <Icon size={15} strokeWidth={2.3} />
                 </span>
                 {f.title}
-              </motion.button>
+              </span>
             );
           })}
         </motion.div>
       </div>
 
-      <div
-        className="mt-4 flex items-start gap-3"
-        style={{
-          background: BLUE_SOFT,
-          borderRadius: 18,
-          padding: '14px 16px',
-        }}
-      >
-        <span
-          className="flex items-center justify-center shrink-0"
-          style={{ width: 38, height: 38, borderRadius: 12, background: BLUE, color: '#ffffff' }}
-        >
-          <Active size={19} strokeWidth={2.2} />
-        </span>
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span
-              className="font-display"
-              style={{ fontSize: '1rem', fontWeight: 700, color: INK }}
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        {FEATURES.map((f) => {
+          const Icon = iconFor(f.icon);
+          return (
+            <div
+              key={f.title}
+              className="flex items-start gap-3"
+              style={{
+                background: BLUE_SOFT,
+                borderRadius: 18,
+                padding: '14px 16px',
+              }}
             >
-              {FEATURES[sel].title}
-            </span>
-            <ArrowUpRight size={15} color={BLUE} strokeWidth={2.4} />
-          </div>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.p
-              key={sel}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -5 }}
-              transition={{ duration: 0.2 }}
-              style={{ fontSize: '0.83rem', lineHeight: 1.4, color: MUTE, margin: '3px 0 0' }}
-            >
-              {FEATURES[sel].desc}
-            </motion.p>
-          </AnimatePresence>
-        </div>
+              <span
+                className="flex items-center justify-center shrink-0"
+                style={{ width: 38, height: 38, borderRadius: 12, background: BLUE, color: '#ffffff' }}
+              >
+                <Icon size={19} strokeWidth={2.2} />
+              </span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="font-display"
+                    style={{ fontSize: '1rem', fontWeight: 700, color: INK }}
+                  >
+                    {f.title}
+                  </span>
+                  <ArrowUpRight size={15} color={BLUE} strokeWidth={2.4} />
+                </div>
+                <p
+                  style={{ fontSize: '0.83rem', lineHeight: 1.4, color: MUTE, margin: '3px 0 0' }}
+                >
+                  {f.desc}
+                </p>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -739,31 +531,31 @@ export const variants = [
   {
     n: 42,
     label: 'Lignes filets',
-    note: 'Lignes séparées par filets avec index, marqueur bleu et détail qui se déplie.',
+    note: 'Lignes séparées par filets avec index, icône bleue, titre et description toujours visibles.',
     Component: V42,
   },
   {
     n: 43,
     label: 'Cartes à chips',
-    note: 'Quatre cartes avec chip d’icône qui se remplit et se coche à la sélection.',
+    note: 'Quatre cartes d’affichage avec chip d’icône et léger survol qui soulève la carte.',
     Component: V43,
   },
   {
     n: 44,
     label: 'Liste numérotée',
-    note: 'Liste numérotée avec stepper de quantité uniquement sur l’atout sélectionné.',
+    note: 'Liste numérotée des engagements, icône et description, léger décalage au survol.',
     Component: V44,
   },
   {
     n: 45,
     label: 'Bento',
-    note: 'Bento asymétrique : l’atout choisi s’ouvre en grande tuile bleu profond.',
+    note: 'Bento asymétrique : le premier atout en grande tuile bleu profond, les autres en cellules.',
     Component: V45,
   },
   {
     n: 46,
     label: 'Bandeau défilant',
-    note: 'Marquee de pastilles en boucle, pause au survol, détail épinglé en bas.',
+    note: 'Marquee de pastilles en boucle, pause au survol, les quatre atouts détaillés en dessous.',
     Component: V46,
   },
 ];

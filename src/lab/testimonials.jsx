@@ -345,15 +345,43 @@ function V52() {
    One review at a time inside a deep-blue framed slide, with animated
    directional transitions, prev/next buttons and clickable dots.
    ===================================================================== */
+// Local review set for V53 only — natural, varied French names + company labels.
+const V53_REVIEWS = [
+  {
+    ini: 'CM',
+    grad: 'linear-gradient(135deg,#0066cc,#3b82f6)',
+    name: 'Camille Mercier',
+    role: 'Trail Évasion Annecy',
+    date: '12 mai 2026',
+    text: 'Structures gonflables de qualité exceptionnelle. Installation en 2 minutes chrono, rendu visuel impressionnant et service client très réactif. Parfait pour nos événements professionnels.',
+  },
+  {
+    ini: 'YB',
+    grad: 'linear-gradient(135deg,#0891b2,#06b6d4)',
+    name: 'Yanis B.',
+    role: 'Agence Lumen — Lyon',
+    date: '3 juillet 2025',
+    text: 'Tente Spider impeccable pour notre salon. Design moderne, montage ultra-rapide et personnalisation parfaite. Conception suisse, qualité au rendez-vous. Je recommande vivement.',
+  },
+  {
+    ini: 'FN',
+    grad: 'linear-gradient(135deg,#2563eb,#60a5fa)',
+    name: 'Farida Nasri',
+    role: 'Comité Marathon du Léman',
+    date: '21 décembre 2024',
+    text: 'Quatrième commande et toujours aussi satisfait. Produits haut de gamme, délais respectés, équipe professionnelle. Les structures résistent parfaitement aux conditions extérieures.',
+  },
+];
+
 function V53() {
   const [[idx, dir], setState] = useState([0, 0]);
   const go = (d) =>
     setState(([i]) => {
-      const next = (i + d + REVIEWS.length) % REVIEWS.length;
+      const next = (i + d + V53_REVIEWS.length) % V53_REVIEWS.length;
       return [next, d];
     });
   const jump = (i) => setState(([cur]) => [i, i > cur ? 1 : -1]);
-  const r = REVIEWS[idx];
+  const r = V53_REVIEWS[idx];
 
   return (
     <div style={{ color: INK }}>
@@ -437,7 +465,7 @@ function V53() {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          {REVIEWS.map((_, i) => (
+          {V53_REVIEWS.map((_, i) => (
             <button
               key={i}
               type="button"

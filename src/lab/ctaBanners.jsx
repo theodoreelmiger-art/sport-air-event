@@ -9,8 +9,6 @@ import {
   Truck,
   Globe,
   Mail,
-  Phone,
-  Send,
   MapPin,
 } from 'lucide-react';
 import { HERO_IMAGE } from './data.js';
@@ -153,18 +151,10 @@ function V93() {
 
 /* ────────────────────────────────────────────────────────────────────────
    V94 — Dégradé bleu profond, centré. Aucune image. Grand titre, ligne de
-   signature, et un sélecteur de canal de contact (Email / Téléphone /
-   WhatsApp) qui pilote le libellé du bouton d'action.
+   signature, et un unique bouton « Demander un devis » centré en bas, mis en
+   avant. Plus de choix de canal de contact : une seule action claire.
    ──────────────────────────────────────────────────────────────────────── */
 function V94() {
-  const [tab, setTab] = useState(0);
-  const channels = [
-    { icon: Mail, label: 'Email', cta: 'Écrire un email' },
-    { icon: Phone, label: 'Téléphone', cta: 'Être rappelé' },
-    { icon: Send, label: 'WhatsApp', cta: 'Ouvrir WhatsApp' },
-  ];
-  const active = channels[tab];
-  const ActiveIcon = active.icon;
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
@@ -180,8 +170,8 @@ function V94() {
             'radial-gradient(120% 90% at 50% -10%, rgba(59,130,246,0.45) 0%, rgba(10,30,66,0) 60%)',
         }}
       />
-      <div className="relative px-6 py-10 text-center">
-        <div className="mx-auto inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/12">
+      <div className="relative flex flex-col items-center px-6 py-10 text-center">
+        <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/12">
           <Sparkles className="h-5 w-5" />
         </div>
         <h3 className="font-display mx-auto mt-4 max-w-[340px] text-[1.85rem] font-bold leading-[1.1]">
@@ -191,58 +181,14 @@ function V94() {
           Conception Suisse. Livraison France et Europe.
         </p>
 
-        {/* Channel selector */}
-        <div
-          className="mx-auto mt-6 flex max-w-[320px] gap-1 rounded-2xl p-1"
-          style={{ background: 'rgba(255,255,255,0.08)' }}
-        >
-          {channels.map((c, i) => {
-            const Icon = c.icon;
-            const on = tab === i;
-            return (
-              <button
-                key={c.label}
-                type="button"
-                onClick={() => setTab(i)}
-                className="relative flex-1 cursor-pointer rounded-xl px-2 py-2 text-[0.78rem] font-medium"
-                aria-pressed={on}
-              >
-                {on && (
-                  <motion.span
-                    layoutId="v94-tab"
-                    className="absolute inset-0 rounded-xl bg-white"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span
-                  className="relative inline-flex items-center justify-center gap-1.5"
-                  style={{ color: on ? '#0066cc' : 'rgba(255,255,255,0.85)' }}
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                  {c.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
+        {/* Single prominent action, centered at the bottom */}
         <motion.button
           type="button"
           whileTap={{ scale: 0.96 }}
-          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-[0.95rem] font-semibold text-[#0066cc] sm:w-auto"
+          className="mt-8 inline-flex w-full max-w-[300px] items-center justify-center gap-2 rounded-2xl bg-white px-6 py-4 text-[1rem] font-semibold text-[#0066cc]"
         >
-          <ActiveIcon className="h-4.5 w-4.5" />
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={active.cta}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -5 }}
-              transition={{ duration: 0.2 }}
-            >
-              {active.cta}
-            </motion.span>
-          </AnimatePresence>
+          Demander un devis
+          <ArrowRight className="h-4.5 w-4.5" />
         </motion.button>
 
         <div className="mt-4 inline-flex items-center gap-1.5 text-[0.74rem] text-white/55">
@@ -499,7 +445,7 @@ export const variants = [
   {
     n: 94,
     label: 'Dégradé bleu centré',
-    note: 'Bannière bleu profond centrée; le canal de contact choisi pilote le libellé du bouton.',
+    note: 'Bannière bleu profond centrée; un unique bouton « Demander un devis » mis en avant en bas.',
     Component: V94,
   },
   {

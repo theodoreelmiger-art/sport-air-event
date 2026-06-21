@@ -3,8 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Sparkles, Check, ChevronLeft, ChevronRight, Star, Wind, Award } from 'lucide-react';
 import { HERO_IMAGE, PRODUCT_NAME, STATS, fmt } from './data.js';
 
-/* Resolve the hero image against the (possibly sub-path) base URL. */
-const IMG = (import.meta.env.BASE_URL || '/') + HERO_IMAGE;
+/* Resolve images against the (possibly sub-path) base URL. */
+const BASE = import.meta.env.BASE_URL || '/';
+const IMG = BASE + HERO_IMAGE;
+/* A second, distinct ChatGPT product render (Colonnes Gonflables) so variants
+   that need a different visual don't all read with the same image. */
+const IMG_ALT = BASE + 'images/04_c91d5f27b_ChatGPTImage17janv202613_28_14.png';
 
 /* Shared feather mask + right-edge crop so the render never reads as a hard
    rectangle and the white render background dissolves into the card. */
@@ -280,8 +284,16 @@ function V28() {
 
 /* ────────────────────────────────────────────────────────────────────────
    V29 — Minimal centered. Lots of white space, a single centered render,
-   tight title, and one focused CTA that toggles a "save" heart-less star.
+   tight title, and a real "favori" toggle: the star fills + a small
+   "Ajouté aux favoris" confirmation slides in. The render edges are feathered
+   into a soft radial halo so it melts into the panel — no hard rectangle.
    ──────────────────────────────────────────────────────────────────────── */
+/* Softer, larger feather just for the centred render so it dissolves fully. */
+const V29_IMG_MASK = {
+  WebkitMaskImage: 'radial-gradient(120% 120% at 50% 46%, #000 52%, transparent 86%)',
+  maskImage: 'radial-gradient(120% 120% at 50% 46%, #000 52%, transparent 86%)',
+  clipPath: 'inset(0.5% 2.2% 0.5% 0.5%)',
+};
 function V29() {
   const [saved, setSaved] = useState(false);
   return (
@@ -289,8 +301,13 @@ function V29() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: EASE }}
-      className="flex w-full flex-col items-center overflow-hidden rounded-[22px] px-5 py-8 text-center"
-      style={{ background: '#fff', border: '1px solid var(--line)' }}
+      className="flex w-full flex-col items-center overflow-hidden rounded-[22px] px-5 py-8 text-center transition-colors duration-500"
+      style={{
+        background: saved
+          ? 'linear-gradient(180deg, var(--blue-mist) 0%, #fff 55%)'
+          : '#fff',
+        border: '1px solid var(--line)',
+      }}
     >
       <motion.div
         className="kicker mb-3"
@@ -319,14 +336,14 @@ function V29() {
       >
         <div
           className="absolute inset-0 rounded-full"
-          style={{ background: 'radial-gradient(circle, var(--blue-soft) 0%, transparent 68%)' }}
+          style={{ background: 'radial-gradient(circle, var(--blue-soft) 0%, transparent 70%)' }}
         />
         <motion.img
           src={IMG}
           alt={PRODUCT_NAME}
           loading="eager"
-          className="relative w-[92%] object-contain select-none pointer-events-none"
-          style={{ mixBlendMode: 'multiply', ...IMG_MASK }}
+          className="relative w-[94%] object-contain select-none pointer-events-none"
+          style={{ mixBlendMode: 'multiply', ...V29_IMG_MASK }}
           animate={{ y: [0, -7, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -349,17 +366,45 @@ function V29() {
           type="button"
           onClick={() => setSaved((v) => !v)}
           aria-pressed={saved}
+          aria-label={saved ? 'Retirer des favoris' : 'Ajouter aux favoris'}
           className="inline-flex h-10 w-10 items-center justify-center rounded-full cursor-pointer transition-colors"
           style={{
             background: saved ? 'var(--blue)' : 'var(--blue-mist)',
             border: `1px solid ${saved ? 'var(--blue)' : 'var(--line)'}`,
           }}
         >
-          <motion.span animate={{ scale: saved ? [1, 1.3, 1] : 1 }} transition={{ duration: 0.35 }}>
-            <Star className="h-4 w-4" style={{ color: saved ? '#fff' : 'var(--blue)', fill: saved ? '#fff' : 'transparent' }} />
+          <motion.span
+            key={saved ? 'on' : 'off'}
+            animate={{ scale: saved ? [1, 1.35, 1] : 1, rotate: saved ? [0, -12, 0] : 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
+          >
+            <Star
+              className="h-4 w-4"
+              style={{ color: saved ? '#fff' : 'var(--blue)', fill: saved ? '#fff' : 'transparent' }}
+            />
           </motion.span>
         </button>
       </motion.div>
+
+      {/* live confirmation of the favourite action */}
+      <div className="mt-3 h-5">
+        <AnimatePresence mode="wait">
+          {saved && (
+            <motion.div
+              key="saved-msg"
+              className="inline-flex items-center gap-1.5 text-[12px] font-semibold"
+              style={{ color: 'var(--blue)' }}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.3, ease: EASE }}
+            >
+              <Star className="h-3.5 w-3.5" style={{ color: 'var(--blue)', fill: 'var(--blue)' }} />
+              Ajouté aux favoris
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }
@@ -374,6 +419,13 @@ const V30_POINTS = [
   { icon: Wind, text: 'Tient jusqu’à 70 km/h de vent' },
   { icon: Sparkles, text: 'Impression HD 360° à vos couleurs' },
 ];
+/* Taller, gentle feather for the off-center column render so its edges melt
+   into the deep-blue panel rather than sitting in a visible box. */
+const V30_IMG_MASK = {
+  WebkitMaskImage: 'radial-gradient(95% 115% at 50% 50%, #000 50%, transparent 88%)',
+  maskImage: 'radial-gradient(95% 115% at 50% 50%, #000 50%, transparent 88%)',
+  clipPath: 'inset(0.5% 2.2% 0.5% 0.5%)',
+};
 function V30() {
   const [i, setI] = useState(0);
   const move = (d) => setI((p) => (p + d + V30_POINTS.length) % V30_POINTS.length);
@@ -403,13 +455,14 @@ function V30() {
         {PRODUCT_NAME}
       </motion.h2>
 
-      {/* off-center render, pushed to the right & down */}
+      {/* off-center render (distinct Colonnes render), pushed right & down with
+          breathing room from the edges — feathered so no hard rectangle reads */}
       <motion.img
-        src={IMG}
-        alt={PRODUCT_NAME}
+        src={IMG_ALT}
+        alt="Colonnes gonflables"
         loading="eager"
-        className="pointer-events-none absolute right-[-6%] top-[26%] w-[72%] select-none object-contain"
-        style={{ mixBlendMode: 'screen', ...IMG_MASK }}
+        className="pointer-events-none absolute right-[2%] top-[24%] w-[58%] select-none object-contain"
+        style={{ mixBlendMode: 'screen', ...V30_IMG_MASK }}
         initial={{ opacity: 0, x: 30 }}
         animate={{ opacity: 1, x: 0, y: [0, -8, 0] }}
         transition={{ opacity: { delay: 0.45, duration: 0.7, ease: EASE }, x: { delay: 0.45, duration: 0.7, ease: EASE }, y: { duration: 6, repeat: Infinity, ease: 'easeInOut' } }}
@@ -482,6 +535,6 @@ export const variants = [
   { n: 26, label: 'Plein cadre', note: 'Image plein cadre, wash bleu et grand titre, CTA devis interactif', Component: V26 },
   { n: 27, label: 'Split texte/visuel', note: 'Colonne texte à gauche, rendu feutré à droite, sélecteur de taille', Component: V27 },
   { n: 28, label: 'Éditorial + stats', note: 'Titre éditorial centré et bande de statistiques cliquables', Component: V28 },
-  { n: 29, label: 'Minimal centré', note: 'Beaucoup de blanc, rendu centré, un seul CTA et bouton favori', Component: V29 },
-  { n: 30, label: 'Asymétrique badge', note: 'Panneau bleu profond, rendu décalé et badge note flottant', Component: V30 },
+  { n: 29, label: 'Minimal centré', note: 'Beaucoup de blanc, rendu feutré centré, CTA et favori fonctionnel', Component: V29 },
+  { n: 30, label: 'Asymétrique badge', note: 'Panneau bleu profond, rendu Colonnes décalé et badge note incliné', Component: V30 },
 ];

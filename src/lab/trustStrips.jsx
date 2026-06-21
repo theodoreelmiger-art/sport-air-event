@@ -12,7 +12,9 @@ const LINE = '#e4ecf7';
 const INK = '#15294a'; // deep blue-ink used instead of black for text
 const MUTED = '#5b6f8e';
 
-// Feather mask + multiply blend so logos sit cleanly on white (no shadows).
+// Soft radial feather mask so logos dissolve into the white chip with no
+// visible square edge (and the clipPath trims the dark right edge). No blend
+// mode needed — every logo sits on a pure-white container.
 const logoMask = {
   WebkitMaskImage:
     'radial-gradient(130% 130% at 50% 48%, #000 60%, transparent 92%)',
@@ -23,14 +25,13 @@ const logoMask = {
 
 /* =====================================================================
    V87 — Marquee infini (CSS keyframes)
-   Bandeau de logos en grayscale qui défile en continu via une keyframe
-   CSS (transform translateX). Le défilement se met en pause au survol,
-   et l'on peut le geler / relancer avec un vrai bouton. Le logo survolé
-   passe en couleur + scale, façon vitrine vivante.
+   Bandeau de logos qui défile EN CONTINU via une keyframe CSS
+   (transform translateX). Le défilement ne s'arrête JAMAIS : aucune
+   pause au survol, aucun bouton de gel. Les logos sont de simples
+   images NON cliquables, posées chacune dans une puce blanche arrondie
+   qui épouse le fond blanc des logos — donc aucun bord carré visible.
    ===================================================================== */
 function V87() {
-  const [paused, setPaused] = useState(false);
-  const [hovered, setHovered] = useState(null);
   // Duplicate the list so the translateX(-50%) loop is seamless.
   const loop = [...LOGOS, ...LOGOS];
 
@@ -43,31 +44,11 @@ function V87() {
         }
       `}</style>
 
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <ShieldCheck size={18} color={BLUE} strokeWidth={2.4} />
-          <div className="kicker" style={{ color: BLUE }}>
-            Ils nous font confiance
-          </div>
+      <div className="flex items-center gap-2 mb-4">
+        <ShieldCheck size={18} color={BLUE} strokeWidth={2.4} />
+        <div className="kicker" style={{ color: BLUE }}>
+          Ils nous font confiance
         </div>
-        <motion.button
-          type="button"
-          onClick={() => setPaused((p) => !p)}
-          whileTap={{ scale: 0.94 }}
-          className="cursor-pointer font-display"
-          style={{
-            border: `1px solid ${paused ? BLUE : LINE}`,
-            background: paused ? BLUE : '#ffffff',
-            color: paused ? '#ffffff' : BLUE_DEEP,
-            borderRadius: 9999,
-            padding: '6px 14px',
-            fontSize: '0.76rem',
-            fontWeight: 700,
-            transition: 'background .2s, border-color .2s, color .2s',
-          }}
-        >
-          {paused ? 'Relancer' : 'Figer'}
-        </motion.button>
       </div>
 
       <div
@@ -99,43 +80,46 @@ function V87() {
           className="flex items-center"
           style={{
             width: 'max-content',
-            gap: 40,
+            gap: 22,
             paddingInline: 20,
+            // Continuous, infinite scroll — never paused.
             animation: 'sae-marquee-87 26s linear infinite',
-            animationPlayState: paused ? 'paused' : 'running',
           }}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
         >
-          {loop.map((logo, i) => {
-            const on = hovered === i;
-            return (
-              <div
-                key={i}
-                onMouseEnter={() => setHovered(i)}
-                onMouseLeave={() => setHovered(null)}
-                className="shrink-0 flex items-center justify-center"
-                style={{ height: 40 }}
-              >
-                <img
-                  src={logo.src}
-                  alt={logo.alt}
-                  style={{
-                    height: 36,
-                    width: 'auto',
-                    objectFit: 'contain',
-                    filter: on ? 'grayscale(0)' : 'grayscale(1)',
-                    opacity: on ? 1 : 0.62,
-                    transform: on ? 'scale(1.12)' : 'scale(1)',
-                    transition: 'filter .25s, opacity .25s, transform .25s',
-                    mixBlendMode: 'multiply',
-                    ...logoMask,
-                  }}
-                  draggable={false}
-                />
-              </div>
-            );
-          })}
+          {loop.map((logo, i) => (
+            <div
+              key={i}
+              aria-hidden={i >= LOGOS.length ? true : undefined}
+              className="shrink-0 flex items-center justify-center"
+              style={{
+                // White rounded chip matching the logos' own white bg —
+                // no visible square edges around any logo.
+                background: '#ffffff',
+                border: `1px solid ${LINE}`,
+                borderRadius: 14,
+                height: 56,
+                padding: '0 20px',
+                // Plain decorative images — not clickable, not selectable.
+                pointerEvents: 'none',
+                userSelect: 'none',
+              }}
+            >
+              <img
+                src={logo.src}
+                alt={logo.alt}
+                style={{
+                  height: 30,
+                  width: 'auto',
+                  objectFit: 'contain',
+                  filter: 'grayscale(1)',
+                  opacity: 0.72,
+                  pointerEvents: 'none',
+                  ...logoMask,
+                }}
+                draggable={false}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
@@ -224,12 +208,16 @@ function V88() {
               onKeyDown={(e) => keyNav(e, i)}
               className="cursor-pointer relative flex items-center justify-center"
               style={{
+                // Always-white chip so the logos' own white bg blends in —
+                // selection is shown via the blue ring, not a tinted fill,
+                // which keeps the logos free of any visible square edges.
                 border: `1px solid ${on ? BLUE : LINE}`,
-                background: on ? BLUE_MIST : '#ffffff',
+                background: '#ffffff',
+                boxShadow: on ? `0 0 0 1px ${BLUE}` : 'none',
                 borderRadius: 16,
                 height: 72,
                 padding: '10px 12px',
-                transition: 'background .2s, border-color .2s',
+                transition: 'border-color .2s, box-shadow .2s',
               }}
             >
               <motion.span
@@ -258,7 +246,6 @@ function V88() {
                   filter: on ? 'grayscale(0)' : 'grayscale(1)',
                   opacity: on ? 1 : 0.58,
                   transition: 'filter .25s, opacity .25s',
-                  mixBlendMode: 'multiply',
                   ...logoMask,
                 }}
                 draggable={false}
@@ -357,7 +344,7 @@ function V89() {
       <div
         className="relative overflow-hidden"
         style={{
-          background: 'rgba(255,255,255,0.96)',
+          background: '#ffffff',
           borderRadius: 16,
           padding: '18px 0',
         }}
@@ -368,7 +355,7 @@ function V89() {
           style={{
             width: 64,
             background:
-              'linear-gradient(90deg, rgba(255,255,255,0.96), rgba(255,255,255,0))',
+              'linear-gradient(90deg, #ffffff, rgba(255,255,255,0))',
           }}
         />
         <div
@@ -376,7 +363,7 @@ function V89() {
           style={{
             width: 64,
             background:
-              'linear-gradient(270deg, rgba(255,255,255,0.96), rgba(255,255,255,0))',
+              'linear-gradient(270deg, #ffffff, rgba(255,255,255,0))',
           }}
         />
 
@@ -411,7 +398,6 @@ function V89() {
                       opacity: on ? 1 : 0.6,
                       transform: on ? 'scale(1.1)' : 'scale(1)',
                       transition: 'filter .25s, opacity .25s, transform .25s',
-                      mixBlendMode: 'multiply',
                       ...logoMask,
                     }}
                     draggable={false}
@@ -440,7 +426,7 @@ export const variants = [
   {
     n: 87,
     label: 'Marquee infini',
-    note: 'Défilement CSS continu, pause au survol, bouton figer/relancer.',
+    note: 'Défilement CSS continu sans pause, logos non cliquables sur puces blanches sans bord carré.',
     Component: V87,
   },
   {
