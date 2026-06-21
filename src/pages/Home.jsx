@@ -273,7 +273,6 @@ function ProductShowcase() {
             <div className={i % 2 ? 'md:order-2' : ''}>
               <ClipReveal className="rounded-[28px]" scaleFrom={1.18}>
                 <div className="relative bg-gradient-to-br from-[var(--blue-mist)] to-[var(--blue-soft)] border border-[var(--line)] flex items-center justify-center p-10 md:p-16 group" style={{ aspectRatio: '4 / 3' }}>
-                  <span className="absolute top-5 left-7 font-display font-bold leading-none text-[var(--blue)]/[0.07] select-none" style={{ fontSize: 'clamp(6rem,12vw,11rem)' }}>{p.n}</span>
                   <div className="absolute w-1/2 h-1/2 rounded-full" style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.16), transparent 70%)', filter: 'blur(40px)' }} />
                   <motion.img src={p.img} alt={p.alt} loading="eager" className="relative max-h-[86%] object-contain product-render"
                     whileHover={{ scale: 1.05, rotate: -1 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} />
@@ -282,7 +281,7 @@ function ProductShowcase() {
             </div>
             <div className={i % 2 ? 'md:order-1' : ''}>
               <Reveal as="div" y={20} className="flex items-center gap-3 mb-5">
-                <span className="font-display text-4xl font-bold text-[var(--blue)]/20">{p.n}</span><span className="kicker">{p.kicker}</span>
+                <span className="h-px w-8" style={{ background: 'var(--blue)' }} /><span className="kicker">{p.kicker}</span>
               </Reveal>
               <h3 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2rem,3.6vw,3.2rem)', lineHeight: 1.0 }}><MaskHeading text={p.title} /></h3>
               <Rise as="p" y={26} delay={0.1} className="lead mt-5 max-w-md">{p.desc}</Rise>
@@ -476,11 +475,8 @@ export default function Home() {
                 className="group relative flex items-center gap-4 overflow-hidden hover:bg-white/[0.04] transition-colors duration-200"
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.14)', padding: '15px 14px 15px 12px' }}
               >
-                <span className="font-display shrink-0 tabular-nums" style={{ fontSize: '0.95rem', fontWeight: 700, width: 26, color: 'rgba(125,180,240,0.65)' }}>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span className="flex items-center justify-center shrink-0 text-[#7db4f0]">
-                  <f.icon size={20} strokeWidth={2.1} />
+                <span className="flex items-center justify-center shrink-0 text-[#7db4f0]" style={{ width: 26 }}>
+                  <f.icon size={21} strokeWidth={2.1} />
                 </span>
                 <span className="min-w-0">
                   <span className="block font-display" style={{ fontSize: '0.96rem', lineHeight: 1.2, fontWeight: 600, color: '#ffffff' }}>{f.title}</span>

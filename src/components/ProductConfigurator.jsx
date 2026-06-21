@@ -134,9 +134,7 @@ export default function ProductConfigurator({ data }) {
                   <div className="text-[10px] uppercase tracking-widest text-[var(--muted)]">Configuration</div>
                   <AnimPrice value={total} className="font-display text-2xl font-bold text-ink leading-tight" />
                 </div>
-                <button type="button" onClick={() => setOpen(true)} data-cursor className="cta-iridescent inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold cursor-pointer">
-                  Devis <ArrowRight className="w-4 h-4" />
-                </button>
+                <div className="text-[11px] font-semibold uppercase tracking-widest text-[var(--blue)]">Total HT</div>
               </div>
             </motion.div>
           </div>
@@ -350,53 +348,31 @@ export default function ProductConfigurator({ data }) {
             </div>
           </Reveal>
 
-          {/* CTAs — design of ctaButtons V21 (action + dashed "sur mesure" card) */}
-          <Reveal y={20}>
-            <motion.button
-              type="button"
-              onClick={() => setOpen(true)}
-              data-cursor
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-              className="group relative flex w-full items-center justify-center gap-2.5 rounded-2xl px-6 py-4 font-semibold text-white cursor-pointer overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, var(--blue-bright), var(--blue-deep))', boxShadow: '0 14px 30px -14px rgba(0,82,163,0.7)' }}
-            >
-              <Send size={18} strokeWidth={2.2} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              Demander un devis
-            </motion.button>
-
-            {surMesureTo && (
-              <>
-                <div className="my-3 flex items-center gap-3">
-                  <span className="h-px flex-1" style={{ background: 'var(--line)' }} />
-                  <span className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--blue)' }}>ou</span>
-                  <span className="h-px flex-1" style={{ background: 'var(--line)' }} />
-                </div>
-
-                <Link
-                  to={surMesureTo}
-                  data-cursor
-                  className="group flex w-full items-center gap-4 rounded-[22px] px-5 py-4 text-left cursor-pointer transition-colors duration-300"
-                  style={{ background: 'var(--blue-mist)', border: '1.5px dashed var(--blue-bright)' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--blue-soft)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--blue-mist)')}
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl" style={{ background: '#fff', border: '1px solid var(--line)' }}>
-                    <PencilRuler size={20} style={{ color: 'var(--blue)' }} strokeWidth={2.1} />
+          {/* Alternative sur-mesure — le devis principal est déjà dans le récapitulatif ci-dessus (un seul bouton devis) */}
+          {surMesureTo && (
+            <Reveal y={20}>
+              <Link
+                to={surMesureTo}
+                data-cursor
+                className="group flex w-full items-center gap-4 rounded-[22px] px-5 py-4 text-left cursor-pointer transition-colors duration-300"
+                style={{ background: 'var(--blue-mist)', border: '1.5px dashed var(--blue-bright)' }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--blue-soft)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--blue-mist)')}
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl" style={{ background: '#fff', border: '1px solid var(--line)' }}>
+                  <PencilRuler size={20} style={{ color: 'var(--blue)' }} strokeWidth={2.1} />
+                </span>
+                <span className="flex-1">
+                  <span className="flex items-center gap-1.5 font-semibold" style={{ color: 'var(--blue-deep)' }}>
+                    Sur mesure
+                    <Sparkles size={14} style={{ color: 'var(--blue-bright)' }} strokeWidth={2.2} />
                   </span>
-                  <span className="flex-1">
-                    <span className="flex items-center gap-1.5 font-semibold" style={{ color: 'var(--blue-deep)' }}>
-                      Sur mesure
-                      <Sparkles size={14} style={{ color: 'var(--blue-bright)' }} strokeWidth={2.2} />
-                    </span>
-                    <span className="block text-sm" style={{ color: 'var(--blue)' }}>Dimensions 100% personnalisées</span>
-                  </span>
-                  <ChevronRight size={20} style={{ color: 'var(--blue)' }} strokeWidth={2.3} className="transition-transform duration-300 group-hover:translate-x-1" />
-                </Link>
-              </>
-            )}
-          </Reveal>
+                  <span className="block text-sm" style={{ color: 'var(--blue)' }}>Dimensions 100% personnalisées</span>
+                </span>
+                <ChevronRight size={20} style={{ color: 'var(--blue)' }} strokeWidth={2.3} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </Reveal>
+          )}
         </div>
       </div>
 
@@ -420,21 +396,27 @@ function OptionRow({ it, on, qty, Icon, first, onToggle, onInc, onDec }) {
       onKeyDown={onKey}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="cursor-pointer flex items-center gap-3 transition-colors"
+      className="cursor-pointer flex items-center gap-4 transition-colors"
       style={{
-        padding: '12px 14px',
+        padding: '17px 18px',
         background: on ? 'var(--blue-mist)' : hover ? 'var(--blue-mist)' : '#fff',
         borderTop: first ? 'none' : '1px solid var(--line)',
       }}
     >
-      <motion.span
+      {/* Case à cocher — cliquer la ligne la coche */}
+      <span
         aria-hidden
-        animate={{ scaleY: on ? 1 : 0 }}
-        transition={{ duration: 0.25, ease: EASE2 }}
-        style={{ width: 3, height: 30, borderRadius: 9999, background: 'var(--blue)', transformOrigin: 'center', marginLeft: -4 }}
-      />
-      <span className="grid place-items-center shrink-0 transition-colors" style={{ width: 30, height: 30, borderRadius: 9, background: on ? 'var(--blue)' : 'var(--blue-soft)' }}>
-        <Icon className="w-4 h-4" strokeWidth={2} style={{ color: on ? '#fff' : 'var(--blue)' }} />
+        className="grid place-items-center shrink-0 transition-colors"
+        style={{
+          width: 24, height: 24, borderRadius: 7,
+          background: on ? 'var(--blue)' : '#fff',
+          border: on ? '1px solid var(--blue)' : '1.5px solid var(--line)',
+          boxShadow: on ? '0 5px 12px -5px rgba(0,82,163,.55)' : 'none',
+        }}
+      >
+        <motion.span initial={false} animate={{ scale: on ? 1 : 0 }} transition={{ duration: 0.18, ease: EASE2 }} style={{ display: 'grid' }}>
+          <Check size={15} strokeWidth={3} style={{ color: '#fff' }} />
+        </motion.span>
       </span>
 
       <div className="flex-1 min-w-0">

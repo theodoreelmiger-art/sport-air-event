@@ -81,21 +81,20 @@ h1, .font-display-xl { letter-spacing: -0.035em; line-height: 0.98; }
 
 .hairline { height: 1px; background: var(--line); }
 
-/* Product renders: blend into the panel + feather the hard rectangle edges + trim the stray dark edge on the right */
+/* Product renders are transparent cutouts (rembg) — just ground them with a
+   soft contact shadow. No multiply, no mask, no box, no dark line. */
 .product-render {
-  mix-blend-mode: multiply;
-  clip-path: inset(0.5% 2.2% 0.5% 0.5%);
-  -webkit-mask-image: radial-gradient(132% 132% at 50% 48%, #000 60%, rgba(0, 0, 0, 0) 92%);
-  mask-image: radial-gradient(132% 132% at 50% 48%, #000 60%, rgba(0, 0, 0, 0) 92%);
+  filter: drop-shadow(0 18px 22px rgba(0, 30, 80, 0.16));
 }
 
 /* ── Custom cursor ── */
 @media (pointer: fine) {
   html.has-cursor, html.has-cursor * { cursor: none !important; }
 }
-.cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; border-radius: 9999px; background: var(--blue); pointer-events: none; z-index: 100000; transform: translate(-50%, -50%); }
-.cursor-ring { position: fixed; top: 0; left: 0; width: 26px; height: 26px; border-radius: 9999px; border: 1.5px solid rgba(0, 102, 204, 0.55); pointer-events: none; z-index: 100000; transform: translate(-50%, -50%); transition: width 0.22s var(--ease), height 0.22s var(--ease), background 0.22s var(--ease), border-color 0.22s var(--ease); }
-.cursor-ring.is-hover { width: 44px; height: 44px; background: rgba(0, 102, 204, 0.07); border-color: rgba(0, 102, 204, 0.85); }
+.cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; border-radius: 9999px; background: var(--blue); pointer-events: none; z-index: 100000; transform: translate(-50%, -50%); transition: opacity 0.2s var(--ease), width 0.2s var(--ease), height 0.2s var(--ease); }
+.cursor-dot.is-hover { opacity: 0; }
+.cursor-ring { position: fixed; top: 0; left: 0; width: 30px; height: 30px; border-radius: 9999px; border: 1.5px solid rgba(0, 102, 204, 0.5); pointer-events: none; z-index: 100000; transform: translate(-50%, -50%); transition: width 0.26s var(--ease), height 0.26s var(--ease), background 0.26s var(--ease), border-color 0.26s var(--ease); }
+.cursor-ring.is-hover { width: 46px; height: 46px; background: rgba(0, 102, 204, 0.10); border-color: rgba(0, 102, 204, 0.9); }
 
 /* Scroll progress bar */
 .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; transform-origin: 0 50%; background: linear-gradient(90deg, var(--blue-bright), var(--blue-deep)); z-index: 1200; }

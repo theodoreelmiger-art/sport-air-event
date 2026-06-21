@@ -10,15 +10,10 @@ export default function SectionHeader({
   const alignCls = align === 'center' ? 'text-center items-center mx-auto' : align === 'right' ? 'text-right items-end ml-auto' : 'text-left items-start';
   return (
     <div className={`flex flex-col ${alignCls} max-w-2xl ${className}`}>
-      {(kicker || index) && (
+      {kicker && (
         <Reveal as="div" y={14} className={`flex items-center gap-3 mb-5 ${align === 'center' ? 'justify-center' : ''}`}>
-          {index && (
-            <span className={`text-xs font-semibold tabular-nums ${light ? 'text-white/40' : 'text-ink/30'}`}>
-              {index}
-            </span>
-          )}
           <span className="h-px w-8" style={{ background: light ? 'rgba(255,255,255,0.3)' : 'var(--blue)' }} />
-          {kicker && <span className="kicker" style={light ? { color: '#7db4f0' } : undefined}>{kicker}</span>}
+          <span className="kicker" style={light ? { color: '#7db4f0' } : undefined}>{kicker}</span>
         </Reveal>
       )}
       <Reveal as="h2" y={26} delay={0.05}

@@ -31,8 +31,9 @@ export function PageTransition() {
 /* ── Custom cursor: a fast dot + a lagging ring that grows over interactive elements ── */
 export function CustomCursor() {
   const dotX = useMotionValue(-100); const dotY = useMotionValue(-100);
-  const ringX = useSpring(dotX, { stiffness: 750, damping: 32, mass: 0.35 });
-  const ringY = useSpring(dotY, { stiffness: 750, damping: 32, mass: 0.35 });
+  // Tight spring so the ring hugs the dot — the dot never escapes the ring.
+  const ringX = useSpring(dotX, { stiffness: 1100, damping: 42, mass: 0.22 });
+  const ringY = useSpring(dotY, { stiffness: 1100, damping: 42, mass: 0.22 });
   const [hover, setHover] = useState(false);
   const [enabled, setEnabled] = useState(false);
 
@@ -60,7 +61,7 @@ export function CustomCursor() {
   if (!enabled) return null;
   return (
     <>
-      <motion.div className="cursor-dot" style={{ x: dotX, y: dotY }} />
+      <motion.div className={`cursor-dot ${hover ? 'is-hover' : ''}`} style={{ x: dotX, y: dotY }} />
       <motion.div className={`cursor-ring ${hover ? 'is-hover' : ''}`} style={{ x: ringX, y: ringY }} />
     </>
   );
