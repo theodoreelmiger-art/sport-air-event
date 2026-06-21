@@ -88,7 +88,7 @@ function ProductShowcase() {
                 <div className="relative bg-gradient-to-br from-[var(--blue-mist)] to-[var(--blue-soft)] border border-[var(--line)] flex items-center justify-center p-10 md:p-16 group" style={{ aspectRatio: '4 / 3' }}>
                   <span className="absolute top-5 left-7 font-display font-bold leading-none text-[var(--blue)]/[0.07] select-none" style={{ fontSize: 'clamp(6rem,12vw,11rem)' }}>{p.n}</span>
                   <div className="absolute w-1/2 h-1/2 rounded-full" style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.16), transparent 70%)', filter: 'blur(40px)' }} />
-                  <motion.img src={p.img} alt={p.alt} loading="eager" className="relative max-h-[82%] object-contain drop-shadow-2xl" style={{ mixBlendMode: 'multiply' }}
+                  <motion.img src={p.img} alt={p.alt} loading="eager" className="relative max-h-[86%] object-contain product-render"
                     whileHover={{ scale: 1.05, rotate: -1 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} />
                 </div>
               </ClipReveal>

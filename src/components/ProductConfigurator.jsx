@@ -79,7 +79,7 @@ export default function ProductConfigurator({ data }) {
               <div className="absolute w-2/3 h-2/3 rounded-full" style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.18), transparent 70%)', filter: 'blur(40px)' }} />
               <motion.img
                 src={image} alt={productName} loading="eager"
-                className="relative max-h-[78%] max-w-[84%] object-contain drop-shadow-2xl" style={{ mixBlendMode: 'multiply' }}
+                className="relative max-h-[82%] max-w-[88%] object-contain product-render"
                 animate={{ y: [0, -12, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
               />
               <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between rounded-2xl bg-white/90 backdrop-blur-md border border-white/60 shadow-lg px-5 py-3.5">

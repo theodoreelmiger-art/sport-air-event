@@ -81,6 +81,14 @@ h1, .font-display-xl { letter-spacing: -0.035em; line-height: 0.98; }
 
 .hairline { height: 1px; background: var(--line); }
 
+/* Product renders: blend into the panel + feather the hard rectangle edges + trim the stray dark edge on the right */
+.product-render {
+  mix-blend-mode: multiply;
+  clip-path: inset(0.5% 2.2% 0.5% 0.5%);
+  -webkit-mask-image: radial-gradient(132% 132% at 50% 48%, #000 60%, rgba(0, 0, 0, 0) 92%);
+  mask-image: radial-gradient(132% 132% at 50% 48%, #000 60%, rgba(0, 0, 0, 0) 92%);
+}
+
 /* ── Custom cursor ── */
 @media (pointer: fine) {
   html.has-cursor, html.has-cursor * { cursor: none !important; }

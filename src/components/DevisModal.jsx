@@ -45,7 +45,8 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[1100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[1100] flex items-center justify-center p-4 overscroll-contain"
+          data-lenis-prevent
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -53,7 +54,8 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
           <motion.div
-            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white shadow-2xl"
+            className="relative w-full max-w-lg max-h-[88vh] overflow-y-auto overscroll-contain bg-white shadow-2xl"
+            data-lenis-prevent
             style={{ borderRadius: 28 }}
             initial={{ opacity: 0, scale: 0.92, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

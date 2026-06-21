@@ -117,7 +117,7 @@ export default function ChatWidget() {
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50">
+            <div ref={scrollRef} data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-3 bg-gray-50">
               {messages.map((m, i) => (
                 <div key={i} className={`flex ${m.from === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <p
