@@ -712,28 +712,6 @@ export default function Contact() {
           </div>
         </div>
       </section>
-
-      {/* Floating chat button */}
-      <motion.button
-        type="button"
-        onClick={() => window.open('https://wa.me/41774835190', '_blank', 'noopener,noreferrer')}
-        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#0066CC] to-[#0052A3] rounded-full shadow-2xl flex items-center justify-center text-white"
-        tabIndex={0}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <motion.div
-          animate={{ rotate: [-10, 10, -10] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <MessageCircle className="lucide lucide-message-circle w-7 h-7" />
-        </motion.div>
-        <motion.div
-          className="absolute inset-0 rounded-full bg-[#0066CC] opacity-20"
-          animate={{ scale: [1, 1.3, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </motion.button>
     </div>
   );
 }
