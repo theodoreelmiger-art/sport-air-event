@@ -31,8 +31,8 @@ export function PageTransition() {
 /* ── Custom cursor: a fast dot + a lagging ring that grows over interactive elements ── */
 export function CustomCursor() {
   const dotX = useMotionValue(-100); const dotY = useMotionValue(-100);
-  const ringX = useSpring(dotX, { stiffness: 500, damping: 40, mass: 0.4 });
-  const ringY = useSpring(dotY, { stiffness: 500, damping: 40, mass: 0.4 });
+  const ringX = useSpring(dotX, { stiffness: 750, damping: 32, mass: 0.35 });
+  const ringY = useSpring(dotY, { stiffness: 750, damping: 32, mass: 0.35 });
   const [hover, setHover] = useState(false);
   const [enabled, setEnabled] = useState(false);
 

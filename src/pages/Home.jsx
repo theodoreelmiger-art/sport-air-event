@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, ChevronDown, Clock, Shield, Sparkles, Truck, Star } from 'lucide-react';
-import { Reveal, RevealStagger, WordsReveal, Magnetic, staggerChild } from '../lib/motion.jsx';
+import { Reveal, RevealStagger, WordsReveal, Magnetic, staggerChild, ClipReveal, Rise, MaskHeading } from '../lib/motion.jsx';
 import { Counter, MouseGlow } from '../lib/interactions.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 
@@ -69,40 +69,10 @@ const Stars = ({ size }) => (
 );
 
 /* Sticky scrollytelling product showcase (desktop) + stacked (mobile) */
-function ProductBlock({ p, i, setActive, last }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { amount: 0.55, margin: '-20% 0px -20% 0px' });
-  useEffect(() => { if (inView) setActive(i); }, [inView, i, setActive]);
-  return (
-    <div ref={ref} className={`min-h-[78vh] flex flex-col justify-center ${!last ? 'border-b border-[var(--line)]' : ''}`}>
-      <div className="flex items-center gap-4 mb-5">
-        <span className="font-display text-5xl font-bold text-[var(--blue)]/15">{p.n}</span>
-        <span className="kicker">{p.kicker}</span>
-      </div>
-      <h3 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2rem,3.4vw,3rem)', lineHeight: 1.0 }}>{p.title}</h3>
-      <p className="lead mt-5 max-w-md">{p.desc}</p>
-      <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2.5">
-        {p.specs.map((s) => (
-          <li key={s} className="flex items-center gap-2 text-sm text-ink/75"><span className="w-1 h-1 rounded-full" style={{ background: 'var(--blue)' }} />{s}</li>
-        ))}
-      </ul>
-      <div className="mt-9 flex items-center gap-7">
-        <span className="font-display text-2xl font-bold text-ink">{p.price}</span>
-        <Magnetic>
-          <Link to={p.to} data-cursor className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-[var(--blue)]/20 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors">
-            Découvrir <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </Link>
-        </Magnetic>
-      </div>
-    </div>
-  );
-}
-
 function ProductShowcase() {
-  const [active, setActive] = useState(0);
   return (
     <section id="structures" className="max-w-content mx-auto px-5 sm:px-8 py-20 md:py-28">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 md:mb-24">
         <SectionHeader kicker="Nos solutions" index="01" title={<>Des structures pensées<br />pour tous vos événements</>} />
         <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
           <Sparkles className="w-4 h-4 text-[var(--blue)]" />
@@ -110,52 +80,42 @@ function ProductShowcase() {
         </Reveal>
       </div>
 
-      {/* Desktop: sticky image + scrolling info */}
-      <div className="hidden lg:grid grid-cols-2 gap-16">
-        <div>
-          <div className="sticky top-28 h-[74vh] rounded-[var(--radius-lg)] bg-[var(--blue-mist)] border border-[var(--line)] overflow-hidden flex items-center justify-center p-12">
-            <div className="absolute top-6 left-6 flex gap-1.5">
-              {products.map((_, i) => (
-                <span key={i} className="h-1 rounded-full transition-all duration-500" style={{ width: i === active ? 28 : 10, background: i === active ? 'var(--blue)' : 'rgba(0,102,204,0.2)' }} />
-              ))}
+      <div className="space-y-24 md:space-y-36">
+        {products.map((p, i) => (
+          <div key={p.to} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+            <div className={i % 2 ? 'md:order-2' : ''}>
+              <ClipReveal className="rounded-[28px]" scaleFrom={1.18}>
+                <div className="relative bg-gradient-to-br from-[var(--blue-mist)] to-[var(--blue-soft)] border border-[var(--line)] flex items-center justify-center p-10 md:p-16 group" style={{ aspectRatio: '4 / 3' }}>
+                  <span className="absolute top-5 left-7 font-display font-bold leading-none text-[var(--blue)]/[0.07] select-none" style={{ fontSize: 'clamp(6rem,12vw,11rem)' }}>{p.n}</span>
+                  <div className="absolute w-1/2 h-1/2 rounded-full" style={{ background: 'radial-gradient(circle, rgba(0,102,204,0.16), transparent 70%)', filter: 'blur(40px)' }} />
+                  <motion.img src={p.img} alt={p.alt} loading="eager" className="relative max-h-[82%] object-contain drop-shadow-2xl" style={{ mixBlendMode: 'multiply' }}
+                    whileHover={{ scale: 1.05, rotate: -1 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} />
+                </div>
+              </ClipReveal>
             </div>
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={active} src={products[active].img} alt={products[active].alt}
-                className="max-h-[70%] object-contain" style={{ mixBlendMode: 'multiply' }}
-                initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: -16 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              />
-            </AnimatePresence>
+            <div className={i % 2 ? 'md:order-1' : ''}>
+              <Reveal as="div" y={20} className="flex items-center gap-3 mb-5">
+                <span className="font-display text-4xl font-bold text-[var(--blue)]/20">{p.n}</span><span className="kicker">{p.kicker}</span>
+              </Reveal>
+              <h3 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2rem,3.6vw,3.2rem)', lineHeight: 1.0 }}><MaskHeading text={p.title} /></h3>
+              <Rise as="p" y={26} delay={0.1} className="lead mt-5 max-w-md">{p.desc}</Rise>
+              <Reveal as="ul" y={20} delay={0.16} className="mt-7 flex flex-wrap gap-x-6 gap-y-2.5">
+                {p.specs.map((s) => <li key={s} className="flex items-center gap-2 text-sm text-ink/75"><span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />{s}</li>)}
+              </Reveal>
+              <Reveal as="div" y={20} delay={0.22} className="mt-9 flex items-center gap-7">
+                <span className="font-display text-2xl font-bold text-ink">{p.price}</span>
+                <Magnetic>
+                  <Link to={p.to} data-cursor className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-[var(--blue)]/25 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors">
+                    Découvrir <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </Link>
+                </Magnetic>
+              </Reveal>
+            </div>
           </div>
-        </div>
-        <div>
-          {products.map((p, i) => <ProductBlock key={p.to} p={p} i={i} setActive={setActive} last={i === products.length - 1} />)}
-        </div>
-      </div>
-
-      {/* Mobile: stacked cards */}
-      <div className="lg:hidden space-y-12">
-        {products.map((p) => (
-          <Reveal key={p.to} y={36}>
-            <div className="rounded-[var(--radius-lg)] bg-[var(--blue-mist)] border border-[var(--line)] flex items-center justify-center p-10 mb-6" style={{ aspectRatio: '4/3' }}>
-              <img src={p.img} alt={p.alt} className="max-h-[78%] object-contain" style={{ mixBlendMode: 'multiply' }} loading="lazy" />
-            </div>
-            <div className="kicker mb-3">{p.kicker}</div>
-            <h3 className="font-display font-bold text-ink text-2xl">{p.title}</h3>
-            <p className="lead mt-4">{p.desc}</p>
-            <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
-              {p.specs.map((s) => <li key={s} className="flex items-center gap-2 text-sm text-ink/75"><span className="w-1 h-1 rounded-full" style={{ background: 'var(--blue)' }} />{s}</li>)}
-            </ul>
-            <div className="mt-6 flex items-center gap-6">
-              <span className="font-display text-xl font-bold text-ink">{p.price}</span>
-              <Link to={p.to} className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--blue)]">Découvrir <ArrowUpRight className="w-4 h-4" /></Link>
-            </div>
-          </Reveal>
         ))}
       </div>
 
-      <Reveal className="mt-16 pt-12 border-t border-[var(--line)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <Reveal className="mt-20 pt-12 border-t border-[var(--line)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <p className="font-display text-xl md:text-2xl font-semibold text-ink max-w-md tracking-tight">Un projet sur mesure ? Parlons-en.</p>
         <Magnetic>
           <Link to="/Contact" data-cursor className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
@@ -177,7 +137,7 @@ export default function Home() {
   const heroFade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <div className="overflow-x-hidden bg-white">
+    <div className="overflow-x-clip bg-white">
       {/* ░░ HERO ░░ */}
       <section ref={heroRef} className="relative flex flex-col justify-end overflow-hidden" style={{ minHeight: '100svh' }}>
         <motion.div className="absolute inset-0" style={{ y: imgY }}>

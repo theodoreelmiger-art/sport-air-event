@@ -220,7 +220,7 @@ export default function Contact() {
   const errorBorder = '#ef4444';
 
   return (
-    <div className="overflow-x-hidden bg-paper">
+    <div className="overflow-x-clip bg-paper">
       {/* ░░ HERO + FORM ░░ */}
       <section className="bg-paper pt-28 md:pt-36 pb-20 md:pb-28">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">

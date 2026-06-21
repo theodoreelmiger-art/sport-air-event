@@ -84,7 +84,7 @@ export default function Customization() {
   ];
 
   return (
-    <div className="overflow-x-hidden bg-paper pt-20">
+    <div className="overflow-x-clip bg-paper pt-20">
       {/* ░░ HERO (dark) ░░ */}
       <section className="relative bg-deep text-white overflow-hidden">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 py-20 md:py-28">

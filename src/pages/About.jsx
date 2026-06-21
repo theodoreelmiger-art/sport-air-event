@@ -22,7 +22,7 @@ const reasons = [
 
 export default function About() {
   return (
-    <div className="overflow-x-hidden bg-paper">
+    <div className="overflow-x-clip bg-paper">
       {/* ░░ HERO ░░ */}
       <section className="pt-32 md:pt-44 pb-16 md:pb-24">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">

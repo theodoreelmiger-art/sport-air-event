@@ -42,7 +42,7 @@ export default function TenteSurMesure() {
   const [devisOpen, setDevisOpen] = useState(false);
 
   return (
-    <div className="overflow-x-hidden bg-paper pt-24 md:pt-28">
+    <div className="overflow-x-clip bg-paper pt-24 md:pt-28">
       <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           {/* ░░ Sticky product image (desktop) ░░ */}

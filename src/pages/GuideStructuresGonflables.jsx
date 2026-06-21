@@ -34,7 +34,7 @@ const advantages = [
 
 export default function GuideStructuresGonflables() {
   return (
-    <div className="overflow-x-hidden bg-paper">
+    <div className="overflow-x-clip bg-paper">
       {/* ░░ HERO ░░ */}
       <section className="border-b border-[var(--line)]">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-32 md:pt-40 pb-16 md:pb-24">

@@ -14,7 +14,7 @@ export default function NotFound() {
   const pageName = pathname.replace(/^\//, '') || 'Home';
 
   return (
-    <div className="overflow-x-hidden bg-deep text-white">
+    <div className="overflow-x-clip bg-deep text-white">
       <section className="relative min-h-screen flex items-center">
         {/* oversized editorial 404 watermark */}
         <span

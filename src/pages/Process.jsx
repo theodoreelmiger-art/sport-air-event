@@ -78,7 +78,7 @@ const delais = [
 
 export default function Process() {
   return (
-    <div className="overflow-x-hidden bg-paper">
+    <div className="overflow-x-clip bg-paper">
       {/* ░░ HERO ░░ */}
       <section className="relative bg-deep text-white overflow-hidden">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-36 md:pt-44 pb-20 md:pb-28">

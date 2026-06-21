@@ -39,7 +39,7 @@ export default function ArchesSurMesure() {
   const [devisOpen, setDevisOpen] = useState(false);
 
   return (
-    <div className="overflow-x-hidden bg-paper">
+    <div className="overflow-x-clip bg-paper">
       {/* ░░ HERO ░░ */}
       <section className="bg-paper pt-28 md:pt-36 pb-16 md:pb-24">
         <div className="max-w-content mx-auto px-5 sm:px-8">

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, useInView } from 'framer-motion';
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -99,6 +99,64 @@ export function Magnetic({ children, strength = 0.35, className = '' }) {
     >
       {children}
     </motion.div>
+  );
+}
+
+/** Dramatic clip-path "curtain" reveal — content wipes up into view (useInView + animate, reliable). */
+export function ClipReveal({ children, className = '', duration = 0.9, delay = 0, amount = 0.25, scaleFrom = 1.12 }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount });
+  return (
+    <div ref={ref} className={`overflow-hidden ${className}`}>
+      <motion.div
+        initial={{ clipPath: 'inset(0 0 100% 0)' }}
+        animate={inView ? { clipPath: 'inset(0 0 0% 0)' } : { clipPath: 'inset(0 0 100% 0)' }}
+        transition={{ duration, delay, ease: [0.76, 0, 0.24, 1] }}
+      >
+        <motion.div initial={{ scale: scaleFrom }} animate={inView ? { scale: 1 } : { scale: scaleFrom }} transition={{ duration: duration + 0.3, delay, ease: EASE }}>
+          {children}
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+
+/** Cinematic fade + slide + blur lift. Stronger than Reveal. */
+export function Rise({ children, y = 60, delay = 0, duration = 0.9, className = '', as = 'div', once = true, amount = 0.25, ...rest }) {
+  const M = motion[as] || motion.div;
+  return (
+    <M className={className}
+      initial={{ opacity: 0, y, filter: 'blur(12px)' }}
+      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      viewport={{ once, amount }}
+      transition={{ duration, delay, ease: EASE }}
+      {...rest}>
+      {children}
+    </M>
+  );
+}
+
+/** Per-word mask reveal for big headlines (cinematic, useInView + animate). */
+export function MaskHeading({ text, className = '', delay = 0, stagger = 0.06 }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.3 });
+  const words = text.split(' ');
+  return (
+    <span ref={ref} className={className} aria-label={text}>
+      {words.map((w, i) => (
+        <span key={i} aria-hidden style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom', paddingBottom: '0.08em' }}>
+          <motion.span
+            style={{ display: 'inline-block' }}
+            initial={{ y: '115%' }}
+            animate={inView ? { y: 0 } : { y: '115%' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: delay + i * stagger }}
+          >
+            {w}
+          </motion.span>
+          {i < words.length - 1 ? ' ' : ''}
+        </span>
+      ))}
+    </span>
   );
 }
 

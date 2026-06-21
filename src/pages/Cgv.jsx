@@ -106,7 +106,7 @@ const articles = [
 
 export default function Cgv() {
   return (
-    <div className="overflow-x-hidden bg-paper">
+    <div className="overflow-x-clip bg-paper">
       {/* ░░ HEADER (dark) ░░ */}
       <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-36 md:pt-44 pb-20 md:pb-28">

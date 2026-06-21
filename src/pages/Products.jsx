@@ -74,7 +74,7 @@ const products = [
 
 export default function Products() {
   return (
-    <div className="overflow-x-hidden bg-paper pt-20">
+    <div className="overflow-x-clip bg-paper pt-20">
       {/* ░░ HERO ░░ */}
       <section className="bg-deep text-white">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-24 md:py-32">

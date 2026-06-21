@@ -85,9 +85,9 @@ h1, .font-display-xl { letter-spacing: -0.035em; line-height: 0.98; }
 @media (pointer: fine) {
   html.has-cursor, html.has-cursor * { cursor: none !important; }
 }
-.cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; border-radius: 9999px; background: var(--blue); pointer-events: none; z-index: 100000; transform: translate(-50%, -50%); mix-blend-mode: normal; }
-.cursor-ring { position: fixed; top: 0; left: 0; width: 38px; height: 38px; border-radius: 9999px; border: 1.5px solid rgba(0, 102, 204, 0.5); pointer-events: none; z-index: 100000; transform: translate(-50%, -50%); transition: width 0.25s var(--ease), height 0.25s var(--ease), background 0.25s var(--ease), border-color 0.25s var(--ease); }
-.cursor-ring.is-hover { width: 60px; height: 60px; background: rgba(0, 102, 204, 0.08); border-color: rgba(0, 102, 204, 0.8); }
+.cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; border-radius: 9999px; background: var(--blue); pointer-events: none; z-index: 100000; transform: translate(-50%, -50%); }
+.cursor-ring { position: fixed; top: 0; left: 0; width: 26px; height: 26px; border-radius: 9999px; border: 1.5px solid rgba(0, 102, 204, 0.55); pointer-events: none; z-index: 100000; transform: translate(-50%, -50%); transition: width 0.22s var(--ease), height 0.22s var(--ease), background 0.22s var(--ease), border-color 0.22s var(--ease); }
+.cursor-ring.is-hover { width: 44px; height: 44px; background: rgba(0, 102, 204, 0.07); border-color: rgba(0, 102, 204, 0.85); }
 
 /* Scroll progress bar */
 .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; transform-origin: 0 50%; background: linear-gradient(90deg, var(--blue-bright), var(--blue-deep)); z-index: 1200; }
