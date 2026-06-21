@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, X } from 'lucide-react';
+import { useT } from '../lib/i18n.jsx';
 
 export default function CookieBanner() {
+  const t = useT();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -36,12 +38,12 @@ export default function CookieBanner() {
             </span>
             <div className="min-w-0">
               <h4 className="font-display text-[0.98rem] font-bold leading-tight" style={{ color: 'var(--ink)' }}>
-                Cookies et confidentialité
+                {t('Cookies et confidentialité', 'Cookies & privacy')}
               </h4>
             </div>
             <button
               type="button"
-              aria-label="Fermer"
+              aria-label={t('Fermer', 'Close')}
               onClick={() => decide('refused')}
               className="ml-auto cursor-pointer rounded-full p-1 transition-colors"
               style={{ color: 'var(--ink-2)' }}
@@ -52,8 +54,10 @@ export default function CookieBanner() {
             </button>
           </div>
           <p className="mt-2.5 text-[0.8rem] leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            Nous utilisons des cookies pour améliorer votre expérience sur notre site. En continuant, vous acceptez notre
-            utilisation des cookies.
+            {t(
+              'Nous utilisons des cookies pour améliorer votre expérience sur notre site. En continuant, vous acceptez notre utilisation des cookies.',
+              'We use cookies to enhance your experience on our site. By continuing, you agree to our use of cookies.'
+            )}
           </p>
           <div className="mt-3.5 grid grid-cols-2 gap-2">
             <motion.button
@@ -65,7 +69,7 @@ export default function CookieBanner() {
               onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--blue-mist)')}
               onMouseLeave={(e) => (e.currentTarget.style.background = 'white')}
             >
-              Refuser
+              {t('Refuser', 'Decline')}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.96 }}
@@ -74,7 +78,7 @@ export default function CookieBanner() {
               className="cursor-pointer rounded-xl py-2 text-[0.82rem] font-semibold text-white transition-transform"
               style={{ background: 'var(--blue)' }}
             >
-              Accepter
+              {t('Accepter', 'Accept')}
             </motion.button>
           </div>
         </motion.div>

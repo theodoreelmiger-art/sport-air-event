@@ -7,29 +7,32 @@ import {
 import { Reveal, Rise, ClipReveal, MaskHeading, Magnetic, RevealStagger, staggerChild } from '../lib/motion.jsx';
 import ProductConfigurator from '../components/ProductConfigurator.jsx';
 import { CONFIGURATORS } from '../data/configurators.js';
+import { useT } from '../lib/i18n.jsx';
 
 /* SPECS — real label + full real value preserved verbatim. The compact card grid
    renders the label and the value as the prominent line — no derived facts. */
-const SPECS = [
-  { icon: Layers, label: 'Matériau', value: 'PVC 650g/m² haute résistance' },
-  { icon: Ruler, label: 'Hauteurs disponibles', value: '2.5m – 3m – 4m' },
-  { icon: Sparkles, label: 'Impression', value: 'Sublimation HD 360° UV résistant' },
-  { icon: Lightbulb, label: 'Éclairage', value: 'LED RGB intégré (option)' },
-  { icon: Timer, label: 'Temps de montage', value: '3-5 minutes par colonne' },
-  { icon: Anchor, label: 'Base de lestage', value: 'Base lestée incluse' },
-  { icon: Sun, label: 'Usage', value: 'Intérieur et extérieur' },
-  { icon: ShieldCheck, label: 'Garantie', value: '2 ans structure + 3 ans impression' },
+const makeSpecs = (t) => [
+  { icon: Layers, label: t('Matériau', 'Material'), value: t('PVC 650g/m² haute résistance', 'Heavy-duty 650 g/m² PVC') },
+  { icon: Ruler, label: t('Hauteurs disponibles', 'Available heights'), value: '2.5m – 3m – 4m' },
+  { icon: Sparkles, label: t('Impression', 'Printing'), value: t('Sublimation HD 360° UV résistant', '360° HD dye-sublimation, UV-resistant') },
+  { icon: Lightbulb, label: t('Éclairage', 'Lighting'), value: t('LED RGB intégré (option)', 'Built-in RGB LED (optional)') },
+  { icon: Timer, label: t('Temps de montage', 'Setup time'), value: t('3-5 minutes par colonne', '3–5 minutes per column') },
+  { icon: Anchor, label: t('Base de lestage', 'Weighted base'), value: t('Base lestée incluse', 'Weighted base included') },
+  { icon: Sun, label: t('Usage', 'Use'), value: t('Intérieur et extérieur', 'Indoor and outdoor') },
+  { icon: ShieldCheck, label: t('Garantie', 'Warranty'), value: t('2 ans structure + 3 ans impression', '2-year structure + 3-year print warranty') },
 ];
 
-const USAGES = [
-  { n: '01', icon: Flag, title: 'Balisage sportif', desc: 'Circuits, parcours, zones de balisage' },
-  { n: '02', icon: DoorOpen, title: 'Entrées & allées', desc: "Créer des couloirs d'honneur visuels" },
-  { n: '03', icon: LayoutPanelTop, title: 'Salons & expo', desc: 'Signalétique de stand, délimitation' },
-  { n: '04', icon: PartyPopper, title: 'Soirées & événements', desc: 'Décoration lumineuse, ambiance unique' },
+const makeUsages = (t) => [
+  { n: '01', icon: Flag, title: t('Balisage sportif', 'Sports course marking'), desc: t('Circuits, parcours, zones de balisage', 'Circuits, courses and marked-out zones') },
+  { n: '02', icon: DoorOpen, title: t('Entrées & allées', 'Entrances & walkways'), desc: t("Créer des couloirs d'honneur visuels", 'Create striking guard-of-honour aisles') },
+  { n: '03', icon: LayoutPanelTop, title: t('Salons & expo', 'Trade shows & expos'), desc: t('Signalétique de stand, délimitation', 'Booth signage and space delineation') },
+  { n: '04', icon: PartyPopper, title: t('Soirées & événements', 'Parties & events'), desc: t('Décoration lumineuse, ambiance unique', 'Illuminated décor and a one-of-a-kind atmosphere') },
 ];
 
 /* ░░ Compact spec-card grid — icône + label, valeur réelle en évidence ░░ */
 function SpecCardGrid() {
+  const t = useT();
+  const SPECS = makeSpecs(t);
   return (
     <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-3.5">
       {SPECS.map((row) => {
@@ -60,6 +63,8 @@ function SpecCardGrid() {
 }
 
 export default function ColonnesGonflables() {
+  const t = useT();
+  const USAGES = makeUsages(t);
   return (
     <div className="overflow-x-clip bg-paper">
       <main>
@@ -67,14 +72,14 @@ export default function ColonnesGonflables() {
         <section className="pt-28 md:pt-32 bg-paper">
           <div className="max-w-content mx-auto px-5 sm:px-8 py-8 md:py-12">
             <Reveal>
-              <div className="kicker mb-4">Configurez votre produit</div>
+              <div className="kicker mb-4">{t('Configurez votre produit', 'Configure your product')}</div>
               <h1 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2.1rem,4.6vw,3.4rem)', lineHeight: 1.0 }}>
-                Colonnes Gonflables
+                {t('Colonnes Gonflables', 'Inflatable Columns')}
               </h1>
-              <p className="lead mt-4">Balisage élégant pour vos événements</p>
+              <p className="lead mt-4">{t('Balisage élégant pour vos événements', 'Elegant marking for your events')}</p>
               <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--line)] bg-white">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
-                <span className="text-[13px] font-semibold text-ink">Impression totale comprise</span>
+                <span className="text-[13px] font-semibold text-ink">{t('Impression totale comprise', 'Full-surface printing included')}</span>
               </div>
             </Reveal>
           </div>
@@ -92,16 +97,16 @@ export default function ColonnesGonflables() {
               <div className="max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                   <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                  <span className="kicker">Fiche technique</span>
+                  <span className="kicker">{t('Fiche technique', 'Technical specifications')}</span>
                 </Reveal>
                 <h2 className="font-display font-bold text-ink leading-[1.02] tracking-tightest text-[clamp(1.9rem,4.4vw,3.4rem)]">
-                  <MaskHeading text="Caractéristiques" />
+                  <MaskHeading text={t('Caractéristiques', 'Technical')} />
                   <br />
-                  <span className="serif-accent text-[var(--blue)]"><MaskHeading text="techniques" delay={0.12} /></span>
+                  <span className="serif-accent text-[var(--blue)]"><MaskHeading text={t('techniques', 'specifications')} delay={0.12} /></span>
                 </h2>
               </div>
               <Rise as="p" y={26} delay={0.1} className="lead max-w-sm md:text-right md:pb-2">
-                Une structure pensée dans le moindre détail, conçue pour durer et briller.
+                {t('Une structure pensée dans le moindre détail, conçue pour durer et briller.', 'A structure engineered down to the finest detail, built to last and to shine.')}
               </Rise>
             </div>
 
@@ -117,12 +122,12 @@ export default function ColonnesGonflables() {
               <div className="max-w-2xl">
                 <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                   <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                  <span className="kicker">Cas d'usage</span>
+                  <span className="kicker">{t("Cas d'usage", 'Use cases')}</span>
                 </Reveal>
                 <h2 className="font-display font-bold text-ink leading-[1.02] tracking-tightest text-[clamp(1.9rem,4.4vw,3.4rem)]">
-                  <MaskHeading text="Parfaites pour" />
+                  <MaskHeading text={t('Parfaites pour', 'Perfect for')} />
                   <br />
-                  <MaskHeading text="vos événements" delay={0.12} />
+                  <MaskHeading text={t('vos événements', 'your events')} delay={0.12} />
                 </h2>
               </div>
               <Reveal as="div" delay={0.1} className="md:pb-2">
@@ -132,7 +137,7 @@ export default function ColonnesGonflables() {
                     data-cursor
                     className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-[var(--blue)]/25 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors"
                   >
-                    Demander un devis <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    {t('Demander un devis', 'Request a quote')} <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </Link>
                 </Magnetic>
               </Reveal>
@@ -172,16 +177,16 @@ export default function ColonnesGonflables() {
                 <div className="pointer-events-none absolute -top-16 right-[10%] w-80 h-80 rounded-full" style={{ background: 'radial-gradient(circle, rgba(70,150,255,0.32), transparent 70%)', filter: 'blur(44px)' }} />
                 <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-8">
                   <div>
-                    <span className="kicker" style={{ color: '#7db4f0' }}>Votre projet</span>
+                    <span className="kicker" style={{ color: '#7db4f0' }}>{t('Votre projet', 'Your project')}</span>
                     <h3 className="mt-4 font-display font-bold tracking-tightest text-white leading-[1.05] text-[clamp(1.7rem,3.4vw,2.7rem)]">
-                      <MaskHeading text="Balisez vos événements avec style" />
+                      <MaskHeading text={t('Balisez vos événements avec style', 'Mark out your events in style')} />
                     </h3>
-                    <Rise as="p" y={22} delay={0.1} className="mt-4 text-white/70 max-w-md">Impression totale comprise. Conception Suisse, livraison rapide.</Rise>
+                    <Rise as="p" y={22} delay={0.1} className="mt-4 text-white/70 max-w-md">{t('Impression totale comprise. Conception Suisse, livraison rapide.', 'Full-surface printing included. Swiss design, fast delivery.')}</Rise>
                   </div>
                   <Reveal as="div" delay={0.15} className="flex-shrink-0">
                     <Magnetic>
                       <Link to="/Contact" data-cursor className="inline-flex items-center gap-2 bg-white text-[var(--blue)] font-semibold rounded-full px-7 py-3.5 text-[15px] hover:bg-white/90 transition-colors">
-                        Demander un devis gratuit <ArrowRight className="w-4 h-4" />
+                        {t('Demander un devis gratuit', 'Request a free quote')} <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Magnetic>
                   </Reveal>

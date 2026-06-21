@@ -3,8 +3,27 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronRight, Globe } from 'lucide-react';
 import { LOGO, CONTACT, FOOTER_NAV, FOOTER_PRODUCTS } from '../data/site.js';
+import { useT } from '../lib/i18n.jsx';
+
+// EN dictionary for the footer link labels that come from ../data/site.js.
+const FOOTER_EN = {
+  // Section titles
+  'Produits': 'Products',
+  'Navigation': 'Navigation',
+  'Contact': 'Contact',
+  // Navigation links
+  'Accueil': 'Home',
+  'À propos': 'About',
+  // Product links
+  'Tente Spider': 'Spider Tent',
+  'Arches Gonflables': 'Inflatable Arches',
+  'Colonnes Gonflables': 'Inflatable Columns',
+  'Mobilier Gonflable': 'Inflatable Furniture',
+  'Sur Mesure': 'Custom-made',
+};
 
 export default function Footer() {
+  const t = useT();
   const [open, setOpen] = useState('Produits');
 
   // Accordion sections wired to the real footer data. Each item carries its
@@ -24,7 +43,7 @@ export default function Footer() {
       items: [
         { kind: 'mailto', href: `mailto:${CONTACT.email}`, label: CONTACT.email },
         { kind: 'external', href: CONTACT.whatsapp, label: 'WhatsApp' },
-        { kind: 'text', label: 'Suisse 🇨🇭' },
+        { kind: 'text', label: t('Suisse 🇨🇭', 'Switzerland 🇨🇭') },
       ],
     },
   ];
@@ -53,7 +72,10 @@ export default function Footer() {
           <span className="font-display text-[1.1rem] font-bold">Sport Air Event</span>
         </div>
         <p className="mt-3 max-w-[340px] text-[0.84rem] leading-relaxed text-white/65">
-          Structures gonflables événementielles premium. Conception Suisse 🇨🇭
+          {t(
+            'Structures gonflables événementielles premium. Conception Suisse 🇨🇭',
+            'Premium inflatable event structures. Swiss-designed 🇨🇭',
+          )}
         </p>
 
         {/* Accordions */}
@@ -67,7 +89,7 @@ export default function Footer() {
                   onClick={() => setOpen(on ? null : s.title)}
                   className="flex w-full cursor-pointer items-center justify-between py-3 text-left"
                 >
-                  <span className="font-display text-[0.95rem] font-semibold">{s.title}</span>
+                  <span className="font-display text-[0.95rem] font-semibold">{t(s.title, FOOTER_EN[s.title] || s.title)}</span>
                   <motion.span animate={{ rotate: on ? 180 : 0 }} transition={{ duration: 0.25 }}>
                     <ChevronDown size={18} className="text-white/60" strokeWidth={2.2} />
                   </motion.span>
@@ -88,7 +110,7 @@ export default function Footer() {
                             {it.kind === 'route' && (
                               <Link to={it.to} className={itemInnerCls}>
                                 {chevron}
-                                <span className="truncate">{it.label}</span>
+                                <span className="truncate">{t(it.label, FOOTER_EN[it.label] || it.label)}</span>
                               </Link>
                             )}
                             {it.kind === 'mailto' && (
@@ -132,12 +154,12 @@ export default function Footer() {
         style={{ background: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)' }}
       >
         <div className="max-w-6xl mx-auto flex w-full flex-col items-center gap-1.5 sm:flex-row sm:justify-between sm:text-left">
-          <p className="text-[0.78rem] text-white/55">© 2026 SPORT AIR EVENT. Tous droits réservés.</p>
+          <p className="text-[0.78rem] text-white/55">{t('© 2026 SPORT AIR EVENT. Tous droits réservés.', '© 2026 SPORT AIR EVENT. All rights reserved.')}</p>
           <Link
             to="/cgv"
             className="text-[0.78rem] text-white/55 transition-colors hover:text-white"
           >
-            Conditions Générales de Vente
+            {t('Conditions Générales de Vente', 'Terms & Conditions')}
           </Link>
           <a
             href="https://switzerweb.ch"
@@ -146,7 +168,7 @@ export default function Footer() {
             className="inline-flex items-center gap-1.5 text-[0.78rem] text-white/55 transition-colors hover:text-white"
           >
             <Globe size={13} strokeWidth={2.2} style={{ color: 'var(--blue-bright)' }} />
-            Site créé par{' '}
+            {t('Site créé par', 'Website by')}{' '}
             <span className="font-semibold" style={{ color: 'var(--blue-bright)' }}>
               SwitzerWeb
             </span>

@@ -3,77 +3,81 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Check } from 'lucide-react';
 import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
+import { useT, useLang } from '../lib/i18n.jsx';
 
-const products = [
+const makeProducts = (t) => [
   {
     n: '01',
-    badge: 'Bestseller',
-    label: 'Visibilité maximale à 360°',
-    title: 'Dôme Premium',
+    badge: t('Bestseller', 'Bestseller'),
+    label: t('Visibilité maximale à 360°', 'Maximum 360° visibility'),
+    title: t('Dôme Premium', 'Premium Dome'),
     specs: [
-      { k: 'Matériau', v: 'PVC 650g/m²' },
-      { k: 'Montage', v: '< 15 min' },
-      { k: 'Personnes', v: '1 seule' },
+      { k: t('Matériau', 'Material'), v: 'PVC 650g/m²' },
+      { k: t('Montage', 'Setup'), v: '< 15 min' },
+      { k: t('Personnes', 'Operators'), v: t('1 seule', 'Just 1') },
     ],
     features: [
-      'Visibilité totale 360°',
-      'Installation express 10min',
-      'Diamètres 4m à 15m',
-      'Résistance vent 70km/h',
-      'Personnalisation complète',
-      'Garantie 2 ans',
+      t('Visibilité totale 360°', 'Full 360° visibility'),
+      t('Installation express 10min', '10-minute express setup'),
+      t('Diamètres 4m à 15m', 'Diameters from 4m to 15m'),
+      t('Résistance vent 70km/h', 'Wind-resistant up to 70 km/h'),
+      t('Personnalisation complète', 'Fully customisable'),
+      t('Garantie 2 ans', '2-year warranty'),
     ],
-    price: "À partir de CHF 3'500",
+    price: t("À partir de CHF 3'500", "From CHF 3'500"),
     href: '/Contact?product=D%C3%B4me%20Premium',
     reverse: false,
   },
   {
     n: '02',
-    badge: 'Innovation',
-    label: 'Architecture unique et moderne',
-    title: 'Tente Spider',
+    badge: t('Innovation', 'Innovation'),
+    label: t('Architecture unique et moderne', 'A unique, modern architecture'),
+    title: t('Tente Spider', 'Spider Tent'),
     specs: [
-      { k: 'Stabilité', v: 'Pieds courbes' },
-      { k: 'Surface', v: "Jusqu'à 60m²" },
-      { k: 'Usage', v: 'Tout terrain' },
+      { k: t('Stabilité', 'Stability'), v: t('Pieds courbes', 'Curved legs') },
+      { k: t('Surface', 'Surface'), v: t("Jusqu'à 60m²", 'Up to 60m²') },
+      { k: t('Usage', 'Use'), v: t('Tout terrain', 'All terrains') },
     ],
     features: [
-      'Design architectural unique',
-      'Pieds courbes stabilisateurs',
-      'Branding sur toutes faces',
-      'Usage indoor & outdoor',
-      'Montage ultra-rapide',
-      'Garantie structure 2 ans',
+      t('Design architectural unique', 'Distinctive architectural design'),
+      t('Pieds courbes stabilisateurs', 'Curved stabilising legs'),
+      t('Branding sur toutes faces', 'Branding on every face'),
+      t('Usage indoor & outdoor', 'Indoor & outdoor use'),
+      t('Montage ultra-rapide', 'Ultra-fast assembly'),
+      t('Garantie structure 2 ans', '2-year structural warranty'),
     ],
-    price: "À partir de CHF 4'500",
+    price: t("À partir de CHF 4'500", "From CHF 4'500"),
     href: '/Contact?product=Tente%20Spider',
     reverse: true,
   },
   {
     n: '03',
-    badge: 'Exclusif',
-    label: 'Votre vision unique réalisée',
-    title: 'Sur Mesure',
+    badge: t('Exclusif', 'Exclusive'),
+    label: t('Votre vision unique réalisée', 'Your unique vision brought to life'),
+    title: t('Sur Mesure', 'Custom-made'),
     specs: [
-      { k: 'Design', v: '100% unique' },
-      { k: 'Dimensions', v: 'Illimitées' },
-      { k: 'Délai', v: '4-6 semaines' },
+      { k: t('Design', 'Design'), v: t('100% unique', '100% unique') },
+      { k: t('Dimensions', 'Dimensions'), v: t('Illimitées', 'Unlimited') },
+      { k: t('Délai', 'Lead time'), v: t('4-6 semaines', '4-6 weeks') },
     ],
     features: [
-      'Design 100% personnalisé',
-      'Formes et tailles illimitées',
-      'Maquette 3D photoréaliste',
-      'Dimensions sur demande',
-      'Conception suisse exclusive',
-      'Support projet dédié',
+      t('Design 100% personnalisé', '100% bespoke design'),
+      t('Formes et tailles illimitées', 'Unlimited shapes and sizes'),
+      t('Maquette 3D photoréaliste', 'Photorealistic 3D mock-up'),
+      t('Dimensions sur demande', 'Dimensions on request'),
+      t('Conception suisse exclusive', 'Exclusive Swiss design'),
+      t('Support projet dédié', 'Dedicated project support'),
     ],
-    price: 'Sur devis personnalisé',
+    price: t('Sur devis personnalisé', 'Custom quote'),
     href: '/Contact?product=Sur%20Mesure',
     reverse: false,
   },
 ];
 
 export default function ModernProducts() {
+  const t = useT();
+  const { lang } = useLang();
+  const products = makeProducts(t);
   return (
     <div className="overflow-x-clip bg-paper">
       {/* ░░ HERO ░░ */}
@@ -81,16 +85,16 @@ export default function ModernProducts() {
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
             <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
-            <span className="kicker">Catalogue · Fabrication Suisse</span>
+            <span className="kicker">{t('Catalogue · Fabrication Suisse', 'Catalogue · Swiss-made')}</span>
           </Reveal>
 
           <h1 className="font-display text-ink font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,7vw,5.8rem)', lineHeight: 0.96, maxWidth: '15ch' }}>
-            Nos produits{' '}
-            <span className="serif-accent text-ink/45" style={{ fontWeight: 500 }}>gonflables professionnels</span>
+            {t('Nos produits', 'Our')}{' '}
+            <span className="serif-accent text-ink/45" style={{ fontWeight: 500 }}>{t('gonflables professionnels', 'professional inflatables')}</span>
           </h1>
 
           <Reveal as="p" delay={0.12} y={18} className="lead mt-7 max-w-xl">
-            Solutions gonflables professionnelles • Fabrication Suisse
+            {t('Solutions gonflables professionnelles • Fabrication Suisse', 'Professional inflatable solutions • Swiss-made')}
           </Reveal>
 
           <Reveal as="div" delay={0.2} className="mt-12 md:mt-16 flex flex-wrap items-stretch gap-6 sm:gap-10">
@@ -111,10 +115,10 @@ export default function ModernProducts() {
       <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-9 md:mb-12">
-            <SectionHeader kicker="Nos solutions" index="01" title={<>Trois structures.<br />Une exigence commune.</>} />
+            <SectionHeader kicker={t('Nos solutions', 'Our solutions')} index="01" title={lang === 'en' ? <>Three structures.<br />One shared standard.</> : <>Trois structures.<br />Une exigence commune.</>} />
             <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
-              Chaque produit en version <span className="text-ink font-medium">100% personnalisable</span>
+              {t('Chaque produit en version', 'Every product available in a')} <span className="text-ink font-medium">{t('100% personnalisable', '100% customisable')}</span> {t('version', 'version')}
             </Reveal>
           </div>
 
@@ -173,7 +177,7 @@ export default function ModernProducts() {
                         to={product.href}
                         className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-ink/15 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors"
                       >
-                        Demander un devis
+                        {t('Demander un devis', 'Request a quote')}
                         <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                       </Link>
                     </Magnetic>
@@ -192,15 +196,17 @@ export default function ModernProducts() {
             <div className="lg:col-span-8">
               <SectionHeader
                 light
-                kicker="Un conseil sur mesure"
+                kicker={t('Un conseil sur mesure', 'Tailored advice')}
                 index="—"
-                title={<>Besoin d&apos;aide<br /><span className="serif-accent text-white/55">pour choisir ?</span></>}
+                title={lang === 'en'
+                  ? <>Need help<br /><span className="serif-accent text-white/55">choosing?</span></>
+                  : <>Besoin d&apos;aide<br /><span className="serif-accent text-white/55">pour choisir ?</span></>}
               />
             </div>
             <Reveal as="div" delay={0.12} className="lg:col-span-4 flex lg:justify-end">
               <Magnetic>
                 <Link to="/Contact" className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
-                  Parler à un expert <ArrowRight className="w-4 h-4" />
+                  {t('Parler à un expert', 'Talk to an expert')} <ArrowRight className="w-4 h-4" />
                 </Link>
               </Magnetic>
             </Reveal>

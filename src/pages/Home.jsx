@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Clock
 import { Reveal, RevealStagger, WordsReveal, Magnetic, staggerChild, ClipReveal, Rise, MaskHeading } from '../lib/motion.jsx';
 import { Counter, MouseGlow } from '../lib/interactions.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
+import { useT } from '../lib/i18n.jsx';
 
 const logos = [
   { src: 'images/05_8424c8189_689347.jpg', alt: 'Adidas' },
@@ -18,50 +19,50 @@ const logos = [
   { src: 'images/13_on-running-logo-vector.png', alt: 'On Running' },
 ];
 
-const features = [
-  { icon: Clock, title: 'Installation 2 min', desc: 'Montage ultra-rapide par une seule personne' },
-  { icon: Shield, title: 'Garantie 5 ans', desc: 'Structure + impression garanties 5 ans' },
-  { icon: Sparkles, title: '100% Personnalisable', desc: 'Impression HD, couleurs et formes sur mesure' },
-  { icon: Truck, title: 'Livraison Europe', desc: "Livraison rapide en France et toute l'Europe" },
+const makeFeatures = (t) => [
+  { icon: Clock, title: t('Installation 2 min', 'Set-up in 2 minutes'), desc: t('Montage ultra-rapide par une seule personne', 'Lightning-fast set-up by a single person') },
+  { icon: Shield, title: t('Garantie 5 ans', '5-year warranty'), desc: t('Structure + impression garanties 5 ans', 'Structure and print covered for 5 years') },
+  { icon: Sparkles, title: t('100% Personnalisable', '100% customisable'), desc: t('Impression HD, couleurs et formes sur mesure', 'HD printing, custom colours and shapes') },
+  { icon: Truck, title: t('Livraison Europe', 'Europe-wide delivery'), desc: t("Livraison rapide en France et toute l'Europe", 'Fast delivery across France and all of Europe') },
 ];
 
-const products = [
+const makeProducts = (t) => [
   {
-    n: '01', to: '/ArchesGonflables', img: 'images/02_e1e114d2c_ChatGPTImage16janv202615_18_26.png', alt: 'Arches Gonflables',
-    kicker: 'Impact visuel immédiat', title: 'Arches Gonflables',
-    desc: 'De 5m à 10m de large, impression totale incluse. Idéales pour départs de course et événements sportifs.',
-    specs: ['5m à 10m de large', 'Impression totale', 'Installation 15 min'], price: 'Dès 1 490€',
+    n: '01', to: '/ArchesGonflables', img: 'images/02_e1e114d2c_ChatGPTImage16janv202615_18_26.png', alt: t('Arches Gonflables', 'Inflatable Arches'),
+    kicker: t('Impact visuel immédiat', 'Instant visual impact'), title: t('Arches Gonflables', 'Inflatable Arches'),
+    desc: t('De 5m à 10m de large, impression totale incluse. Idéales pour départs de course et événements sportifs.', 'From 5 m to 10 m wide, full-surface printing included. Ideal for race start lines and sporting events.'),
+    specs: [t('5m à 10m de large', '5 m to 10 m wide'), t('Impression totale', 'Full-surface print'), t('Installation 15 min', 'Set up in 15 min')], price: 'Dès 1 490€',
   },
   {
-    n: '02', to: '/Tente', img: 'images/03_330206aa0_ChatGPTImage17janv202613_32_29.png', alt: 'Tente Spider',
-    kicker: 'Notre produit phare', title: 'Tente Spider',
-    desc: 'Architecture moderne avec pieds courbes. De 3×3m à 5×5m, montage en 2 minutes. Design 100% personnalisable.',
-    specs: ['3×3m à 5×5m', 'Montage 2 min', 'Usage indoor/outdoor'], price: 'Dès 1 180€',
+    n: '02', to: '/Tente', img: 'images/03_330206aa0_ChatGPTImage17janv202613_32_29.png', alt: t('Tente Spider', 'Spider Tent'),
+    kicker: t('Notre produit phare', 'Our flagship product'), title: t('Tente Spider', 'Spider Tent'),
+    desc: t('Architecture moderne avec pieds courbes. De 3×3m à 5×5m, montage en 2 minutes. Design 100% personnalisable.', 'Modern architecture with curved legs. From 3×3 m to 5×5 m, set up in two minutes. Fully customisable design.'),
+    specs: [t('3×3m à 5×5m', '3×3 m to 5×5 m'), t('Montage 2 min', 'Set up in 2 min'), t('Usage indoor/outdoor', 'Indoor / outdoor use')], price: 'Dès 1 180€',
   },
   {
-    n: '03', to: '/ColonnesGonflables', img: 'images/04_c91d5f27b_ChatGPTImage17janv202613_28_14.png', alt: 'Colonnes Gonflables',
-    kicker: 'Balisage élégant', title: 'Colonnes Gonflables',
-    desc: 'De 2.5m à 4m de hauteur. Option éclairage LED RGB intégré. Personnalisation 360° de votre marque.',
-    specs: ['2.5m à 4m', 'LED RGB optionnel', 'Installation simple'], price: 'Dès 590€',
+    n: '03', to: '/ColonnesGonflables', img: 'images/04_c91d5f27b_ChatGPTImage17janv202613_28_14.png', alt: t('Colonnes Gonflables', 'Inflatable Columns'),
+    kicker: t('Balisage élégant', 'Elegant course marking'), title: t('Colonnes Gonflables', 'Inflatable Columns'),
+    desc: t('De 2.5m à 4m de hauteur. Option éclairage LED RGB intégré. Personnalisation 360° de votre marque.', 'From 2.5 m to 4 m tall. Optional built-in RGB LED lighting. Full 360° branding of your identity.'),
+    specs: [t('2.5m à 4m', '2.5 m to 4 m'), t('LED RGB optionnel', 'Optional RGB LED'), t('Installation simple', 'Easy set-up')], price: 'Dès 590€',
   },
 ];
 
-const reviews = [
-  { ini: 'CM', grad: 'linear-gradient(135deg,#0066cc,#3b82f6)', name: 'Camille Mercier', role: 'Trail Évasion Annecy', date: '12 mai 2026',
-    text: 'Structures gonflables de qualité exceptionnelle. Installation en 2 minutes chrono, rendu visuel impressionnant et service client très réactif. Parfait pour nos événements professionnels.' },
-  { ini: 'YB', grad: 'linear-gradient(135deg,#0891b2,#06b6d4)', name: 'Yanis B.', role: 'Agence Lumen — Lyon', date: '3 juillet 2025',
-    text: 'Tente Spider impeccable pour notre salon. Design moderne, montage ultra-rapide et personnalisation parfaite. Conception suisse, qualité au rendez-vous. Je recommande vivement.' },
-  { ini: 'FN', grad: 'linear-gradient(135deg,#2563eb,#60a5fa)', name: 'Farida Nasri', role: 'Comité Marathon du Léman', date: '21 décembre 2024',
-    text: 'Quatrième commande et toujours aussi satisfait. Produits haut de gamme, délais respectés, équipe professionnelle. Les structures résistent parfaitement aux conditions extérieures.' },
+const makeReviews = (t) => [
+  { ini: 'CM', grad: 'linear-gradient(135deg,#0066cc,#3b82f6)', name: 'Camille Mercier', role: t('Trail Évasion Annecy', 'Trail Évasion Annecy'), date: t('12 mai 2026', '12 May 2026'),
+    text: t('Structures gonflables de qualité exceptionnelle. Installation en 2 minutes chrono, rendu visuel impressionnant et service client très réactif. Parfait pour nos événements professionnels.', 'Outstanding-quality inflatable structures. Set up in two minutes flat, stunning visual finish and a highly responsive customer service. Perfect for our professional events.') },
+  { ini: 'YB', grad: 'linear-gradient(135deg,#0891b2,#06b6d4)', name: 'Yanis B.', role: t('Agence Lumen — Lyon', 'Lumen Agency — Lyon'), date: t('3 juillet 2025', '3 July 2025'),
+    text: t('Tente Spider impeccable pour notre salon. Design moderne, montage ultra-rapide et personnalisation parfaite. Conception suisse, qualité au rendez-vous. Je recommande vivement.', 'Flawless Spider Tent for our trade show. Modern design, ultra-fast set-up and perfect customisation. Swiss-engineered, with the quality to match. Highly recommended.') },
+  { ini: 'FN', grad: 'linear-gradient(135deg,#2563eb,#60a5fa)', name: 'Farida Nasri', role: t('Comité Marathon du Léman', 'Léman Marathon Committee'), date: t('21 décembre 2024', '21 December 2024'),
+    text: t('Quatrième commande et toujours aussi satisfait. Produits haut de gamme, délais respectés, équipe professionnelle. Les structures résistent parfaitement aux conditions extérieures.', 'Fourth order and still just as satisfied. Premium products, deadlines met, a professional team. The structures hold up perfectly in outdoor conditions.') },
 ];
 
-const faqs = [
-  { q: 'Quel est le délai de livraison ?', a: '2 à 3 semaines pour tous nos produits avec livraison suivie.' },
-  { q: 'Livrez-vous en dehors de la France ?', a: "Oui, nous livrons dans toute l'Europe avec des partenaires logistiques de confiance." },
-  { q: 'Proposez-vous la location de structures ?', a: 'Non, nous nous concentrons sur la vente de structures gonflables de haute qualité pour garantir une expérience client optimale et une personnalisation complète de chaque produit.' },
-  { q: 'Quelle est la garantie sur vos produits ?', a: '5 ans de garantie sur toutes nos structures gonflables.' },
-  { q: "Comment se déroule l'installation ?", a: 'Installation ultra-rapide en 2 minutes seulement ! Notre système de gonflage intuitif permet une mise en place simple et efficace, réalisable par une seule personne.' },
-  { q: 'Peut-on personnaliser entièrement la structure ?', a: 'Absolument ! Nous offrons une personnalisation complète 360° avec impression HD de votre logo, couleurs corporate et design sur mesure.' },
+const makeFaqs = (t) => [
+  { q: t('Quel est le délai de livraison ?', 'What is the delivery time?'), a: t('2 à 3 semaines pour tous nos produits avec livraison suivie.', '2 to 3 weeks for all our products, with tracked delivery.') },
+  { q: t('Livrez-vous en dehors de la France ?', 'Do you deliver outside France?'), a: t("Oui, nous livrons dans toute l'Europe avec des partenaires logistiques de confiance.", 'Yes, we deliver throughout Europe with trusted logistics partners.') },
+  { q: t('Proposez-vous la location de structures ?', 'Do you offer structure rentals?'), a: t('Non, nous nous concentrons sur la vente de structures gonflables de haute qualité pour garantir une expérience client optimale et une personnalisation complète de chaque produit.', 'No. We focus on selling high-quality inflatable structures to ensure an outstanding customer experience and full customisation of every product.') },
+  { q: t('Quelle est la garantie sur vos produits ?', 'What warranty do your products come with?'), a: t('5 ans de garantie sur toutes nos structures gonflables.', 'A 5-year warranty on all our inflatable structures.') },
+  { q: t("Comment se déroule l'installation ?", 'How does the set-up work?'), a: t('Installation ultra-rapide en 2 minutes seulement ! Notre système de gonflage intuitif permet une mise en place simple et efficace, réalisable par une seule personne.', 'Ultra-fast set-up in just two minutes! Our intuitive inflation system makes installation simple and efficient — one person is all it takes.') },
+  { q: t('Peut-on personnaliser entièrement la structure ?', 'Can the structure be fully customised?'), a: t('Absolument ! Nous offrons une personnalisation complète 360° avec impression HD de votre logo, couleurs corporate et design sur mesure.', 'Absolutely! We offer complete 360° customisation with HD printing of your logo, corporate colours and bespoke design.') },
 ];
 
 const Stars = ({ size }) => (
@@ -69,10 +70,10 @@ const Stars = ({ size }) => (
 );
 
 /* ── Stats (animated counters · design #50) ───────────────────────────── */
-const STATS = [
-  { value: 20, suffix: ' ans', label: "D'expérience" },
-  { value: 2, suffix: ' min', label: 'Installation' },
-  { value: 100, suffix: '%', label: 'Conception Suisse' },
+const makeStats = (t) => [
+  { value: 20, suffix: t(' ans', ' yrs'), label: t("D'expérience", 'Of experience') },
+  { value: 2, suffix: t(' min', ' min'), label: t('Installation', 'Set-up time') },
+  { value: 100, suffix: '%', label: t('Conception Suisse', 'Swiss-engineered') },
 ];
 const STAT_ICONS = [Award, Timer, Flag];
 
@@ -141,6 +142,8 @@ function StatRing({ stat, Icon, active, onSelect, duration }) {
 
 /* Stats section (animated progress-ring counters · design #50). */
 function StatsRings() {
+  const t = useT();
+  const STATS = makeStats(t);
   const [active, setActive] = useState(1);
   const durations = [1500, 1100, 1800];
   return (
@@ -148,8 +151,8 @@ function StatsRings() {
       <div className="max-w-content mx-auto px-5 sm:px-8">
         <div className="flex items-center justify-between mb-7">
           <div>
-            <div className="kicker" style={{ color: 'var(--blue)' }}>Performance</div>
-            <h3 className="font-display font-bold text-ink tracking-tight" style={{ fontSize: 'clamp(1.4rem,2.4vw,1.9rem)', lineHeight: 1.05, marginTop: 6 }}>Nos repères</h3>
+            <div className="kicker" style={{ color: 'var(--blue)' }}>{t('Performance', 'Performance')}</div>
+            <h3 className="font-display font-bold text-ink tracking-tight" style={{ fontSize: 'clamp(1.4rem,2.4vw,1.9rem)', lineHeight: 1.05, marginTop: 6 }}>{t('Nos repères', 'Our benchmarks')}</h3>
           </div>
           <span className="inline-flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--blue-soft)', color: 'var(--blue)' }}>
             <Gauge size={20} strokeWidth={2.2} />
@@ -164,7 +167,7 @@ function StatsRings() {
         </RevealStagger>
         <Reveal as="div" delay={0.1} className="flex items-center gap-2 mt-4" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--blue-mist)', padding: '10px 14px', fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink-2)' }}>
           <Wind size={16} strokeWidth={2.2} style={{ color: 'var(--blue)', flexShrink: 0 }} />
-          <span>{STATS[active].label} — sélectionné</span>
+          <span>{STATS[active].label} — {t('sélectionné', 'selected')}</span>
         </Reveal>
       </div>
     </section>
@@ -182,6 +185,8 @@ const logoMask = {
 /* Reviews carousel (design #53) — one deep-blue framed slide at a time,
    animated directional transitions, prev/next buttons + clickable dots. */
 function ReviewsCarousel() {
+  const t = useT();
+  const reviews = makeReviews(t);
   const [[idx, dir], setState] = useState([0, 0]);
   const go = (d) => setState(([i]) => [(i + d + reviews.length) % reviews.length, d]);
   const jump = (i) => setState(([cur]) => [i, i > cur ? 1 : -1]);
@@ -196,7 +201,7 @@ function ReviewsCarousel() {
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
           </svg>
-          <span className="text-sm font-bold text-ink"><Counter to={4.9} decimals={1} /> / <Counter to={127} /> avis</span>
+          <span className="text-sm font-bold text-ink"><Counter to={4.9} decimals={1} /> / <Counter to={127} /> {t('avis', 'reviews')}</span>
         </div>
         <div className="flex items-center gap-1"><Stars size="w-4 h-4" /></div>
       </div>
@@ -215,7 +220,7 @@ function ReviewsCarousel() {
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
-                Publié sur Google
+                {t('Publié sur Google', 'Posted on Google')}
               </span>
             </div>
             <p style={{ fontSize: '1rem', lineHeight: 1.55, margin: '0 0 20px', color: '#eaf2ff' }}>{r.text}</p>
@@ -238,7 +243,7 @@ function ReviewsCarousel() {
         <div className="flex items-center gap-2">
           {[-1, 1].map((d) => (
             <motion.button key={d} type="button" onClick={() => go(d)} whileTap={{ scale: 0.9 }} data-cursor
-              aria-label={d < 0 ? 'Précédent' : 'Suivant'} className="cursor-pointer inline-flex items-center justify-center"
+              aria-label={d < 0 ? t('Précédent', 'Previous') : t('Suivant', 'Next')} className="cursor-pointer inline-flex items-center justify-center"
               style={{ width: 40, height: 40, borderRadius: 9999, border: '1px solid var(--line)', background: '#ffffff', color: 'var(--blue)' }}>
               {d < 0 ? <ChevronLeft size={18} strokeWidth={2.4} /> : <ChevronRight size={18} strokeWidth={2.4} />}
             </motion.button>
@@ -246,7 +251,7 @@ function ReviewsCarousel() {
         </div>
         <div className="flex items-center gap-2">
           {reviews.map((_, i) => (
-            <button key={i} type="button" onClick={() => jump(i)} aria-label={`Avis ${i + 1}`} data-cursor className="cursor-pointer"
+            <button key={i} type="button" onClick={() => jump(i)} aria-label={t(`Avis ${i + 1}`, `Review ${i + 1}`)} data-cursor className="cursor-pointer"
               style={{ width: i === idx ? 22 : 8, height: 8, borderRadius: 9999, background: i === idx ? 'var(--blue)' : 'var(--line)', border: 'none', transition: 'width .25s, background .25s', padding: 0 }} />
           ))}
         </div>
@@ -257,13 +262,15 @@ function ReviewsCarousel() {
 
 /* Sticky scrollytelling product showcase (desktop) + stacked (mobile) */
 function ProductShowcase() {
+  const t = useT();
+  const products = makeProducts(t);
   return (
     <section id="structures" className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-9 md:mb-12">
-        <SectionHeader kicker="Nos solutions" index="01" title={<>Des structures pensées<br />pour tous vos événements</>} />
+        <SectionHeader kicker={t('Nos solutions', 'Our solutions')} index="01" title={<>{t('Des structures pensées', 'Structures designed')}<br />{t('pour tous vos événements', 'for every one of your events')}</>} />
         <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
           <Sparkles className="w-4 h-4 text-[var(--blue)]" />
-          Chaque produit disponible en version <span className="text-ink font-medium">Sur Mesure</span>
+          {t('Chaque produit disponible en version', 'Every product available in a')} <span className="text-ink font-medium">{t('Sur Mesure', 'Custom-made')}</span> {t('version', 'version')}
         </Reveal>
       </div>
 
@@ -292,7 +299,7 @@ function ProductShowcase() {
                 <span className="font-display text-2xl font-bold text-ink">{p.price}</span>
                 <Magnetic>
                   <Link to={p.to} data-cursor className="group inline-flex items-center gap-2 text-sm font-semibold text-ink border-b-2 border-[var(--blue)]/25 hover:border-[var(--blue)] hover:text-[var(--blue)] pb-1 transition-colors">
-                    Découvrir <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    {t('Découvrir', 'Discover')} <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </Link>
                 </Magnetic>
               </Reveal>
@@ -302,10 +309,10 @@ function ProductShowcase() {
       </div>
 
       <Reveal className="mt-20 pt-12 border-t border-[var(--line)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-        <p className="font-display text-xl md:text-2xl font-semibold text-ink max-w-md tracking-tight">Un projet sur mesure ? Parlons-en.</p>
+        <p className="font-display text-xl md:text-2xl font-semibold text-ink max-w-md tracking-tight">{t('Un projet sur mesure ? Parlons-en.', 'A custom project in mind? Let’s talk.')}</p>
         <Magnetic>
           <Link to="/Contact" data-cursor className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
-            Demander un devis <ArrowRight className="w-4 h-4" />
+            {t('Demander un devis', 'Request a quote')} <ArrowRight className="w-4 h-4" />
           </Link>
         </Magnetic>
       </Reveal>
@@ -314,6 +321,9 @@ function ProductShowcase() {
 }
 
 export default function Home() {
+  const t = useT();
+  const features = makeFeatures(t);
+  const faqs = makeFaqs(t);
   const [openFaq, setOpenFaq] = useState(null);
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -327,7 +337,7 @@ export default function Home() {
       {/* ░░ HERO ░░ */}
       <section ref={heroRef} className="relative flex flex-col justify-end overflow-hidden" style={{ minHeight: '100svh' }}>
         <motion.div className="absolute inset-0" style={{ y: imgY }}>
-          <motion.img src="images/01_352cf8bae_WhatsAppImage2026-01-17at132722.jpg" alt="Sport Air Event – Structures gonflables événementielles"
+          <motion.img src="images/01_352cf8bae_WhatsAppImage2026-01-17at132722.jpg" alt={t('Sport Air Event – Structures gonflables événementielles', 'Sport Air Event – Inflatable event structures')}
             className="w-full h-[124%] object-cover object-center" fetchpriority="high"
             initial={{ scale: 1.16 }} animate={{ scale: 1 }} transition={{ duration: 1.9, ease: [0.16, 1, 0.3, 1] }} />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(175deg, rgba(6,36,95,0.30) 0%, rgba(0,102,204,0.20) 36%, rgba(4,23,63,0.90) 100%)' }} />
@@ -337,31 +347,31 @@ export default function Home() {
         <motion.div style={{ y: orb2Y, background: 'radial-gradient(circle, rgba(31,122,224,0.5), transparent 70%)', filter: 'blur(40px)' }} className="absolute top-1/4 left-[8%] w-80 h-80 rounded-full pointer-events-none" />
 
         <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden lg:block z-10">
-          <div className="text-white/40 text-[11px] font-semibold tracking-[0.34em] uppercase" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>Structures gonflables · Suisse</div>
+          <div className="text-white/40 text-[11px] font-semibold tracking-[0.34em] uppercase" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>{t('Structures gonflables · Suisse', 'Inflatable structures · Switzerland')}</div>
         </div>
 
         <motion.div style={{ opacity: heroFade }} className="relative z-10 w-full max-w-content mx-auto px-5 sm:px-8 lg:px-16 pb-14 md:pb-20" >
           <div style={{ paddingTop: 'clamp(120px,18vw,180px)' }}>
             <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
               <span className="h-px w-10 bg-white/50" />
-              <span className="kicker" style={{ color: 'rgba(255,255,255,0.92)' }}>🇨🇭 Conception Suisse · Swiss Quality</span>
+              <span className="kicker" style={{ color: 'rgba(255,255,255,0.92)' }}>{t('🇨🇭 Conception Suisse · Swiss Quality', '🇨🇭 Swiss Design · Swiss Quality')}</span>
             </Reveal>
             <h1 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,7.5vw,6.4rem)', lineHeight: 0.95, maxWidth: '16ch' }}>
-              <WordsReveal text="Structures gonflables" />{' '}
-              <WordsReveal text="événementielles" delay={0.16} />{' '}
-              <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}><WordsReveal text="pour professionnels" delay={0.4} /></span>
+              <WordsReveal text={t('Structures gonflables', 'Inflatable event')} />{' '}
+              <WordsReveal text={t('événementielles', 'structures')} delay={0.16} />{' '}
+              <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}><WordsReveal text={t('pour professionnels', 'for professionals')} delay={0.4} /></span>
             </h1>
             <Reveal as="p" delay={0.55} y={18} className="lead mt-7 max-w-xl" style={{ color: 'rgba(255,255,255,0.78)' }}>
-              Tentes gonflables, arches publicitaires, dômes événementiels et mobilier gonflable personnalisé. Conception Suisse, installation rapide 2 minutes.
+              {t('Tentes gonflables, arches publicitaires, dômes événementiels et mobilier gonflable personnalisé. Conception Suisse, installation rapide 2 minutes.', 'Inflatable tents, branded arches, event domes and custom inflatable furniture. Swiss-engineered, with fast 2-minute set-up.')}
             </Reveal>
             <Reveal as="div" delay={0.66} className="mt-9 flex flex-col sm:flex-row gap-3">
               <Magnetic>
-                <Link to="/Contact" data-cursor className="cta-iridescent inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px]">Obtenir un devis <ArrowRight className="w-4 h-4" /></Link>
+                <Link to="/Contact" data-cursor className="cta-iridescent inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px]">{t('Obtenir un devis', 'Get a quote')} <ArrowRight className="w-4 h-4" /></Link>
               </Magnetic>
-              <Link to="/Tente" data-cursor className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-white border border-white/30 hover:bg-white/10 transition-colors backdrop-blur-sm">Découvrir nos solutions</Link>
+              <Link to="/Tente" data-cursor className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-white border border-white/30 hover:bg-white/10 transition-colors backdrop-blur-sm">{t('Découvrir nos solutions', 'Explore our solutions')}</Link>
             </Reveal>
             <Reveal as="div" delay={0.8} className="mt-12 md:mt-16 flex items-stretch gap-6 sm:gap-10">
-              {[[20, '', 'ans', "D'expérience", 0], [2, '', 'min', 'Installation', 0], [100, '%', '', 'Conception Suisse', 0]].map(([num, suf, unit, label], i) => (
+              {[[20, '', t('ans', 'yrs'), t("D'expérience", 'Of experience'), 0], [2, '', t('min', 'min'), t('Installation', 'Set-up time'), 0], [100, '%', '', t('Conception Suisse', 'Swiss-engineered'), 0]].map(([num, suf, unit, label], i) => (
                 <div key={i} className="flex items-stretch gap-6 sm:gap-10">
                   {i > 0 && <span className="w-px self-stretch bg-white/20" />}
                   <div>
@@ -376,7 +386,7 @@ export default function Home() {
           </div>
         </motion.div>
         <div className="absolute bottom-6 right-6 hidden sm:flex items-center gap-2 text-white/45 text-xs z-10">
-          <span className="uppercase tracking-[0.2em]">Scroll</span>
+          <span className="uppercase tracking-[0.2em]">{t('Scroll', 'Scroll')}</span>
           <motion.span animate={{ y: [0, 5, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}><ChevronDown className="w-4 h-4" /></motion.span>
         </div>
       </section>
@@ -388,7 +398,7 @@ export default function Home() {
       <section className="bg-white border-b border-[var(--line)] py-10">
         <div className="flex items-center justify-center gap-2 mb-7">
           <ShieldCheck size={18} className="text-[var(--blue)]" strokeWidth={2.4} />
-          <p className="kicker" style={{ color: 'var(--blue)' }}>Ils nous font confiance</p>
+          <p className="kicker" style={{ color: 'var(--blue)' }}>{t('Ils nous font confiance', 'They trust us')}</p>
         </div>
         <div className="relative">
           {/* Fade edges so logos slide in/out softly (white → transparent) */}
@@ -431,7 +441,7 @@ export default function Home() {
       <section className="bg-[var(--blue-mist)] border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
-            <SectionHeader kicker="Témoignages" index="02" title={<>Ils nous font<br />confiance</>} />
+            <SectionHeader kicker={t('Témoignages', 'Testimonials')} index="02" title={<>{t('Ils nous font', 'They put their')}<br />{t('confiance', 'trust in us')}</>} />
             <Reveal as="div" delay={0.1} className="flex items-center gap-4 md:pb-2">
               <div className="flex items-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -443,7 +453,7 @@ export default function Home() {
                 <div className="flex items-center gap-1"><Stars size="w-4 h-4" /></div>
                 <span className="font-display text-xl font-bold text-ink ml-1"><Counter to={4.9} decimals={1} /></span>
               </div>
-              <span className="text-sm text-[var(--muted)]">Basé sur <strong className="text-ink/70"><Counter to={127} /></strong> avis</span>
+              <span className="text-sm text-[var(--muted)]">{t('Basé sur', 'Based on')} <strong className="text-ink/70"><Counter to={127} /></strong> {t('avis', 'reviews')}</span>
             </Reveal>
           </div>
           {/* Carousel (prev / next + dots · design #53) */}
@@ -459,10 +469,10 @@ export default function Home() {
         <div className="relative max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-9 md:mb-12">
             <div className="lg:col-span-7">
-              <SectionHeader light kicker="Pourquoi Sport Air Event" index="—" title={<>Conçues en Suisse.<br />Montées en deux minutes.<br /><span className="serif-accent text-white/55">Pensées pour votre marque.</span></>} />
+              <SectionHeader light kicker={t('Pourquoi Sport Air Event', 'Why Sport Air Event')} index="—" title={<>{t('Conçues en Suisse.', 'Engineered in Switzerland.')}<br />{t('Montées en deux minutes.', 'Set up in two minutes.')}<br /><span className="serif-accent text-white/55">{t('Pensées pour votre marque.', 'Built for your brand.')}</span></>} />
             </div>
             <Reveal as="p" delay={0.1} className="lg:col-span-5 text-white/65 leading-relaxed">
-              Depuis 20 ans, nous fabriquons des structures gonflables événementielles haut de gamme : impact visuel maximal, durabilité et personnalisation complète, pour les marques et les événements les plus exigeants.
+              {t('Depuis 20 ans, nous fabriquons des structures gonflables événementielles haut de gamme : impact visuel maximal, durabilité et personnalisation complète, pour les marques et les événements les plus exigeants.', 'For 20 years, we have been crafting premium inflatable event structures: maximum visual impact, lasting durability and full customisation — for the most demanding brands and events.')}
             </Reveal>
           </div>
           {/* Hairline divided rows w/ index (design #42) — display only, no quantity controls */}
@@ -494,7 +504,7 @@ export default function Home() {
       {/* ░░ FAQ ░░ */}
       <section className="py-12 md:py-16">
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
-          <SectionHeader align="center" kicker="Questions fréquentes" className="mb-12" title="Tout ce que vous devez savoir" lead="Des réponses claires à vos questions" />
+          <SectionHeader align="center" kicker={t('Questions fréquentes', 'Frequently asked questions')} className="mb-12" title={t('Tout ce que vous devez savoir', 'Everything you need to know')} lead={t('Des réponses claires à vos questions', 'Clear answers to your questions')} />
           {/* Accordéon hairline (design #57) — ultra-sober, single-open */}
           <RevealStagger style={{ borderTop: '1px solid var(--line)' }}>
             {faqs.map(({ q, a }, i) => {
@@ -542,19 +552,19 @@ export default function Home() {
             <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.12]">
               <Sparkles className="h-5 w-5" />
             </div>
-            <Reveal as="h2" delay={0.05} className="font-display font-bold tracking-tightest mt-5" style={{ fontSize: 'clamp(2.1rem,5vw,4rem)', lineHeight: 1.05, maxWidth: '16ch' }}>Prêt à marquer les esprits ?</Reveal>
-            <Reveal as="p" delay={0.12} className="mt-3 text-white/75 text-lg max-w-md">Conception Suisse. Livraison France et Europe.</Reveal>
+            <Reveal as="h2" delay={0.05} className="font-display font-bold tracking-tightest mt-5" style={{ fontSize: 'clamp(2.1rem,5vw,4rem)', lineHeight: 1.05, maxWidth: '16ch' }}>{t('Prêt à marquer les esprits ?', 'Ready to make a lasting impression?')}</Reveal>
+            <Reveal as="p" delay={0.12} className="mt-3 text-white/75 text-lg max-w-md">{t('Conception Suisse. Livraison France et Europe.', 'Swiss-engineered. Delivery across France and Europe.')}</Reveal>
             {/* Single prominent action, centered at the bottom — no call/message split */}
             <Reveal delay={0.2} className="mt-9 w-full flex justify-center">
               <Magnetic>
                 <Link to="/Contact" data-cursor className="inline-flex w-full max-w-[320px] items-center justify-center gap-2 rounded-full bg-white text-[var(--blue)] font-semibold px-8 py-4 text-[15px] hover:bg-white/90 transition-colors">
-                  Demander un devis <ArrowRight className="w-4 h-4" />
+                  {t('Demander un devis', 'Request a quote')} <ArrowRight className="w-4 h-4" />
                 </Link>
               </Magnetic>
             </Reveal>
             <div className="mt-4 inline-flex items-center gap-1.5 text-[0.78rem] text-white/55">
               <ShieldCheck className="h-3.5 w-3.5" />
-              Réponse sous 24 h — devis sans engagement
+              {t('Réponse sous 24 h — devis sans engagement', 'Reply within 24 h — no-obligation quote')}
             </div>
           </div>
         </motion.div>

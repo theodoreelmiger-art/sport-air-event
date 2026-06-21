@@ -26,44 +26,45 @@ import {
   staggerChild,
 } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
+import { useT } from '../lib/i18n.jsx';
 
-const features = [
+const makeFeatures = (t) => [
   {
     Icon: Zap,
-    title: 'Montage ultra-rapide',
-    desc: 'Installation en 10 minutes par 1 personne',
+    title: t('Montage ultra-rapide', 'Ultra-fast setup'),
+    desc: t('Installation en 10 minutes par 1 personne', 'Up and running in 10 minutes by a single person'),
   },
   {
     Icon: Wind,
-    title: 'Résistance au vent',
-    desc: "Jusqu'à 70 km/h",
+    title: t('Résistance au vent', 'Wind resistance'),
+    desc: t("Jusqu'à 70 km/h", 'Up to 70 km/h'),
   },
   {
     Icon: Droplet,
-    title: 'Étanche',
-    desc: '100% imperméable, PVC 650g/m²',
+    title: t('Étanche', 'Waterproof'),
+    desc: t('100% imperméable, PVC 650g/m²', '100% waterproof, 650g/m² PVC'),
   },
   {
     Icon: Sun,
-    title: 'Anti-UV',
-    desc: 'Protection UV50+',
+    title: t('Anti-UV', 'UV protection'),
+    desc: t('Protection UV50+', 'UV50+ protection'),
   },
   {
     Icon: Shield,
-    title: 'Garantie 2 ans',
-    desc: 'Sur structure et impression',
+    title: t('Garantie 2 ans', '2-year warranty'),
+    desc: t('Sur structure et impression', 'On structure and printing'),
   },
   {
     Icon: Clock,
-    title: 'Livraison rapide',
-    desc: '4-6 semaines',
+    title: t('Livraison rapide', 'Fast delivery'),
+    desc: t('4-6 semaines', '4-6 weeks'),
   },
 ];
 
-const sizes = [
+const makeSizes = (t) => [
   {
     title: '3x3m',
-    people: '8-10 personnes',
+    people: t('8-10 personnes', '8-10 people'),
     dimensions: '3m x 3m',
     hauteur: '2.8m',
     poids: '45kg',
@@ -72,7 +73,7 @@ const sizes = [
   },
   {
     title: '4x4m',
-    people: '12-15 personnes',
+    people: t('12-15 personnes', '12-15 people'),
     dimensions: '4m x 4m',
     hauteur: '3.2m',
     poids: '60kg',
@@ -81,7 +82,7 @@ const sizes = [
   },
   {
     title: '5x5m',
-    people: '20-25 personnes',
+    people: t('20-25 personnes', '20-25 people'),
     dimensions: '5m x 5m',
     hauteur: '3.5m',
     poids: '75kg',
@@ -91,24 +92,26 @@ const sizes = [
 ];
 
 // Spec data — icon + label + prominent value. `feature` marks the deep-blue hero spec.
-const specs = [
+const makeSpecs = (t) => [
   {
     icon: Layers,
-    label: 'Structure',
-    value: '4 pieds gonflables courbes',
-    note: 'Architecture autoportante, sans armature rigide',
+    label: t('Structure', 'Structure'),
+    value: t('4 pieds gonflables courbes', '4 curved inflatable legs'),
+    note: t('Architecture autoportante, sans armature rigide', 'Self-supporting architecture, no rigid frame'),
     feature: true,
   },
-  { icon: Shield, label: 'Matériau', value: 'PVC 650g/m² anti-UV' },
-  { icon: Gauge, label: 'Pression', value: '0.3 bar' },
-  { icon: Sparkles, label: 'Personnalisation', value: 'Impression haute définition' },
-  { icon: Wrench, label: 'Accessoires', value: 'Pompe électrique incluse' },
-  { icon: Maximize, label: 'Usage', value: 'Intérieur et extérieur' },
+  { icon: Shield, label: t('Matériau', 'Material'), value: t('PVC 650g/m² anti-UV', '650g/m² UV-resistant PVC') },
+  { icon: Gauge, label: t('Pression', 'Pressure'), value: '0.3 bar' },
+  { icon: Sparkles, label: t('Personnalisation', 'Customisation'), value: t('Impression haute définition', 'High-definition printing') },
+  { icon: Wrench, label: t('Accessoires', 'Accessories'), value: t('Pompe électrique incluse', 'Electric pump included') },
+  { icon: Maximize, label: t('Usage', 'Use'), value: t('Intérieur et extérieur', 'Indoor and outdoor') },
 ];
 
 // Compact spec-card grid — icône + label, valeur réelle en évidence, petit
 // sous-titre. La spec signature (feature) garde un léger liseré bleu.
 function SpecCardGrid() {
+  const t = useT();
+  const specs = makeSpecs(t);
   return (
     <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-3.5">
       {specs.map((s) => {
@@ -126,7 +129,7 @@ function SpecCardGrid() {
                 <Icon className="w-4 h-4" strokeWidth={2.4} />
               </span>
               {s.feature && (
-                <span className="kicker text-[0.62rem]" style={{ color: 'var(--blue)' }}>Signature</span>
+                <span className="kicker text-[0.62rem]" style={{ color: 'var(--blue)' }}>{t('Signature', 'Signature')}</span>
               )}
             </div>
             <div className="text-[0.7rem] font-bold uppercase tracking-[0.1em] leading-tight text-[var(--blue-deep)]">
@@ -149,6 +152,9 @@ function SpecCardGrid() {
 }
 
 export default function SpiderTent() {
+  const t = useT();
+  const features = makeFeatures(t);
+  const sizes = makeSizes(t);
   const [selectedSize, setSelectedSize] = useState(
     sizes.find((s) => s.popular)?.title ?? sizes[0].title
   );
@@ -161,22 +167,22 @@ export default function SpiderTent() {
             <div>
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
                 <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Tente professionnelle</span>
+                <span className="kicker">{t('Tente professionnelle', 'Professional tent')}</span>
               </Reveal>
 
               <Reveal as="h1" y={26} delay={0.05}
                 className="font-display font-bold text-ink tracking-tightest"
                 style={{ fontSize: 'clamp(2.6rem,6vw,5rem)', lineHeight: 0.96 }}>
-                Tente Spider<br />
+                {t('Tente Spider', 'Spider Tent')}<br />
                 <span className="serif-accent text-ink/55" style={{ fontWeight: 500 }}>X-Gloo Style</span>
               </Reveal>
 
               <Reveal as="p" delay={0.12} y={20} className="lead mt-7 max-w-lg">
-                Design architectural unique avec 4 pieds courbes gonflables. Parfaite pour salons, événements sportifs et stands promotionnels.
+                {t('Design architectural unique avec 4 pieds courbes gonflables. Parfaite pour salons, événements sportifs et stands promotionnels.', 'A striking architectural design with 4 curved inflatable legs. Perfect for trade shows, sporting events and promotional stands.')}
               </Reveal>
 
               <Reveal as="div" delay={0.18} className="mt-8 flex flex-wrap gap-x-7 gap-y-3">
-                {['Montage 10 minutes', 'Design moderne', 'Branding 360°'].map((item) => (
+                {[t('Montage 10 minutes', '10-minute setup'), t('Design moderne', 'Modern design'), t('Branding 360°', '360° branding')].map((item) => (
                   <div key={item} className="flex items-center gap-2 text-sm text-ink/75">
                     <Check className="w-4 h-4 text-[var(--blue)]" />
                     <span>{item}</span>
@@ -187,11 +193,11 @@ export default function SpiderTent() {
               <Reveal as="div" delay={0.24} className="mt-9 flex flex-col sm:flex-row gap-3">
                 <Magnetic>
                   <Link to="/Calculator" className="cta-iridescent inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
-                    Calculer mon prix <ArrowRight className="w-4 h-4" />
+                    {t('Calculer mon prix', 'Calculate my price')} <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Magnetic>
                 <Link to="/Contact?product=Tente%20Spider" className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-ink border border-[var(--line)] hover:border-ink/30 transition-colors">
-                  Demander un devis
+                  {t('Demander un devis', 'Request a quote')}
                 </Link>
               </Reveal>
             </div>
@@ -200,12 +206,12 @@ export default function SpiderTent() {
               <div className="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--paper-2)] border border-[var(--line)]">
                 <img
                   src="images/16_be94e4481_Capturedecran2026-01-02a170703.png"
-                  alt="Tente Spider X-Gloo"
+                  alt={t('Tente Spider X-Gloo', 'Spider Tent X-Gloo')}
                   className="w-full object-cover"
                 />
               </div>
               <div className="absolute -bottom-6 -right-4 sm:-right-6 rounded-[var(--radius-lg)] bg-white border border-[var(--line)] p-6">
-                <div className="text-xs text-[var(--muted)] uppercase tracking-[0.16em] font-semibold mb-1.5">À partir de</div>
+                <div className="text-xs text-[var(--muted)] uppercase tracking-[0.16em] font-semibold mb-1.5">{t('À partir de', 'From')}</div>
                 <div className="font-display text-3xl font-bold text-ink">CHF 4,500</div>
               </div>
             </Reveal>
@@ -220,16 +226,15 @@ export default function SpiderTent() {
             <div className="flex flex-col items-start max-w-2xl">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                 <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Parfaite pour</span>
+                <span className="kicker">{t('Parfaite pour', 'Perfect for')}</span>
               </Reveal>
               <h2 className="font-display font-bold text-ink leading-[1.0] tracking-tightest text-[clamp(1.9rem,4.6vw,3.4rem)]">
-                <MaskHeading text="Conçue pour l'efficacité" />{' '}
-                <span className="serif-accent text-[var(--blue)]"><MaskHeading text="et l'impact visuel." delay={0.2} /></span>
+                <MaskHeading text={t("Conçue pour l'efficacité", 'Built for efficiency')} />{' '}
+                <span className="serif-accent text-[var(--blue)]"><MaskHeading text={t("et l'impact visuel.", 'and visual impact.')} delay={0.2} /></span>
               </h2>
             </div>
             <Rise as="p" y={28} delay={0.1} className="lead md:max-w-sm md:pb-2">
-              Six atouts qui font de la Tente Spider la structure idéale pour vos salons,
-              événements sportifs et stands promotionnels.
+              {t('Six atouts qui font de la Tente Spider la structure idéale pour vos salons, événements sportifs et stands promotionnels.', 'Six strengths that make the Spider Tent the ideal structure for your trade shows, sporting events and promotional stands.')}
             </Rise>
           </div>
 
@@ -264,11 +269,11 @@ export default function SpiderTent() {
       {/* ░░ SIZES ░░ */}
       <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 md:mb-20">
-          <SectionHeader kicker="Tailles disponibles" index="02"
-            title={<>Choisissez la dimension<br />adaptée à votre événement</>} />
+          <SectionHeader kicker={t('Tailles disponibles', 'Available sizes')} index="02"
+            title={<>{t('Choisissez la dimension', 'Choose the size')}<br />{t('adaptée à votre événement', 'that fits your event')}</>} />
           <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
-            Sélectionnez votre format
+            {t('Sélectionnez votre format', 'Select your format')}
           </Reveal>
         </div>
 
@@ -290,7 +295,7 @@ export default function SpiderTent() {
               >
                 {size.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-white text-xs font-semibold" style={{ background: 'var(--blue)' }}>
-                    Plus populaire
+                    {t('Plus populaire', 'Most popular')}
                   </div>
                 )}
                 <div className="flex flex-col flex-1 p-8">
@@ -300,15 +305,15 @@ export default function SpiderTent() {
                   </div>
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between text-sm">
-                      <span className="text-[var(--muted)]">Dimensions</span>
+                      <span className="text-[var(--muted)]">{t('Dimensions', 'Dimensions')}</span>
                       <span className="font-semibold text-ink">{size.dimensions}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-[var(--muted)]">Hauteur</span>
+                      <span className="text-[var(--muted)]">{t('Hauteur', 'Height')}</span>
                       <span className="font-semibold text-ink">{size.hauteur}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-[var(--muted)]">Poids</span>
+                      <span className="text-[var(--muted)]">{t('Poids', 'Weight')}</span>
                       <span className="font-semibold text-ink">{size.poids}</span>
                     </div>
                   </div>
@@ -323,7 +328,7 @@ export default function SpiderTent() {
                         }`}
                         tabIndex={0}
                       >
-                        Configurer
+                        {t('Configurer', 'Configure')}
                       </button>
                     </Link>
                   </div>
@@ -341,16 +346,15 @@ export default function SpiderTent() {
             <div className="lg:col-span-7 flex flex-col items-start max-w-2xl">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                 <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Fiche technique</span>
+                <span className="kicker">{t('Fiche technique', 'Spec sheet')}</span>
               </Reveal>
               <h2 className="font-display font-bold text-ink leading-[1.02] tracking-tightest text-[clamp(1.9rem,4.4vw,3.4rem)]">
-                <MaskHeading text="Caractéristiques" />{' '}
-                <span className="serif-accent text-[var(--blue)]"><MaskHeading text="techniques" delay={0.18} /></span>
+                <MaskHeading text={t('Caractéristiques', 'Technical')} />{' '}
+                <span className="serif-accent text-[var(--blue)]"><MaskHeading text={t('techniques', 'specifications')} delay={0.18} /></span>
               </h2>
             </div>
             <Rise as="p" y={28} delay={0.1} className="lg:col-span-5 lead">
-              Une structure pensée pour durer : matériaux anti-UV, gonflage haute pression et
-              personnalisation haute définition, prête pour l'intérieur comme l'extérieur.
+              {t("Une structure pensée pour durer : matériaux anti-UV, gonflage haute pression et personnalisation haute définition, prête pour l'intérieur comme l'extérieur.", 'A structure built to last: UV-resistant materials, high-pressure inflation and high-definition customisation, ready for indoor and outdoor use alike.')}
             </Rise>
           </div>
 
@@ -362,21 +366,21 @@ export default function SpiderTent() {
       {/* ░░ CTA ░░ */}
       <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
         <Reveal className="rounded-[var(--radius-lg)] bg-deep text-white px-6 sm:px-12 py-16 md:py-20 text-center">
-          <span className="kicker" style={{ color: '#7db4f0' }}>Prêt à démarrer</span>
+          <span className="kicker" style={{ color: '#7db4f0' }}>{t('Prêt à démarrer', 'Ready to start')}</span>
           <h2 className="font-display font-bold tracking-tightest mt-5" style={{ fontSize: 'clamp(2rem,4.6vw,3.4rem)', lineHeight: 1.02 }}>
-            Prêt à commander votre Tente Spider ?
+            {t('Prêt à commander votre Tente Spider ?', 'Ready to order your Spider Tent?')}
           </h2>
           <p className="lead mt-5 mx-auto max-w-xl" style={{ color: 'rgba(255,255,255,0.72)' }}>
-            Obtenez un devis personnalisé en quelques clics
+            {t('Obtenez un devis personnalisé en quelques clics', 'Get a tailored quote in just a few clicks')}
           </p>
           <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
             <Magnetic>
               <Link to="/Calculator" className="inline-flex items-center justify-center gap-2 bg-white text-ink font-semibold rounded-full px-7 py-3.5 text-[15px] hover:bg-white/90 transition-colors">
-                Calculer mon prix <ArrowRight className="w-4 h-4" />
+                {t('Calculer mon prix', 'Calculate my price')} <ArrowRight className="w-4 h-4" />
               </Link>
             </Magnetic>
             <Link to="/Contact?product=Tente%20Spider" className="group inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-white border border-white/30 hover:bg-white/10 transition-colors">
-              Contacter un expert <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              {t('Contacter un expert', 'Talk to an expert')} <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
           </div>
         </Reveal>

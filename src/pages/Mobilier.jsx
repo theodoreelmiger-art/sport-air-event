@@ -10,9 +10,32 @@ import { AnimatePresence } from 'framer-motion';
 import SectionHeader from '../components/SectionHeader.jsx';
 import DevisModal from '../components/DevisModal.jsx';
 import { CONFIGURATORS } from '../data/configurators.js';
+import { useT } from '../lib/i18n.jsx';
 
 const EASE = [0.16, 1, 0.3, 1];
 const fmt = (n) => '€ ' + n.toLocaleString('fr-FR');
+
+/* EN dictionary for the French labels coming from ../data/configurators.js */
+const EN = {
+  'Mobilier Gonflable': 'Inflatable Furniture',
+  'Assises': 'Seating',
+  'Tables': 'Tables',
+  'Bars': 'Bars',
+  'Accessoires': 'Accessories',
+  'Pouf gonflable imprimé': 'Printed inflatable pouf',
+  'Chaise basse': 'Low chair',
+  'Sofa 1 place': 'One-seater sofa',
+  'Sofa 2 places': 'Two-seater sofa',
+  'Table basse': 'Coffee table',
+  'Table haute': 'High table',
+  'Bar gonflable droit': 'Straight inflatable bar',
+  'Pompe 220 volts': '220-volt pump',
+  'Impression HD': 'HD printing',
+  'Matériaux premium': 'Premium materials',
+  'Montage rapide': 'Quick setup',
+  'Design 3D gratuit': 'Free 3D design',
+};
+const tr = (t, name) => t(name, EN[name] || name);
 
 const DATA = CONFIGURATORS.mobilier;
 const CAT_ICON = { Assises: Armchair, Tables: Table2, Bars: Wine };
@@ -84,17 +107,18 @@ function FurnitureArt({ kind }) {
 
 /* ── Quantity stepper — shown only on a selected row ── */
 function Stepper({ qty, onInc, onDec }) {
+  const t = useT();
   const base = 'w-8 h-8 grid place-items-center rounded-full cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed';
   const style = { border: '1px solid var(--line)', color: 'var(--blue)', background: 'var(--blue-mist)' };
   const stop = (e) => e.stopPropagation();
   return (
     <div className="flex items-center gap-2" onClick={stop} onKeyDown={stop}>
-      <motion.button type="button" aria-label="Diminuer la quantité" whileTap={{ scale: 0.85 }}
+      <motion.button type="button" aria-label={t('Diminuer la quantité', 'Decrease quantity')} whileTap={{ scale: 0.85 }}
         onClick={onDec} disabled={qty <= 1} className={base} style={style}>
         <Minus className="w-3.5 h-3.5" strokeWidth={2.5} />
       </motion.button>
       <div className="w-7 text-center font-display tabular-nums select-none" style={{ color: 'var(--blue-deep)', fontSize: '0.95rem' }} aria-live="polite">{qty}</div>
-      <motion.button type="button" aria-label="Augmenter la quantité" whileTap={{ scale: 0.85 }}
+      <motion.button type="button" aria-label={t('Augmenter la quantité', 'Increase quantity')} whileTap={{ scale: 0.85 }}
         onClick={onInc} className={base} style={style}>
         <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
       </motion.button>
@@ -104,6 +128,7 @@ function Stepper({ qty, onInc, onDec }) {
 
 /* ── One selectable furniture row: whole row toggles, checkbox + qty stepper ── */
 function ItemRow({ it, on, active, qty, first, onToggle, onFocusRow, onInc, onDec }) {
+  const t = useT();
   const onKey = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } };
   return (
     <div
@@ -139,8 +164,8 @@ function ItemRow({ it, on, active, qty, first, onToggle, onFocusRow, onInc, onDe
       </span>
 
       <div className="flex-1 min-w-0">
-        <div className="leading-snug" style={{ fontSize: '0.92rem', fontWeight: on ? 600 : 500, color: on ? 'var(--ink)' : 'var(--ink-2)' }}>{it.name}</div>
-        {it.sub && <div style={{ fontSize: '0.74rem', color: 'var(--muted)', marginTop: 2 }}>{it.sub}</div>}
+        <div className="leading-snug" style={{ fontSize: '0.92rem', fontWeight: on ? 600 : 500, color: on ? 'var(--ink)' : 'var(--ink-2)' }}>{tr(t, it.name)}</div>
+        {it.sub && <div style={{ fontSize: '0.74rem', color: 'var(--muted)', marginTop: 2 }}>{tr(t, it.sub)}</div>}
       </div>
 
       <AnimatePresence mode="wait" initial={false}>
@@ -160,6 +185,7 @@ function ItemRow({ it, on, active, qty, first, onToggle, onFocusRow, onInc, onDe
 }
 
 export default function Mobilier() {
+  const t = useT();
   const { productName, image, groups, accessories, custom } = DATA;
   const categories = groups.map((g) => g.category);
 
@@ -210,18 +236,18 @@ export default function Mobilier() {
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
             <span className="h-px w-8" style={{ background: 'rgba(255,255,255,0.3)' }} />
-            <span className="kicker" style={{ color: '#7db4f0' }}>Mobilier événementiel</span>
+            <span className="kicker" style={{ color: '#7db4f0' }}>{t('Mobilier événementiel', 'Event furniture')}</span>
           </Reveal>
           <Reveal as="h1" className="font-display text-white font-bold tracking-tightest max-w-3xl" style={{ fontSize: 'clamp(2.4rem,6vw,4.6rem)', lineHeight: 0.98 }}>
-            Mobilier Gonflable{' '}
-            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>sur mesure</span>
+            {t('Mobilier Gonflable', 'Inflatable Furniture')}{' '}
+            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>{t('sur mesure', 'custom-made')}</span>
           </Reveal>
           <Reveal as="p" delay={0.1} className="lead mt-5 max-w-lg" style={{ color: 'rgba(255,255,255,0.72)' }}>
-            Complétez vos structures avec notre mobilier personnalisé.
+            {t('Complétez vos structures avec notre mobilier personnalisé.', 'Complete your structures with our custom-made furniture.')}
           </Reveal>
           <Reveal as="div" delay={0.16} className="mt-6 inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/15">
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#7db4f0' }} />
-            <span className="text-[13px] font-medium text-white/85">Impression totale comprise</span>
+            <span className="text-[13px] font-medium text-white/85">{t('Impression totale comprise', 'Full printing included')}</span>
           </Reveal>
         </div>
       </section>
@@ -260,7 +286,7 @@ export default function Mobilier() {
                 {/* caption — updates to the currently selected/active item */}
                 <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 rounded-2xl bg-white/92 backdrop-blur-md border border-white/60 shadow-lg px-5 py-3.5">
                   <div className="min-w-0">
-                    <div className="text-[10px] uppercase tracking-widest text-[var(--muted)]">{activeItem?.group}</div>
+                    <div className="text-[10px] uppercase tracking-widest text-[var(--muted)]">{activeItem?.group ? tr(t, activeItem.group) : ''}</div>
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div
                         key={activeItem?.name}
@@ -268,12 +294,12 @@ export default function Mobilier() {
                         transition={{ duration: 0.25, ease: EASE }}
                         className="font-display text-lg md:text-xl font-bold text-ink leading-tight truncate"
                       >
-                        {activeItem?.name}
+                        {activeItem?.name ? tr(t, activeItem.name) : ''}
                       </motion.div>
                     </AnimatePresence>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className="text-[10px] uppercase tracking-widest text-[var(--blue)] font-semibold">À partir de</div>
+                    <div className="text-[10px] uppercase tracking-widest text-[var(--blue)] font-semibold">{t('À partir de', 'From')}</div>
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div
                         key={activeItem?.price}
@@ -296,7 +322,7 @@ export default function Mobilier() {
             <Reveal y={28}>
               <div className="mb-3 flex items-center gap-2 text-[var(--blue)]">
                 <Layers size={16} strokeWidth={2.4} />
-                <span className="kicker !text-[0.68rem]">Catégorie</span>
+                <span className="kicker !text-[0.68rem]">{t('Catégorie', 'Category')}</span>
               </div>
               <div className="flex flex-wrap gap-2.5">
                 {groups.map((g) => {
@@ -318,7 +344,7 @@ export default function Mobilier() {
                       }}
                     >
                       <Icon size={15} strokeWidth={2.4} />
-                      {g.category}
+                      {tr(t, g.category)}
                       <span className="tabular-nums" style={{ opacity: on ? 0.8 : 0.5 }}>{g.items.length}</span>
                     </button>
                   );
@@ -329,10 +355,10 @@ export default function Mobilier() {
             {/* Type de mobilier — list for active category */}
             <Reveal y={28} delay={0.05}>
               <div className="flex items-end justify-between mb-1">
-                <h3 className="font-display" style={{ fontSize: '1.15rem', color: 'var(--ink)' }}>Type de mobilier</h3>
-                <span className="tabular-nums" style={{ fontSize: '0.72rem', color: '#8493a8', letterSpacing: '0.04em' }}>PRIX HT / UNITÉ</span>
+                <h3 className="font-display" style={{ fontSize: '1.15rem', color: 'var(--ink)' }}>{t('Type de mobilier', 'Furniture type')}</h3>
+                <span className="tabular-nums" style={{ fontSize: '0.72rem', color: '#8493a8', letterSpacing: '0.04em' }}>{t('PRIX HT / UNITÉ', 'PRICE EXCL. VAT / UNIT')}</span>
               </div>
-              <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 14 }}>Cliquez une ligne pour l’ajouter — l’aperçu se met à jour.</p>
+              <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 14 }}>{t('Cliquez une ligne pour l’ajouter — l’aperçu se met à jour.', 'Click a row to add it — the preview updates instantly.')}</p>
 
               <AnimatePresence mode="wait">
                 <motion.div
@@ -360,7 +386,7 @@ export default function Mobilier() {
 
             {/* Accessoires */}
             <Reveal y={28} delay={0.05}>
-              <h3 className="font-display mb-3" style={{ fontSize: '1.15rem', color: 'var(--ink)' }}>{accessories.label}</h3>
+              <h3 className="font-display mb-3" style={{ fontSize: '1.15rem', color: 'var(--ink)' }}>{tr(t, accessories.label)}</h3>
               <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--line)' }}>
                 {accessories.items.map((it, i) => {
                   const k = `acc-${i}`; const q = qtys[k] || 0; const on = q > 0;
@@ -383,10 +409,10 @@ export default function Mobilier() {
               <div className="rounded-[22px] p-6 md:p-7" style={{ background: 'var(--blue-mist)', border: '1px solid var(--line)' }}>
                 <div className="flex items-center gap-2 mb-1.5">
                   <Sparkles size={18} color="var(--blue)" strokeWidth={2.4} />
-                  <div className="kicker">Personnalisation complète</div>
+                  <div className="kicker">{t('Personnalisation complète', 'Full customization')}</div>
                 </div>
                 <p style={{ fontSize: '0.9rem', color: 'var(--muted)', margin: '0 0 16px', maxWidth: '38ch' }}>
-                  Chaque élément de mobilier peut être entièrement personnalisé avec vos couleurs et votre logo.
+                  {t('Chaque élément de mobilier peut être entièrement personnalisé avec vos couleurs et votre logo.', 'Every piece of furniture can be fully customized with your colors and your logo.')}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {custom.map((label) => (
@@ -395,7 +421,7 @@ export default function Mobilier() {
                       <span className="flex items-center justify-center shrink-0" style={{ width: 22, height: 22, borderRadius: 9999, background: 'var(--blue)', color: '#fff' }}>
                         <Check size={13} strokeWidth={3} />
                       </span>
-                      <span style={{ lineHeight: 1.25 }}>{label}</span>
+                      <span style={{ lineHeight: 1.25 }}>{tr(t, label)}</span>
                     </div>
                   ))}
                 </div>
@@ -409,14 +435,14 @@ export default function Mobilier() {
                   <div style={{ padding: '6px 20px 4px' }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--blue)', padding: '14px 0 4px' }}>
                       <Tag size={13} strokeWidth={2.4} />
-                      Récapitulatif · {selected.length} élément{selected.length > 1 ? 's' : ''}
+                      {t('Récapitulatif', 'Summary')} · {selected.length} {t(`élément${selected.length > 1 ? 's' : ''}`, `item${selected.length > 1 ? 's' : ''}`)}
                     </div>
                     {selected.map((r, i) => (
                       <div key={`${r.label}-${i}`}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '11px 0' }}>
                           <div style={{ minWidth: 0 }}>
-                            <div style={{ fontWeight: 600, color: 'var(--ink)', fontSize: 14.5 }}>{r.label}</div>
-                            <div style={{ fontSize: 12, color: 'var(--ink-2)', opacity: 0.8 }}>{fmt(r.unit)} / unité · ×{r.qty}</div>
+                            <div style={{ fontWeight: 600, color: 'var(--ink)', fontSize: 14.5 }}>{tr(t, r.label)}</div>
+                            <div style={{ fontSize: 12, color: 'var(--ink-2)', opacity: 0.8 }}>{fmt(r.unit)} {t('/ unité', '/ unit')} · ×{r.qty}</div>
                           </div>
                           <RollPrice value={fmt(r.unit * r.qty)} style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink)', fontVariantNumeric: 'tabular-nums', fontFamily: "'Schibsted Grotesk', sans-serif" }} />
                         </div>
@@ -430,7 +456,7 @@ export default function Mobilier() {
                   <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12 }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: 'var(--ink-2)' }}>
                       <Sparkles size={14} strokeWidth={2.2} style={{ color: 'var(--blue)' }} />
-                      Prix HT
+                      {t('Prix HT', 'Price excl. VAT')}
                     </div>
                     <RollPrice value={fmt(total)} style={{ fontSize: 32, fontWeight: 700, color: 'var(--blue-deep)', lineHeight: 1, fontVariantNumeric: 'tabular-nums', fontFamily: "'Schibsted Grotesk', sans-serif" }} />
                   </div>
@@ -450,7 +476,7 @@ export default function Mobilier() {
                       }}
                     >
                       <FileText size={17} strokeWidth={2.2} />
-                      Demander un devis
+                      {t('Demander un devis', 'Request a quote')}
                       <ArrowRight size={17} strokeWidth={2.4} />
                     </motion.button>
                   </Magnetic>
@@ -465,17 +491,17 @@ export default function Mobilier() {
       <section className="bg-paper py-12 md:py-16 border-t border-[var(--line)]">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <SectionHeader
-            kicker="Fiche technique"
-            title="Un mobilier pensé pour l’événementiel"
-            lead="Matériaux premium, impression haute définition et une installation express, partout, en quelques minutes."
+            kicker={t('Fiche technique', 'Technical specifications')}
+            title={t('Un mobilier pensé pour l’événementiel', 'Furniture designed for events')}
+            lead={t('Matériaux premium, impression haute définition et une installation express, partout, en quelques minutes.', 'Premium materials, high-definition printing and express setup, anywhere, in just minutes.')}
             className="mb-9 md:mb-12"
           />
           <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
             {[
-              { label: 'Matériau', value: 'PVC premium', sub: 'Soudé, étanche et résistant' },
-              { label: 'Impression', value: 'HD 360°', sub: 'Sublimation résistante aux UV' },
-              { label: 'Montage', value: '< 2 min', sub: 'Mise en place par une personne' },
-              { label: 'Usage', value: 'Indoor / Outdoor', sub: 'Intérieur comme extérieur' },
+              { label: t('Matériau', 'Material'), value: t('PVC premium', 'Premium PVC'), sub: t('Soudé, étanche et résistant', 'Welded, waterproof and durable') },
+              { label: t('Impression', 'Printing'), value: 'HD 360°', sub: t('Sublimation résistante aux UV', 'UV-resistant sublimation') },
+              { label: t('Montage', 'Setup'), value: t('< 2 min', '< 2 min'), sub: t('Mise en place par une personne', 'Set up by a single person') },
+              { label: t('Usage', 'Use'), value: t('Indoor / Outdoor', 'Indoor / Outdoor'), sub: t('Intérieur comme extérieur', 'Indoors and outdoors alike') },
             ].map((s) => (
               <motion.div
                 key={s.label}
@@ -497,7 +523,7 @@ export default function Mobilier() {
       <DevisModal
         open={open}
         onClose={() => setOpen(false)}
-        productName={productName}
+        productName={tr(t, productName)}
         groupLabel={null}
         lines={[]}
         extras={selected}

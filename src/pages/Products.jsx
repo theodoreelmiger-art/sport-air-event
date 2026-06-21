@@ -13,66 +13,79 @@ import {
 } from 'lucide-react';
 import { motion, Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
+import { useT } from '../lib/i18n.jsx';
 
-const specs = [
-  { icon: Shield, label: 'Matériaux', value: 'PVC 650g/m² anti-UV' },
-  { icon: Clock, label: 'Montage', value: 'Moins de 15 minutes' },
-  { icon: Users, label: 'Installation', value: '1 personne suffit' },
-  { icon: Maximize2, label: 'Tailles', value: 'De 3m à 20m' },
+const makeSpecs = (t) => [
+  { icon: Shield, label: t('Matériaux', 'Materials'), value: t('PVC 650g/m² anti-UV', '650 g/m² anti-UV PVC') },
+  { icon: Clock, label: t('Montage', 'Setup'), value: t('Moins de 15 minutes', 'Under 15 minutes') },
+  { icon: Users, label: t('Installation', 'Installation'), value: t('1 personne suffit', 'One person is enough') },
+  { icon: Maximize2, label: t('Tailles', 'Sizes'), value: t('De 3m à 20m', 'From 3 m to 20 m') },
 ];
 
-const products = [
+const makeProducts = (t) => [
   {
     n: '01',
     img: 'images/19_f5298932f_Capturedecran2026-01-02a170657.png',
-    alt: 'Dôme Premium - Dômes gonflables SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+    alt: t(
+      'Dôme Premium - Dômes gonflables SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+      'Premium Dome - SPORT AIR EVENT inflatable domes - Professional inflatable structures made in Switzerland for events, trade shows and exhibitions'
+    ),
     icon: Wind,
-    category: 'Dômes gonflables',
-    title: 'Dôme Premium',
-    tagline: 'Visibilité 360° garantie',
+    category: t('Dômes gonflables', 'Inflatable domes'),
+    title: t('Dôme Premium', 'Premium Dome'),
+    tagline: t('Visibilité 360° garantie', 'Guaranteed 360° visibility'),
     features: [
-      'Montage 10 minutes',
-      'Surface personnalisable complète',
-      'Résistance vent 70 km/h',
-      'Diamètres 4m à 15m',
+      t('Montage 10 minutes', 'Set up in 10 minutes'),
+      t('Surface personnalisable complète', 'Fully customisable surface'),
+      t('Résistance vent 70 km/h', 'Wind resistance up to 70 km/h'),
+      t('Diamètres 4m à 15m', 'Diameters from 4 m to 15 m'),
     ],
     to: '/Contact?product=D%C3%B4me%20Premium',
   },
   {
     n: '02',
     img: 'images/16_be94e4481_Capturedecran2026-01-02a170703.png',
-    alt: 'Tente Spider - Tentes professionnelles SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+    alt: t(
+      'Tente Spider - Tentes professionnelles SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+      'Spider Tent - SPORT AIR EVENT professional tents - Professional inflatable structures made in Switzerland for events, trade shows and exhibitions'
+    ),
     icon: Zap,
-    category: 'Tentes professionnelles',
-    title: 'Tente Spider',
-    tagline: 'Design architectural unique',
+    category: t('Tentes professionnelles', 'Professional tents'),
+    title: t('Tente Spider', 'Spider Tent'),
+    tagline: t('Design architectural unique', 'A unique architectural design'),
     features: [
-      'Pieds courbes stabilisateurs',
-      'Montage ultra-rapide',
-      'Branding sur arches',
-      'Indoor & Outdoor',
+      t('Pieds courbes stabilisateurs', 'Curved stabilising legs'),
+      t('Montage ultra-rapide', 'Ultra-fast setup'),
+      t('Branding sur arches', 'Branding on the arches'),
+      t('Indoor & Outdoor', 'Indoor & outdoor'),
     ],
     to: '/Contact?product=Tente%20Spider',
   },
   {
     n: '03',
     img: 'images/17_0aa557b4e_Capturedecran2026-01-02a170639.png',
-    alt: 'Structure Sur Mesure - Création exclusive SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+    alt: t(
+      'Structure Sur Mesure - Création exclusive SPORT AIR EVENT - Structures gonflables professionnelles fabriquées en Suisse pour événements, salons et expositions',
+      'Custom-Made Structure - Exclusive SPORT AIR EVENT creation - Professional inflatable structures made in Switzerland for events, trade shows and exhibitions'
+    ),
     icon: Package,
-    category: 'Création exclusive',
-    title: 'Structure Sur Mesure',
-    tagline: 'Votre vision, notre réalité',
+    category: t('Création exclusive', 'Exclusive creation'),
+    title: t('Structure Sur Mesure', 'Custom-Made Structure'),
+    tagline: t('Votre vision, notre réalité', 'Your vision, brought to life'),
     features: [
-      'Design unique',
-      'Dimensions illimitées',
-      'Formes personnalisées',
-      'Maquette 3D incluse',
+      t('Design unique', 'One-of-a-kind design'),
+      t('Dimensions illimitées', 'Unlimited dimensions'),
+      t('Formes personnalisées', 'Custom shapes'),
+      t('Maquette 3D incluse', '3D mock-up included'),
     ],
     to: '/Contact?product=Structure%20Sur%20Mesure',
   },
 ];
 
 export default function Products() {
+  const t = useT();
+  const specs = makeSpecs(t);
+  const products = makeProducts(t);
   return (
     <div className="overflow-x-clip bg-paper pt-20">
       {/* ░░ HERO ░░ */}
@@ -80,19 +93,19 @@ export default function Products() {
         <div className="max-w-content mx-auto px-5 sm:px-8 py-24 md:py-32">
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
             <span className="h-px w-10 bg-white/40" />
-            <span className="kicker" style={{ color: '#7db4f0' }}>Catalogue · Swiss Quality</span>
+            <span className="kicker" style={{ color: '#7db4f0' }}>{t('Catalogue · Swiss Quality', 'Catalogue · Swiss Quality')}</span>
           </Reveal>
           <h1
             className="font-display text-white font-bold tracking-tightest"
             style={{ fontSize: 'clamp(2.4rem,6.5vw,5.4rem)', lineHeight: 0.97, maxWidth: '18ch' }}
           >
-            Structures gonflables événementielles{' '}
+            {t('Structures gonflables événementielles', 'Inflatable event structures')}{' '}
             <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>
-              professionnelles suisses
+              {t('professionnelles suisses', 'professional Swiss-made')}
             </span>
           </h1>
           <Reveal as="p" delay={0.18} y={18} className="lead mt-7 max-w-xl" style={{ color: 'rgba(255,255,255,0.78)' }}>
-            Impact maximum. Installation minimum.
+            {t('Impact maximum. Installation minimum.', 'Maximum impact. Minimal setup.')}
           </Reveal>
         </div>
       </section>
@@ -119,10 +132,10 @@ export default function Products() {
       <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
         <div className="mb-9 md:mb-12">
           <SectionHeader
-            kicker="Notre gamme"
+            kicker={t('Notre gamme', 'Our range')}
             index="01"
-            title={<>Trois structures.<br />Une exigence suisse.</>}
-            lead="Chaque structure est conçue, imprimée et finie sur mesure pour votre marque et vos événements."
+            title={<>{t('Trois structures.', 'Three structures.')}<br />{t('Une exigence suisse.', 'One Swiss standard.')}</>}
+            lead={t('Chaque structure est conçue, imprimée et finie sur mesure pour votre marque et vos événements.', 'Every structure is designed, printed and finished to measure for your brand and your events.')}
           />
         </div>
 
@@ -174,7 +187,7 @@ export default function Products() {
                       to={p.to}
                       className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
                     >
-                      Obtenir un devis <ArrowRight className="w-4 h-4" />
+                      {t('Obtenir un devis', 'Request a quote')} <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Magnetic>
                 </div>
@@ -191,10 +204,10 @@ export default function Products() {
             <div className="lg:col-span-7">
               <SectionHeader
                 light
-                kicker="Prêt à démarrer"
+                kicker={t('Prêt à démarrer', 'Ready to start')}
                 index="02"
-                title={<>Prêt à donner vie<br /><span className="serif-accent text-white/55">à votre projet ?</span></>}
-                lead="Obtenez un devis personnalisé en quelques clics"
+                title={<>{t('Prêt à donner vie', 'Ready to bring')}<br /><span className="serif-accent text-white/55">{t('à votre projet ?', 'your project to life?')}</span></>}
+                lead={t('Obtenez un devis personnalisé en quelques clics', 'Get a tailored quote in just a few clicks')}
               />
             </div>
             <Reveal as="div" delay={0.15} className="lg:col-span-5 flex flex-col sm:flex-row lg:justify-end gap-3 lg:pb-2">
@@ -203,14 +216,14 @@ export default function Products() {
                   to="/Calculator"
                   className="inline-flex items-center justify-center gap-2 bg-white text-ink font-semibold rounded-full px-7 py-3.5 text-[15px] hover:bg-white/90 transition-colors"
                 >
-                  Calculer mon devis <ArrowRight className="w-4 h-4" />
+                  {t('Calculer mon devis', 'Calculate my quote')} <ArrowRight className="w-4 h-4" />
                 </Link>
               </Magnetic>
               <Link
                 to="/Contact"
                 className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 text-[15px] rounded-full text-white border border-white/30 hover:bg-white/10 transition-colors"
               >
-                Parler à un expert <ArrowUpRight className="w-4 h-4" />
+                {t('Parler à un expert', 'Talk to an expert')} <ArrowUpRight className="w-4 h-4" />
               </Link>
             </Reveal>
           </div>

@@ -3,36 +3,41 @@ import { ArrowRight, Check } from 'lucide-react';
 import { Reveal, RevealStagger, Magnetic, staggerChild, motion } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 import DevisModal from '../components/DevisModal.jsx';
+import { useT } from '../lib/i18n.jsx';
 
 /* ░░ Per-product config — ONLY this block differs between the 3 sur-mesure pages ░░ */
-const PRODUCT = {
-  name: 'Tente Sur Mesure',
+const makeProduct = (t) => ({
+  name: t('Tente Sur Mesure', 'Custom-Made Tent'),
   image: 'images/cutout/tente.png',
-  intro: 'Tentes de 6 à 20 mètres de diamètre. Votre vision, notre expertise — conception et fabrication sur mesure.',
-  width: { label: 'Diamètre', range: 'De 6 à 20 m', placeholder: 'ex. 12' },
-  height: { label: 'Hauteur', range: 'Selon le modèle', placeholder: 'ex. 5' },
-  delay: 'Délai : 8-12 semaines',
-};
+  intro: t('Tentes de 6 à 20 mètres de diamètre. Votre vision, notre expertise — conception et fabrication sur mesure.', 'Tents from 6 to 20 metres in diameter. Your vision, our expertise — custom design and manufacturing.'),
+  width: { label: t('Diamètre', 'Diameter'), range: t('De 6 à 20 m', 'From 6 to 20 m'), placeholder: t('ex. 12', 'e.g. 12') },
+  height: { label: t('Hauteur', 'Height'), range: t('Selon le modèle', 'Depending on the model'), placeholder: t('ex. 5', 'e.g. 5') },
+  delay: t('Délai : 8-12 semaines', 'Lead time: 8-12 weeks'),
+});
 
 /* Finishes / options the client can pick — rendered as CHECKBOX rows */
-const OPTIONS = [
-  'Impression totale 360°',
-  'Forme spéciale (dôme, géodésique, polygone)',
-  'Maquette 3D de validation',
-  'Plancher / habillage intérieur',
+const makeOptions = (t) => [
+  t('Impression totale 360°', 'Full 360° printing'),
+  t('Forme spéciale (dôme, géodésique, polygone)', 'Special shape (dome, geodesic, polygon)'),
+  t('Maquette 3D de validation', '3D validation mockup'),
+  t('Plancher / habillage intérieur', 'Flooring / interior lining'),
 ];
 
 /* Short "Toujours inclus" advantages strip */
-const INCLUDED = [
-  'Design 100% personnalisé',
-  'Modélisation & maquette 3D',
-  'Impression haute définition de votre logo',
-  'Ventilateur professionnel fourni',
-  'Kit de fixation & sac de transport',
-  'Garantie 2 ans structure + 3 ans impression',
+const makeIncluded = (t) => [
+  t('Design 100% personnalisé', '100% bespoke design'),
+  t('Modélisation & maquette 3D', '3D modelling & mockup'),
+  t('Impression haute définition de votre logo', 'High-definition printing of your logo'),
+  t('Ventilateur professionnel fourni', 'Professional blower included'),
+  t('Kit de fixation & sac de transport', 'Anchoring kit & carry bag'),
+  t('Garantie 2 ans structure + 3 ans impression', '2-year structure warranty + 3-year print warranty'),
 ];
 
 export default function TenteSurMesure() {
+  const t = useT();
+  const PRODUCT = makeProduct(t);
+  const OPTIONS = makeOptions(t);
+  const INCLUDED = makeIncluded(t);
   const [devisOpen, setDevisOpen] = useState(false);
   const [selected, setSelected] = useState([]);
 
@@ -48,7 +53,7 @@ export default function TenteSurMesure() {
             <div className="lg:col-span-6">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                 <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Création exclusive · Sur mesure</span>
+                <span className="kicker">{t('Création exclusive · Sur mesure', 'Exclusive creation · Custom-made')}</span>
               </Reveal>
               <h1 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2.2rem,5vw,3.6rem)', lineHeight: 1.0 }}>
                 {PRODUCT.name}
@@ -58,7 +63,7 @@ export default function TenteSurMesure() {
               </Reveal>
               <Reveal as="div" delay={0.18} className="mt-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--line)] bg-white">
                 <Check className="w-4 h-4" style={{ color: 'var(--blue)' }} />
-                <span className="text-[13px] font-semibold text-ink">Impression totale comprise</span>
+                <span className="text-[13px] font-semibold text-ink">{t('Impression totale comprise', 'Full printing included')}</span>
               </Reveal>
             </div>
 
@@ -80,16 +85,16 @@ export default function TenteSurMesure() {
       <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
           <SectionHeader
-            kicker="Configuration"
-            title="Vos dimensions sur mesure"
-            lead="Indiquez les dimensions exactes de votre structure — nous fabriquons à la mesure de votre espace."
+            kicker={t('Configuration', 'Configuration')}
+            title={t('Vos dimensions sur mesure', 'Your custom dimensions')}
+            lead={t('Indiquez les dimensions exactes de votre structure — nous fabriquons à la mesure de votre espace.', 'Tell us the exact dimensions of your structure — we manufacture it to fit your space perfectly.')}
           />
 
           <Reveal className="mt-9 grid sm:grid-cols-3 gap-4">
             {[
               { ...PRODUCT.width },
               { ...PRODUCT.height },
-              { label: 'Quantité', range: 'Nombre de structures', placeholder: 'ex. 1' },
+              { label: t('Quantité', 'Quantity'), range: t('Nombre de structures', 'Number of structures'), placeholder: t('ex. 1', 'e.g. 1') },
             ].map((f) => (
               <div key={f.label} className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-paper p-5">
                 <label className="kicker block mb-2" style={{ color: 'var(--muted)' }}>{f.label}</label>
@@ -106,7 +111,7 @@ export default function TenteSurMesure() {
 
           {/* Options — CHECKBOX rows */}
           <div className="mt-8">
-            <div className="kicker mb-3" style={{ color: 'var(--muted)' }}>Finitions & options</div>
+            <div className="kicker mb-3" style={{ color: 'var(--muted)' }}>{t('Finitions & options', 'Finishes & options')}</div>
             <RevealStagger className="rounded-[var(--radius-lg)] border border-[var(--line)] bg-white overflow-hidden">
               {OPTIONS.map((opt, i) => {
                 const on = selected.includes(opt);
@@ -144,9 +149,9 @@ export default function TenteSurMesure() {
       <section className="bg-paper py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
           <SectionHeader
-            kicker="Sans supplément"
-            title="Toujours inclus"
-            lead="Chaque création sur mesure comprend, de série, l'essentiel pour un résultat impeccable."
+            kicker={t('Sans supplément', 'No extra cost')}
+            title={t('Toujours inclus', 'Always included')}
+            lead={t('Chaque création sur mesure comprend, de série, l’essentiel pour un résultat impeccable.', 'Every custom-made creation comes standard with everything needed for a flawless result.')}
           />
           <RevealStagger className="mt-9 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {INCLUDED.map((item) => (
@@ -169,11 +174,11 @@ export default function TenteSurMesure() {
           <Reveal className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
               <p className="font-display text-2xl md:text-3xl font-bold text-ink tracking-tight max-w-md">
-                Un projet d&apos;exception ? Parlons-en.
+                {t('Un projet d’exception ? Parlons-en.', 'An exceptional project? Let’s talk.')}
               </p>
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-sm text-[var(--muted)]">Prix HT</span>
-                <span className="font-display text-xl font-bold text-ink">Sur devis</span>
+                <span className="text-sm text-[var(--muted)]">{t('Prix HT', 'Price excl. VAT')}</span>
+                <span className="font-display text-xl font-bold text-ink">{t('Sur devis', 'On quote')}</span>
               </div>
             </div>
             <Magnetic>
@@ -182,7 +187,7 @@ export default function TenteSurMesure() {
                 onClick={() => setDevisOpen(true)}
                 className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
               >
-                Demander un devis <ArrowRight className="w-4 h-4" />
+                {t('Demander un devis', 'Request a quote')} <ArrowRight className="w-4 h-4" />
               </button>
             </Magnetic>
           </Reveal>

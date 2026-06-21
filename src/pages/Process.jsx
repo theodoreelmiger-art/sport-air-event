@@ -12,71 +12,75 @@ import {
 } from 'lucide-react';
 import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
+import { useT } from '../lib/i18n.jsx';
 
-const steps = [
+const makeSteps = (t) => [
   {
     number: '1',
-    title: 'Analyse du besoin',
-    duration: '1-2 jours',
-    description: 'Échange approfondi pour comprendre votre projet',
+    title: t('Analyse du besoin', 'Needs assessment'),
+    duration: t('1-2 jours', '1-2 days'),
+    description: t('Échange approfondi pour comprendre votre projet', 'An in-depth conversation to fully understand your project'),
     Icon: MessageSquare,
   },
   {
     number: '2',
-    title: 'Design 3D',
-    duration: '3-5 jours',
-    description: 'Maquette photoréaliste de votre structure',
+    title: t('Design 3D', '3D design'),
+    duration: t('3-5 jours', '3-5 days'),
+    description: t('Maquette photoréaliste de votre structure', 'A photorealistic mock-up of your structure'),
     Icon: Palette,
   },
   {
     number: '3',
-    title: 'Validation',
-    duration: '2-3 jours',
-    description: 'Révisions illimitées jusqu\'à votre satisfaction',
+    title: t('Validation', 'Approval'),
+    duration: t('2-3 jours', '2-3 days'),
+    description: t('Révisions illimitées jusqu\'à votre satisfaction', 'Unlimited revisions until you are fully satisfied'),
     Icon: CircleCheckBig,
   },
   {
     number: '4',
-    title: 'Production',
-    duration: '2-4 semaines',
-    description: 'Fabrication avec contrôle qualité rigoureux',
+    title: t('Production', 'Production'),
+    duration: t('2-4 semaines', '2-4 weeks'),
+    description: t('Fabrication avec contrôle qualité rigoureux', 'Manufacturing with rigorous quality control'),
     Icon: Factory,
   },
   {
     number: '5',
-    title: 'Livraison',
-    duration: '2-5 jours',
-    description: 'Expédition sécurisée avec tout le matériel',
+    title: t('Livraison', 'Delivery'),
+    duration: t('2-5 jours', '2-5 days'),
+    description: t('Expédition sécurisée avec tout le matériel', 'Secure shipping with all the equipment included'),
     Icon: Truck,
   },
   {
     number: '6',
-    title: 'Support continu',
-    duration: 'Illimité',
-    description: 'Assistance technique et service après-vente',
+    title: t('Support continu', 'Ongoing support'),
+    duration: t('Illimité', 'Unlimited'),
+    description: t('Assistance technique et service après-vente', 'Technical assistance and after-sales service'),
     Icon: Headphones,
   },
 ];
 
-const delais = [
+const makeDelais = (t) => [
   {
-    big: '4-6 semaines',
-    title: 'Standard',
-    description: 'Structure classique personnalisée',
+    big: t('4-6 semaines', '4-6 weeks'),
+    title: t('Standard', 'Standard'),
+    description: t('Structure classique personnalisée', 'A classic structure, personalised for you'),
   },
   {
-    big: '6-8 semaines',
-    title: 'Sur mesure',
-    description: 'Création unique sur cahier des charges',
+    big: t('6-8 semaines', '6-8 weeks'),
+    title: t('Sur mesure', 'Custom-made'),
+    description: t('Création unique sur cahier des charges', 'A one-of-a-kind creation built to your specifications'),
   },
   {
-    big: '2-3 semaines',
-    title: 'Express',
-    description: 'Production accélérée (supplément)',
+    big: t('2-3 semaines', '2-3 weeks'),
+    title: t('Express', 'Express'),
+    description: t('Production accélérée (supplément)', 'Accelerated production (surcharge applies)'),
   },
 ];
 
 export default function Process() {
+  const t = useT();
+  const steps = makeSteps(t);
+  const delais = makeDelais(t);
   return (
     <div className="overflow-x-clip bg-paper">
       {/* ░░ HERO ░░ */}
@@ -84,20 +88,20 @@ export default function Process() {
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16 pt-36 md:pt-44 pb-20 md:pb-28">
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-7">
             <span className="h-px w-10 bg-white/50" />
-            <span className="kicker" style={{ color: '#7db4f0' }}>Notre méthode</span>
+            <span className="kicker" style={{ color: '#7db4f0' }}>{t('Notre méthode', 'Our method')}</span>
           </Reveal>
 
           <h1 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,7vw,6rem)', lineHeight: 0.95, maxWidth: '14ch' }}>
-            De l&apos;idée{' '}
-            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>à la réalité</span>
+            {t('De l’idée', 'From idea')}{' '}
+            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>{t('à la réalité', 'to reality')}</span>
           </h1>
 
           <Reveal as="p" delay={0.18} y={18} className="lead mt-7 max-w-xl" style={{ color: 'rgba(255,255,255,0.74)' }}>
-            Un processus transparent pour un résultat parfait
+            {t('Un processus transparent pour un résultat parfait', 'A transparent process for a flawless result')}
           </Reveal>
 
           <Reveal as="div" delay={0.3} className="mt-12 md:mt-16 flex items-stretch gap-6 sm:gap-10">
-            {[['6', '', 'Étapes claires'], ['1-2', 'sem', 'Express possible'], ['100', '%', 'Suivi dédié']].map(([n, u, l], i) => (
+            {[['6', '', t('Étapes claires', 'Clear steps')], ['1-2', t('sem', 'wks'), t('Express possible', 'Express available')], ['100', '%', t('Suivi dédié', 'Dedicated follow-up')]].map(([n, u, l], i) => (
               <div key={i} className="flex items-stretch gap-6 sm:gap-10">
                 {i > 0 && <span className="w-px self-stretch bg-white/20" />}
                 <div>
@@ -115,10 +119,10 @@ export default function Process() {
       {/* ░░ STEPS — editorial numbered rows ░░ */}
       <section className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-9 md:mb-12">
-          <SectionHeader kicker="Le déroulé" index="01" title={<>Six étapes,<br />de l&apos;échange à l&apos;événement</>} />
+          <SectionHeader kicker={t('Le déroulé', 'The journey')} index="01" title={<>{t('Six étapes,', 'Six steps,')}<br />{t('de l’échange à l’événement', 'from first conversation to event day')}</>} />
           <Reveal as="div" delay={0.1} className="flex items-center gap-2 text-sm text-[var(--muted)] md:pb-2">
             <Clock className="w-4 h-4 text-[var(--blue)]" />
-            Chaque étape pilotée avec un <span className="text-ink font-medium">délai annoncé</span>
+            {t('Chaque étape pilotée avec un', 'Every step managed with a')} <span className="text-ink font-medium">{t('délai annoncé', 'committed timeline')}</span>
           </Reveal>
         </div>
 
@@ -163,12 +167,14 @@ export default function Process() {
         <div className="max-w-content mx-auto px-5 sm:px-8 py-12 md:py-16">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-14 md:mb-16">
             <div className="lg:col-span-7">
-              <SectionHeader light kicker="Calendrier" index="02"
-                title={<>Délais de<br /><span className="serif-accent text-white/55">réalisation</span></>} />
+              <SectionHeader light kicker={t('Calendrier', 'Timeline')} index="02"
+                title={<>{t('Délais de', 'Production')}<br /><span className="serif-accent text-white/55">{t('réalisation', 'lead times')}</span></>} />
             </div>
             <Reveal as="p" delay={0.1} className="lg:col-span-5 text-white/65 leading-relaxed">
-              Trois cadences de production selon votre projet et votre échéance. Le délai exact vous est
-              confirmé dès la validation du design.
+              {t(
+                'Trois cadences de production selon votre projet et votre échéance. Le délai exact vous est confirmé dès la validation du design.',
+                'Three production paces to match your project and your deadline. Your exact lead time is confirmed as soon as the design is approved.'
+              )}
             </Reveal>
           </div>
 
@@ -190,11 +196,11 @@ export default function Process() {
       {/* ░░ CTA ░░ */}
       <section className="bg-white border-t border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
-          <SectionHeader kicker="Prêt à démarrer" title={<>Lançons votre projet<br />ensemble.</>} lead="Conception Suisse. Livraison France et Europe." />
+          <SectionHeader kicker={t('Prêt à démarrer', 'Ready to start')} title={<>{t('Lançons votre projet', 'Let’s launch your project')}<br />{t('ensemble.', 'together.')}</>} lead={t('Conception Suisse. Livraison France et Europe.', 'Designed in Switzerland. Delivered across France and Europe.')} />
           <Reveal delay={0.1}>
             <Magnetic>
               <Link to="/Contact" className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
-                Démarrer votre projet <ArrowRight className="w-4 h-4" />
+                {t('Démarrer votre projet', 'Start your project')} <ArrowRight className="w-4 h-4" />
               </Link>
             </Magnetic>
           </Reveal>

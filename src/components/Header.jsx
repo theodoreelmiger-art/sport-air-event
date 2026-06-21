@@ -3,10 +3,24 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Globe, Menu, X, Check, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { LOGO, PRODUCT_LINKS } from '../data/site.js';
+import { useLang, useT } from '../lib/i18n.jsx';
 
 const EASE = [0.22, 1, 0.36, 1];
 
+// EN labels for the product names rendered from PRODUCT_LINKS (../data/site.js).
+const PRODUCT_EN = {
+  'Tente Spider': 'Spider Tent',
+  'Tente Sur Mesure': 'Custom-Made Tent',
+  'Arches Gonflables': 'Inflatable Arches',
+  'Arches Sur Mesure': 'Custom-Made Arches',
+  'Colonnes Gonflables': 'Inflatable Columns',
+  'Colonnes Sur Mesure': 'Custom-Made Columns',
+  'Mobilier Gonflable': 'Inflatable Furniture',
+};
+
 export default function Header() {
+  const { lang, setLang } = useLang();
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [prodOpen, setProdOpen] = useState(false);
   const [deskProd, setDeskProd] = useState(false);
@@ -115,7 +129,7 @@ export default function Header() {
                 color: isActive('/Home', location) ? 'var(--blue-deep)' : 'var(--ink)',
               }}
             >
-              Accueil
+              {t('Accueil', 'Home')}
             </Link>
 
             {/* "Produits" — NOT a link. Dropdown opens directly below, centered. */}
@@ -132,7 +146,7 @@ export default function Header() {
                   color: deskProd || isProductActive ? 'var(--blue-deep)' : 'var(--ink)',
                 }}
               >
-                Produits
+                {t('Produits', 'Products')}
                 <motion.span animate={{ rotate: deskProd ? 180 : 0 }} transition={{ duration: 0.2 }}>
                   <ChevronDown className="w-4 h-4" strokeWidth={2.2} />
                 </motion.span>
@@ -146,7 +160,7 @@ export default function Header() {
                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                     transition={{ duration: 0.18, ease: EASE }}
                     role="menu"
-                    aria-label="Produits"
+                    aria-label={t('Produits', 'Products')}
                     className="absolute top-full left-0 z-30 pt-3"
                     style={{ width: 268 }}
                   >
@@ -176,7 +190,7 @@ export default function Header() {
                         className="px-4 pt-3 pb-2 kicker relative"
                         style={{ background: 'var(--blue-mist)' }}
                       >
-                        Nos produits
+                        {t('Nos produits', 'Our products')}
                       </div>
                       <ul className="p-1.5">
                         {PRODUCT_LINKS.map((p, i) => {
@@ -213,7 +227,7 @@ export default function Header() {
                                   className="flex-1 leading-tight"
                                   style={{ fontSize: '0.88rem', fontWeight: active ? 600 : 500 }}
                                 >
-                                  {p.label}
+                                  {t(p.label, PRODUCT_EN[p.label] || p.label)}
                                 </span>
                                 <ArrowUpRight
                                   className="w-3.5 h-3.5 shrink-0"
@@ -240,7 +254,7 @@ export default function Header() {
                 color: isActive('/About', location) ? 'var(--blue-deep)' : 'var(--ink)',
               }}
             >
-              À propos
+              {t('À propos', 'About')}
             </Link>
             <Link
               to="/Contact"
@@ -265,7 +279,7 @@ export default function Header() {
                 style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--ink)' }}
               >
                 <Globe className="w-3.5 h-3.5" />
-                <span>FR</span>
+                <span>{lang === 'en' ? 'EN' : 'FR'}</span>
                 <ChevronDown
                   className={`w-3 h-3 opacity-60 transition-transform ${langOpen ? 'rotate-180' : ''}`}
                 />
@@ -280,15 +294,21 @@ export default function Header() {
                     boxShadow: '0 18px 50px -22px rgba(11,28,63,0.28)',
                   }}
                 >
-                  <button
-                    type="button"
-                    onClick={() => setLangOpen(false)}
-                    className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium cursor-pointer transition-colors"
-                    style={{ color: 'var(--blue-deep)' }}
-                  >
-                    <span>🇫🇷 Français</span>
-                    <Check className="w-3.5 h-3.5" />
-                  </button>
+                  {[
+                    { code: 'fr', label: '🇫🇷 Français' },
+                    { code: 'en', label: '🇬🇧 English' },
+                  ].map((o) => (
+                    <button
+                      key={o.code}
+                      type="button"
+                      onClick={() => { setLang(o.code); setLangOpen(false); }}
+                      className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium cursor-pointer transition-colors hover:bg-[var(--blue-mist)]"
+                      style={{ color: lang === o.code ? 'var(--blue-deep)' : 'var(--ink-2)' }}
+                    >
+                      <span>{o.label}</span>
+                      {lang === o.code && <Check className="w-3.5 h-3.5" />}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
@@ -300,7 +320,7 @@ export default function Header() {
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full cursor-pointer"
                 style={{ background: 'var(--blue)', color: '#fff', fontSize: '0.85rem', fontWeight: 600 }}
               >
-                Demander un devis
+                {t('Demander un devis', 'Request a quote')}
                 <ArrowRight className="w-4 h-4" strokeWidth={2.4} />
               </motion.span>
             </Link>
@@ -310,7 +330,7 @@ export default function Header() {
           <button
             type="button"
             className="lg:hidden flex items-center justify-center ml-auto cursor-pointer"
-            aria-label="Menu"
+            aria-label={t('Menu', 'Menu')}
             style={{ width: 40, height: 40, borderRadius: '50%', color: 'var(--ink)' }}
             onClick={() => setOpen((v) => !v)}
           >
@@ -327,7 +347,7 @@ export default function Header() {
         >
           <div className="flex flex-col items-center justify-center min-h-screen gap-1 px-8 text-center">
             <Link to="/Home" className="py-3 text-lg font-medium" style={{ color: 'var(--ink)' }}>
-              Accueil
+              {t('Accueil', 'Home')}
             </Link>
             <button
               type="button"
@@ -335,16 +355,16 @@ export default function Header() {
               style={{ color: 'var(--ink)' }}
               onClick={() => setProdOpen((v) => !v)}
             >
-              Produits <ChevronDown className={`w-4 h-4 transition-transform ${prodOpen ? 'rotate-180' : ''}`} />
+              {t('Produits', 'Products')} <ChevronDown className={`w-4 h-4 transition-transform ${prodOpen ? 'rotate-180' : ''}`} />
             </button>
             {prodOpen &&
               PRODUCT_LINKS.map((p) => (
                 <Link key={p.to} to={p.to} className="py-2 text-base" style={{ color: 'var(--ink-2)' }}>
-                  {p.label}
+                  {t(p.label, PRODUCT_EN[p.label] || p.label)}
                 </Link>
               ))}
             <Link to="/About" className="py-3 text-lg font-medium" style={{ color: 'var(--ink)' }}>
-              À propos
+              {t('À propos', 'About')}
             </Link>
             <Link to="/Contact" className="py-3 text-lg font-medium" style={{ color: 'var(--ink)' }}>
               Contact
@@ -354,7 +374,7 @@ export default function Header() {
               className="mt-4 inline-flex items-center gap-1.5 text-white font-semibold rounded-full px-6 py-3"
               style={{ background: 'var(--blue)' }}
             >
-              Demander un devis
+              {t('Demander un devis', 'Request a quote')}
               <ArrowRight className="w-4 h-4" strokeWidth={2.4} />
             </Link>
           </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Check, User, Mail, Phone, Calendar, Send, MessageCircle } from 'lucide-react';
+import { useT } from '../lib/i18n.jsx';
 
 /**
  * Animated "Demande de devis" modal — faithful reproduction of the original product-page modal.
@@ -15,6 +16,7 @@ import { X, Sparkles, Check, User, Mail, Phone, Calendar, Send, MessageCircle } 
  *  - total: number | null
  */
 export default function DevisModal({ open, onClose, productName, groupLabel = null, lines = [], extras = [], total = null }) {
+  const t = useT();
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ nom: '', email: '', telephone: '', date: '', description: '' });
   const f = (k) => (e) => setForm((s) => ({ ...s, [k]: e.target.value }));
@@ -22,21 +24,21 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
   const handleSubmit = (e) => {
     e.preventDefault();
     const cfg = [
-      `Produit : ${productName}`,
+      `${t('Produit', 'Product')} : ${productName}`,
       ...(groupLabel ? lines.map((l) => `- ${l.label} × ${l.qty} = ${l.unit * l.qty}€`) : []),
       ...extras.map((x) => `- ${x.label} × ${x.qty} = ${x.unit * x.qty}€`),
-      total != null ? `Prix total : ${total}€` : '',
+      total != null ? `${t('Prix total', 'Total price')} : ${total}€` : '',
     ].filter(Boolean).join('\n');
     const body = [
-      'Votre configuration :', cfg, '',
-      `Prénom et nom : ${form.nom}`,
+      `${t('Votre configuration', 'Your configuration')} :`, cfg, '',
+      `${t('Prénom et nom', 'First and last name')} : ${form.nom}`,
       `Email : ${form.email}`,
-      `Téléphone : ${form.telephone}`,
-      `Date du projet : ${form.date || '—'}`,
-      '', 'Description :', form.description || '—',
+      `${t('Téléphone', 'Phone')} : ${form.telephone}`,
+      `${t('Date du projet', 'Project date')} : ${form.date || '—'}`,
+      '', `${t('Description', 'Description')} :`, form.description || '—',
     ].join('\n');
     window.location.href = `mailto:contact@sport-air-event.com?subject=${encodeURIComponent(
-      'Demande de devis – ' + productName
+      t('Demande de devis', 'Quote request') + ' – ' + productName
     )}&body=${encodeURIComponent(body)}`;
     setSent(true);
   };
@@ -64,7 +66,7 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
           >
             <button
               onClick={onClose}
-              aria-label="Fermer"
+              aria-label={t('Fermer', 'Close')}
               className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors z-10"
             >
               <X className="w-5 h-5" />
@@ -72,8 +74,8 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
 
             <div className="p-6 md:p-8">
               <div className="bg-gradient-to-r from-[#0066CC] to-[#0052A3] -mx-6 md:-mx-8 -mt-6 md:-mt-8 px-6 md:px-8 pt-8 pb-6 mb-6" style={{ borderRadius: '28px 28px 0 0' }}>
-                <h2 className="text-2xl font-extrabold text-white">Demande de devis</h2>
-                <p className="text-blue-100 text-sm mt-1">Réponse garantie sous 24h</p>
+                <h2 className="text-2xl font-extrabold text-white">{t('Demande de devis', 'Request a quote')}</h2>
+                <p className="text-blue-100 text-sm mt-1">{t('Réponse garantie sous 24h', 'Guaranteed reply within 24h')}</p>
               </div>
 
               {sent ? (
@@ -81,9 +83,9 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
                     <Check className="w-8 h-8 text-green-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Merci !</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('Merci !', 'Thank you!')}</h3>
                   <p className="text-gray-600 text-sm">
-                    Votre demande a bien été préparée. Nous vous répondons sous 24h.
+                    {t('Votre demande a bien été préparée. Nous vous répondons sous 24h.', 'Your request is ready. We will get back to you within 24 hours.')}
                   </p>
                 </div>
               ) : (
@@ -91,11 +93,11 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
                   <div className="bg-blue-50 rounded-2xl p-4 mb-6">
                     <h3 className="flex items-center gap-2 font-bold text-[#0066CC] mb-2 text-sm">
                       <Sparkles className="w-4 h-4" />
-                      Votre configuration
+                      {t('Votre configuration', 'Your configuration')}
                     </h3>
                     <div className="text-sm text-gray-700 space-y-0.5">
                       <div>
-                        <strong>Produit :</strong> {productName}
+                        <strong>{t('Produit', 'Product')} :</strong> {productName}
                       </div>
                       {groupLabel && lines.length > 0 && (
                         <div>
@@ -109,7 +111,7 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
                       )}
                       {extras.length > 0 && (
                         <div>
-                          <strong>Options :</strong>
+                          <strong>{t('Options', 'Options')} :</strong>
                           {extras.map((x, i) => (
                             <div key={i}>
                               - {x.label} × {x.qty} = {x.unit * x.qty}€
@@ -118,60 +120,60 @@ export default function DevisModal({ open, onClose, productName, groupLabel = nu
                         </div>
                       )}
                       {total != null && (
-                        <div className="font-bold text-[#0066CC] pt-1">Prix total : {total}€</div>
+                        <div className="font-bold text-[#0066CC] pt-1">{t('Prix total', 'Total price')} : {total}€</div>
                       )}
                     </div>
                     <div className="flex flex-wrap gap-3 mt-3 text-xs text-gray-600">
                       <span className="flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5 text-green-500" /> Design 3D gratuit inclus
+                        <Check className="w-3.5 h-3.5 text-green-500" /> {t('Design 3D gratuit inclus', 'Free 3D design included')}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5 text-green-500" /> Impression totale comprise
+                        <Check className="w-3.5 h-3.5 text-green-500" /> {t('Impression totale comprise', 'Full printing included')}
                       </span>
                     </div>
                   </div>
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Prénom et nom *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t('Prénom et nom *', 'First and last name *')}</label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input required value={form.nom} onChange={f('nom')} placeholder="Votre nom" className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm" />
+                        <input required value={form.nom} onChange={f('nom')} placeholder={t('Votre nom', 'Your name')} className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm" />
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input type="email" required value={form.email} onChange={f('email')} placeholder="email@exemple.com" className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm" />
+                        <input type="email" required value={form.email} onChange={f('email')} placeholder={t('email@exemple.com', 'email@example.com')} className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm" />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t('Téléphone *', 'Phone *')}</label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input type="tel" required value={form.telephone} onChange={f('telephone')} placeholder="06 XX XX XX XX" className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm" />
+                        <input type="tel" required value={form.telephone} onChange={f('telephone')} placeholder={t('06 XX XX XX XX', '+41 XX XXX XX XX')} className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm" />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Date du projet</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t('Date du projet', 'Project date')}</label>
                       <div className="relative">
                         <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input value={form.date} onChange={f('date')} placeholder="Ex: 15 juin 2026" className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm" />
+                        <input value={form.date} onChange={f('date')} placeholder={t('Ex: 15 juin 2026', 'e.g. June 15, 2026')} className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm" />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Description du projet</label>
-                      <textarea value={form.description} onChange={f('description')} placeholder="Décrivez votre projet..." rows={3} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm resize-none" />
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t('Description du projet', 'Project description')}</label>
+                      <textarea value={form.description} onChange={f('description')} placeholder={t('Décrivez votre projet...', 'Tell us about your project...')} rows={3} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#0066CC] focus:ring-2 focus:ring-blue-100 outline-none text-sm resize-none" />
                     </div>
                   </div>
 
                   <button type="submit" className="w-full mt-6 flex items-center justify-center gap-2 bg-[#0066CC] hover:bg-[#0052A3] text-white font-semibold rounded-full py-3 transition-colors">
                     <Send className="w-4 h-4" />
-                    Envoyer
+                    {t('Envoyer', 'Send')}
                   </button>
 
-                  <p className="text-center text-xs text-gray-500 mt-4">Ou alors nous contacter :</p>
+                  <p className="text-center text-xs text-gray-500 mt-4">{t('Ou alors nous contacter :', 'Or reach out to us:')}</p>
                   <div className="flex items-center justify-center gap-4 mt-2 text-sm">
                     <a href="mailto:contact@sport-air-event.com" className="text-[#0066CC] hover:underline">
                       contact@sport-air-event.com

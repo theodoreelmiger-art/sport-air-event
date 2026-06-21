@@ -7,28 +7,32 @@ import {
 import { Reveal, Rise, MaskHeading, Magnetic, RevealStagger, staggerChild } from '../lib/motion.jsx';
 import ProductConfigurator from '../components/ProductConfigurator.jsx';
 import { CONFIGURATORS } from '../data/configurators.js';
+import { useT } from '../lib/i18n.jsx';
 
 // Each spec keeps its real label (k) + full real value (v). `note` is an optional
 // short sub-line drawn only from the original copy — no new facts.
-const specs = [
-  { k: 'Matériau', v: 'Oxford 600D haute résistance + soudure thermique', icon: Layers },
-  { k: 'Largeurs disponibles', v: '5m – 6m – 7m – 8m – 10m', icon: Ruler },
-  { k: 'Hauteur', v: '3m à 5m selon largeur', icon: MoveVertical },
-  { k: 'Impression', v: 'Sublimation HD 360° UV résistant', icon: Sparkles },
-  { k: 'Temps de gonflage', v: '10-15 minutes', icon: Timer },
-  { k: 'Résistance au vent', v: "Jusqu'à 60 km/h avec haubans", icon: Wind },
-  { k: 'Alimentation ventilateur', v: '220V inclus', icon: Plug },
-  { k: 'Garantie', v: '2 ans structure + 3 ans impression', icon: ShieldCheck },
+const makeSpecs = (t) => [
+  { k: t('Matériau', 'Material'), v: t('Oxford 600D haute résistance + soudure thermique', 'Heavy-duty 600D Oxford + thermal welding'), icon: Layers },
+  { k: t('Largeurs disponibles', 'Available widths'), v: '5m – 6m – 7m – 8m – 10m', icon: Ruler },
+  { k: t('Hauteur', 'Height'), v: t('3m à 5m selon largeur', '3m to 5m depending on width'), icon: MoveVertical },
+  { k: t('Impression', 'Printing'), v: t('Sublimation HD 360° UV résistant', '360° HD sublimation, UV-resistant'), icon: Sparkles },
+  { k: t('Temps de gonflage', 'Inflation time'), v: t('10-15 minutes', '10–15 minutes'), icon: Timer },
+  { k: t('Résistance au vent', 'Wind resistance'), v: t("Jusqu'à 60 km/h avec haubans", 'Up to 60 km/h with guy ropes'), icon: Wind },
+  { k: t('Alimentation ventilateur', 'Blower power supply'), v: t('220V inclus', '220V included'), icon: Plug },
+  { k: t('Garantie', 'Warranty'), v: t('2 ans structure + 3 ans impression', '2-year structure + 3-year print'), icon: ShieldCheck },
 ];
 
-const useCases = [
-  { n: '01', title: 'Courses & marathons', desc: "Lignes de départ et d'arrivée spectaculaires", icon: Flag },
-  { n: '02', title: 'Sports cyclistes', desc: 'Étapes de course, cols, critériums', icon: Bike },
-  { n: '03', title: "Entrées d'événements", desc: 'Portiques, accueil, signalétique', icon: DoorOpen },
-  { n: '04', title: 'Animations commerciales', desc: 'Ouvertures de magasins, promotions', icon: Store },
+const makeUseCases = (t) => [
+  { n: '01', title: t('Courses & marathons', 'Races & marathons'), desc: t("Lignes de départ et d'arrivée spectaculaires", 'Striking start and finish lines'), icon: Flag },
+  { n: '02', title: t('Sports cyclistes', 'Cycling events'), desc: t('Étapes de course, cols, critériums', 'Race stages, mountain passes, criteriums'), icon: Bike },
+  { n: '03', title: t("Entrées d'événements", 'Event entrances'), desc: t('Portiques, accueil, signalétique', 'Gateways, welcome areas, signage'), icon: DoorOpen },
+  { n: '04', title: t('Animations commerciales', 'Retail activations'), desc: t('Ouvertures de magasins, promotions', 'Store openings, promotions'), icon: Store },
 ];
 
 export default function ArchesGonflables() {
+  const t = useT();
+  const specs = makeSpecs(t);
+  const useCases = makeUseCases(t);
   return (
     <div className="overflow-x-clip bg-paper">
       {/* ░░ SLIM HERO ░░ */}
@@ -36,19 +40,19 @@ export default function ArchesGonflables() {
         <div className="max-w-content mx-auto px-5 sm:px-8 lg:px-16">
           <Reveal as="div" y={14} className="flex items-center gap-3 mb-6">
             <span className="h-px w-10" style={{ background: 'var(--blue)' }} />
-            <span className="kicker">Arches Gonflables · Sur mesure</span>
+            <span className="kicker">{t('Arches Gonflables · Sur mesure', 'Inflatable Arches · Custom-made')}</span>
           </Reveal>
 
           <Reveal>
             <h1 className="font-display font-bold text-ink tracking-tightest" style={{ fontSize: 'clamp(2.2rem,5vw,3.6rem)', lineHeight: 1.0 }}>
-              Arches Gonflables
+              {t('Arches Gonflables', 'Inflatable Arches')}
             </h1>
             <p className="lead mt-4 max-w-md">
-              Lignes de départ/arrivée et événements sportifs
+              {t('Lignes de départ/arrivée et événements sportifs', 'Start/finish lines and sporting events')}
             </p>
             <div className="mt-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--line)] bg-white">
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--blue)' }} />
-              <span className="text-[13px] font-semibold text-ink">Impression totale comprise</span>
+              <span className="text-[13px] font-semibold text-ink">{t('Impression totale comprise', 'Full printing included')}</span>
             </div>
           </Reveal>
         </div>
@@ -65,16 +69,16 @@ export default function ArchesGonflables() {
             <div className="max-w-2xl">
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                 <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Fiche technique</span>
+                <span className="kicker">{t('Fiche technique', 'Spec sheet')}</span>
               </Reveal>
               <h2 className="font-display font-bold text-ink tracking-tightest leading-[1.02] text-[clamp(1.9rem,4.4vw,3.4rem)]">
-                <MaskHeading text="Caractéristiques" />
+                <MaskHeading text={t('Caractéristiques', 'Technical')} />
                 <br />
-                <span className="serif-accent text-[var(--blue)]"><MaskHeading text="techniques" delay={0.12} /></span>
+                <span className="serif-accent text-[var(--blue)]"><MaskHeading text={t('techniques', 'specifications')} delay={0.12} /></span>
               </h2>
             </div>
             <Rise as="p" y={28} delay={0.1} className="lead max-w-sm lg:text-right">
-              Chaque arche est fabriquée avec des matériaux haute résistance, pensés pour durer saison après saison.
+              {t('Chaque arche est fabriquée avec des matériaux haute résistance, pensés pour durer saison après saison.', 'Every arch is built from heavy-duty materials, engineered to last season after season.')}
             </Rise>
           </div>
 
@@ -118,16 +122,16 @@ export default function ArchesGonflables() {
               <Reveal as="div" y={14} className="flex items-center gap-3 mb-5">
                 <span className="text-xs font-semibold tabular-nums text-ink/30">03</span>
                 <span className="h-px w-8" style={{ background: 'var(--blue)' }} />
-                <span className="kicker">Cas d'usage</span>
+                <span className="kicker">{t("Cas d'usage", 'Use cases')}</span>
               </Reveal>
               <h2 className="font-display font-bold text-ink tracking-tightest leading-[1.02] text-[clamp(1.9rem,4.4vw,3.4rem)]">
-                <MaskHeading text="Parfaite" />
+                <MaskHeading text={t('Parfaite', 'Perfect')} />
                 <br />
-                <span className="serif-accent text-[var(--blue)]"><MaskHeading text="pour" delay={0.1} /></span>
+                <span className="serif-accent text-[var(--blue)]"><MaskHeading text={t('pour', 'for')} delay={0.1} /></span>
               </h2>
             </div>
             <Rise as="p" y={28} delay={0.1} className="lead max-w-sm md:text-right">
-              Là où l'impact visuel fait la différence, l'arche marque l'entrée et le passage.
+              {t("Là où l'impact visuel fait la différence, l'arche marque l'entrée et le passage.", 'Wherever visual impact matters most, the arch frames the entrance and marks the passage.')}
             </Rise>
           </div>
 
@@ -167,14 +171,14 @@ export default function ArchesGonflables() {
 
           <Reveal className="mt-16 pt-12 border-t border-[var(--line)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <p className="font-display text-xl md:text-2xl font-semibold text-ink max-w-md tracking-tight">
-              Un projet sur mesure ? Parlons-en.
+              {t('Un projet sur mesure ? Parlons-en.', 'A custom project in mind? Let’s talk.')}
             </p>
             <Magnetic>
               <Link
                 to="/Contact?product=Arche%20Gonflable"
                 className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold"
               >
-                Demander un devis <ArrowRight className="w-4 h-4" />
+                {t('Demander un devis', 'Request a quote')} <ArrowRight className="w-4 h-4" />
               </Link>
             </Magnetic>
           </Reveal>

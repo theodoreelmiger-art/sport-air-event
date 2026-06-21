@@ -3,59 +3,65 @@ import { motion } from 'framer-motion';
 import { Award, Leaf, Recycle, Factory, Shield, Clock, TrendingUp, Package, Zap, CircleCheckBig, ArrowRight } from 'lucide-react';
 import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
+import { useT } from '../lib/i18n.jsx';
 
-const durabilityItems = [
+const makeDurabilityItems = (t) => [
   {
     Icon: Leaf,
-    title: 'Matériaux durables',
-    text: 'Sélection rigoureuse de matières premières certifiées',
+    title: t('Matériaux durables', 'Sustainable materials'),
+    text: t('Sélection rigoureuse de matières premières certifiées', 'Carefully selected, certified raw materials'),
   },
   {
     Icon: Recycle,
-    title: 'Réutilisation optimale',
-    text: "Conçues pour des centaines d'utilisations",
+    title: t('Réutilisation optimale', 'Built to be reused'),
+    text: t("Conçues pour des centaines d'utilisations", 'Engineered for hundreds of uses'),
   },
   {
     Icon: Factory,
-    title: 'Production responsable',
-    text: 'Processus optimisés, déchets minimisés',
+    title: t('Production responsable', 'Responsible production'),
+    text: t('Processus optimisés, déchets minimisés', 'Optimised processes, minimal waste'),
   },
 ];
 
-const swissCards = [
+const makeSwissCards = (t) => [
   {
     Icon: Award,
-    title: 'Conception suisse',
-    text: "Bureau d'études basé en Suisse, rigueur absolue",
+    title: t('Conception suisse', 'Swiss engineering'),
+    text: t("Bureau d'études basé en Suisse, rigueur absolue", 'Design office based in Switzerland, uncompromising rigour'),
   },
   {
     Icon: Shield,
-    title: 'Tests rigoureux',
-    text: 'Chaque structure testée avant expédition',
+    title: t('Tests rigoureux', 'Rigorous testing'),
+    text: t('Chaque structure testée avant expédition', 'Every structure tested before shipping'),
   },
   {
     Icon: Clock,
-    title: 'Longévité garantie',
-    text: 'Durée de vie exceptionnelle prouvée',
+    title: t('Longévité garantie', 'Guaranteed longevity'),
+    text: t('Durée de vie exceptionnelle prouvée', 'A proven, exceptional lifespan'),
   },
 ];
 
-const stats = [
-  { Icon: TrendingUp, value: '10+', label: "Années d'expérience" },
-  { Icon: Package, value: '500+', label: 'Structures produites' },
-  { Icon: Award, value: '99%', label: 'Satisfaction client' },
-  { Icon: Zap, value: '5', label: 'Ans de durée de vie' },
+const makeStats = (t) => [
+  { Icon: TrendingUp, value: '10+', label: t("Années d'expérience", 'Years of experience') },
+  { Icon: Package, value: '500+', label: t('Structures produites', 'Structures produced') },
+  { Icon: Award, value: '99%', label: t('Satisfaction client', 'Customer satisfaction') },
+  { Icon: Zap, value: '5', label: t('Ans de durée de vie', 'Years of service life') },
 ];
 
-const certifications = [
-  'ISO 9001 - Management de la qualité',
-  'Certification ignifugation M2/B1',
-  'Conformité CE',
-  'Traitement anti-UV certifié',
-  'Tests résistance traction',
+const makeCertifications = (t) => [
+  t('ISO 9001 - Management de la qualité', 'ISO 9001 - Quality management'),
+  t('Certification ignifugation M2/B1', 'M2/B1 flame-retardant certification'),
+  t('Conformité CE', 'CE compliance'),
+  t('Traitement anti-UV certifié', 'Certified anti-UV treatment'),
+  t('Tests résistance traction', 'Tensile strength testing'),
 ];
 
 export default function Quality() {
+  const t = useT();
+  const durabilityItems = makeDurabilityItems(t);
+  const swissCards = makeSwissCards(t);
+  const stats = makeStats(t);
+  const certifications = makeCertifications(t);
   return (
     <div className="overflow-x-clip bg-paper">
       {/* ░░ HERO (dark) ░░ */}
@@ -67,12 +73,12 @@ export default function Quality() {
           </Reveal>
 
           <h1 className="font-display text-white font-bold tracking-tightest" style={{ fontSize: 'clamp(2.6rem,7.5vw,6rem)', lineHeight: 0.95, maxWidth: '14ch' }}>
-            Qualité &amp; Durabilité{' '}
-            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>par exigence</span>
+            {t('Qualité & Durabilité', 'Quality & Sustainability')}{' '}
+            <span className="serif-accent text-white/55" style={{ fontWeight: 500 }}>{t('par exigence', 'by standard')}</span>
           </h1>
 
           <Reveal as="p" delay={0.2} y={18} className="lead mt-7 max-w-xl" style={{ color: 'rgba(255,255,255,0.78)' }}>
-            L'excellence suisse au service de l'environnement
+            {t("L'excellence suisse au service de l'environnement", 'Swiss excellence in service of the environment')}
           </Reveal>
 
           <Reveal as="div" delay={0.32} className="mt-12 md:mt-16 flex items-stretch gap-6 sm:gap-10">
@@ -98,21 +104,21 @@ export default function Quality() {
             <div className="relative rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line)]">
               <img
                 src="images/20_photo-1473496169904-658ba7c44d8a.img"
-                alt="Durabilité"
+                alt={t('Durabilité', 'Sustainability')}
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="absolute -bottom-6 -right-3 sm:-right-6 bg-white border border-[var(--line)] rounded-[var(--radius)] px-7 py-6 shadow-sm">
               <div className="font-display text-4xl md:text-5xl font-bold text-ink leading-none">90%</div>
-              <div className="text-sm text-[var(--muted)] mt-2">matériaux recyclables</div>
+              <div className="text-sm text-[var(--muted)] mt-2">{t('matériaux recyclables', 'recyclable materials')}</div>
             </div>
           </Reveal>
 
           <div className="order-1 lg:order-2">
             <SectionHeader
-              kicker="Durabilité par conception"
+              kicker={t('Durabilité par conception', 'Sustainability by design')}
               index="01"
-              title={<>Durabilité<br />par conception</>}
+              title={<>{t('Durabilité', 'Sustainability')}<br />{t('par conception', 'by design')}</>}
             />
             <RevealStagger className="mt-10 space-y-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden">
               {durabilityItems.map(({ Icon, title, text }, i) => (
@@ -144,7 +150,7 @@ export default function Quality() {
             kicker="Swiss Made"
             index="02"
             title={<>Swiss Made Excellence</>}
-            lead="La précision suisse dans chaque produit"
+            lead={t('La précision suisse dans chaque produit', 'Swiss precision in every product')}
             className="mb-9 md:mb-12"
           />
           <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10 rounded-[var(--radius-lg)] overflow-hidden">
@@ -166,9 +172,9 @@ export default function Quality() {
       <section className="bg-white border-y border-[var(--line)] py-12 md:py-16">
         <div className="max-w-content mx-auto px-5 sm:px-8">
           <SectionHeader
-            kicker="En chiffres"
+            kicker={t('En chiffres', 'By the numbers')}
             index="03"
-            title={<>Les chiffres parlent<br />d'eux-mêmes</>}
+            title={<>{t('Les chiffres parlent', 'The numbers speak')}<br />{t("d'eux-mêmes", 'for themselves')}</>}
             className="mb-14 md:mb-16"
           />
           <RevealStagger className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius-lg)] overflow-hidden">
@@ -195,9 +201,9 @@ export default function Quality() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
             <SectionHeader
-              kicker="Conformités"
+              kicker={t('Conformités', 'Compliance')}
               index="04"
-              title={<>Certifications<br />&amp; Conformités</>}
+              title={<>{t('Certifications', 'Certifications')}<br />&amp; {t('Conformités', 'Compliance')}</>}
             />
             <RevealStagger className="mt-10 border-t border-[var(--line)]">
               {certifications.map((text, i) => (
@@ -217,7 +223,7 @@ export default function Quality() {
             <div className="rounded-[var(--radius-lg)] overflow-hidden border border-[var(--line)]">
               <img
                 src="images/21_photo-1581092918056-0c4c3acd3789.img"
-                alt="Qualité"
+                alt={t('Qualité', 'Quality')}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -231,14 +237,14 @@ export default function Quality() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
             <SectionHeader
               light
-              kicker="Prêt à démarrer"
+              kicker={t('Prêt à démarrer', 'Ready to start')}
               index="—"
-              title={<>L'exigence suisse,<br /><span className="serif-accent text-white/55">au service de vos événements.</span></>}
+              title={<>{t('L\'exigence suisse,', 'Swiss standards,')}<br /><span className="serif-accent text-white/55">{t('au service de vos événements.', 'in service of your events.')}</span></>}
             />
             <Reveal as="div" delay={0.1} className="md:pb-2">
               <Magnetic>
                 <Link to="/Contact" className="cta-iridescent inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
-                  Demander un devis <ArrowRight className="w-4 h-4" />
+                  {t('Demander un devis', 'Request a quote')} <ArrowRight className="w-4 h-4" />
                 </Link>
               </Magnetic>
             </Reveal>
