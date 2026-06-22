@@ -79,10 +79,11 @@ function Mark({ x, y, s = 1 }) {
   );
 }
 
-function FurnitureRender({ kind }) {
+function FurnitureRender({ kind, label }) {
   if (FURNITURE_PHOTO[kind]) {
     return (
-      <img src={FURNITURE_PHOTO[kind]} alt="" className="block w-full h-auto"
+      <img src={FURNITURE_PHOTO[kind]} alt={label ? `${label} gonflable personnalisé SPORT AIR EVENT` : 'Mobilier gonflable SPORT AIR EVENT'}
+        className="block w-full h-auto"
         style={{ maxWidth: 380, filter: 'drop-shadow(0 16px 20px rgba(0,30,90,0.15))' }} />
     );
   }
@@ -316,7 +317,7 @@ export default function Mobilier() {
                       exit={{ opacity: 0, scale: 0.94, y: -10 }}
                       transition={{ duration: 0.3, ease: EASE }}
                     >
-                      <FurnitureRender kind={activeKind} />
+                      <FurnitureRender kind={activeKind} label={activeItem?.name} />
                     </motion.div>
                   </AnimatePresence>
                 </motion.div>

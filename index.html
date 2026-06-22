@@ -3,21 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- spa-github-pages: restore the clean URL encoded by 404.html before the app mounts -->
-    <script type="text/javascript">
-      (function (l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search
-            .slice(1)
-            .split('&')
-            .map(function (s) {
-              return s.replace(/~and~/g, '&');
-            })
-            .join('?');
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
-        }
-      })(window.location);
-    </script>
+    <!-- Aucun script inline : les URLs profondes sont gérées par les rewrites Vercel.
+         Cela permet un CSP fort (script-src 'self', sans 'unsafe-inline'). -->
     <link rel="manifest" href="manifest.json" />
 
     <!-- Fonts preload -->
