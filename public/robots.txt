@@ -1,4 +1,86 @@
+# --- Crawlers IA / AI search : autorisés explicitement (à ajouter avant "User-agent: *") ---
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google (AI Overviews / Gemini / extended training)
+User-agent: Google-Extended
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Microsoft Copilot / Bing
+User-agent: bingbot
+Allow: /
+
+# Meta AI
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: meta-externalfetcher
+Allow: /
+
+# Amazon (Alexa / Rufus)
+User-agent: Amazonbot
+Allow: /
+
+# Common Crawl (alimente de nombreux modèles)
+User-agent: CCBot
+Allow: /
+
+# Mistral
+User-agent: MistralAI-User
+Allow: /
+
+# DuckDuckGo AI
+User-agent: DuckAssistBot
+Allow: /
+
+# ByteDance (Doubao). Note : Bytespider ignore souvent robots.txt.
+User-agent: Bytespider
+Allow: /
+
+# Pointeur vers le résumé pour LLM
+# Llms: https://sport-air-event.com/llms.txt
+
+# --- Tous les autres robots ---
 User-agent: *
 Allow: /
 
 Sitemap: https://sport-air-event.com/sitemap.xml
+Llms: https://sport-air-event.com/llms.txt
