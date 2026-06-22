@@ -40,8 +40,7 @@ const tr = (t, name) => t(name, EN[name] || name);
 const DATA = CONFIGURATORS.mobilier;
 const CAT_ICON = { Assises: Armchair, Tables: Table2, Bars: Wine };
 
-/* No real per-furniture photo exists (the old site had a single render too), so each
-   item gets a clean on-brand inflatable illustration that swaps when you click a row. */
+/* Maps each furniture name to its render kind; clicking a row swaps the sticky image. */
 const FURNITURE_KIND = {
   'Pouf gonflable imprimé': 'pouf',
   'Chaise basse': 'chaise',
@@ -53,54 +52,85 @@ const FURNITURE_KIND = {
   'Pompe 220 volts': 'pompe',
 };
 
-function FurnitureArt({ kind }) {
-  const F = 'var(--blue-soft)', S = 'var(--blue)', sw = 3.5;
-  const box = { fill: F, stroke: S, strokeWidth: sw, strokeLinejoin: 'round' };
-  const top = { fill: '#ffffff', stroke: S, strokeWidth: sw };
-  const seam = { stroke: S, strokeWidth: 2.2, opacity: 0.35, fill: 'none', strokeLinecap: 'round' };
-  const shadow = <ellipse cx="110" cy="183" rx="72" ry="9" fill="rgba(0,82,163,0.12)" />;
+/* The Pouf is the only real base44 render (a real photo). Every other piece uses a
+   matching white-inflatable render (volume gradient + SPORT AIR EVENT wordmark + soft
+   contact shadow) so each furniture shows its OWN visual when selected. */
+const FURNITURE_PHOTO = { pouf: 'images/mobilier/pouf.jpg' };
+
+/* Small SPORT AIR EVENT wordmark, faithful to the real logo (navy + red + swoosh). */
+function Mark({ x, y, s = 1 }) {
+  return (
+    <g transform={`translate(${x},${y}) scale(${s})`}>
+      <text x="0" y="0" fontFamily="'Schibsted Grotesk',system-ui,sans-serif" fontStyle="italic" fontWeight="800" fontSize="17" letterSpacing="-0.3">
+        <tspan fill="#06245f">SPORT</tspan><tspan dx="2" fill="#e11d2a">AIR</tspan>
+      </text>
+      <text x="1" y="14" fontFamily="'Schibsted Grotesk',system-ui,sans-serif" fontStyle="italic" fontWeight="800" fontSize="12" letterSpacing="1.5" fill="#06245f">EVENT</text>
+      <path d="M0 20 Q44 12 88 20" fill="none" stroke="#e11d2a" strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M0 23.5 Q44 15.5 88 23.5" fill="none" stroke="#1f4fa0" strokeWidth="2.2" strokeLinecap="round" />
+    </g>
+  );
+}
+
+function FurnitureRender({ kind }) {
+  if (FURNITURE_PHOTO[kind]) {
+    return (
+      <img src={FURNITURE_PHOTO[kind]} alt="" className="block w-full h-auto"
+        style={{ maxWidth: 380, filter: 'drop-shadow(0 16px 20px rgba(0,30,90,0.15))' }} />
+    );
+  }
+  const B = { fill: 'url(#fbody)', stroke: '#bcd3ef', strokeWidth: 2.5, strokeLinejoin: 'round' };
+  const T = { fill: 'url(#ftop)', stroke: '#bcd3ef', strokeWidth: 2.5, strokeLinejoin: 'round' };
+  const seam = { stroke: '#c3d7f0', strokeWidth: 2, fill: 'none', opacity: 0.75, strokeLinecap: 'round' };
+  const shadow = <ellipse cx="160" cy="214" rx="106" ry="13" fill="rgba(0,40,100,0.12)" />;
   const SHAPES = {
-    pouf: (<>{shadow}
-      <rect x="60" y="96" width="100" height="72" rx="28" {...box} />
-      <ellipse cx="110" cy="96" rx="50" ry="17" {...top} />
-      <path d="M73 122 H147 M73 142 H147" {...seam} /></>),
     chaise: (<>{shadow}
-      <rect x="64" y="72" width="92" height="42" rx="18" {...box} />
-      <rect x="56" y="106" width="108" height="58" rx="22" {...box} />
-      <path d="M56 134 H164" {...seam} /></>),
+      <rect x="84" y="70" width="152" height="58" rx="26" {...B} />
+      <rect x="66" y="120" width="188" height="74" rx="30" {...B} />
+      <path d="M86 158 H234" {...seam} />
+      <Mark x="116" y="150" s={0.92} /></>),
     sofa1: (<>{shadow}
-      <rect x="58" y="82" width="104" height="42" rx="18" {...box} />
-      <rect x="50" y="104" width="120" height="58" rx="20" {...box} />
-      <rect x="46" y="98" width="24" height="64" rx="12" {...box} />
-      <rect x="150" y="98" width="24" height="64" rx="12" {...box} /></>),
+      <rect x="84" y="66" width="152" height="56" rx="24" {...B} />
+      <rect x="68" y="112" width="184" height="78" rx="28" {...B} />
+      <rect x="58" y="100" width="34" height="90" rx="16" {...B} />
+      <rect x="228" y="100" width="34" height="90" rx="16" {...B} />
+      <Mark x="118" y="146" s={0.9} /></>),
     sofa2: (<>{shadow}
-      <rect x="40" y="82" width="140" height="42" rx="18" {...box} />
-      <rect x="32" y="104" width="156" height="56" rx="20" {...box} />
-      <rect x="28" y="98" width="24" height="62" rx="12" {...box} />
-      <rect x="168" y="98" width="24" height="62" rx="12" {...box} />
-      <path d="M110 110 V152" {...seam} strokeWidth="2.5" opacity="0.4" /></>),
+      <rect x="50" y="66" width="220" height="54" rx="24" {...B} />
+      <rect x="36" y="110" width="248" height="80" rx="28" {...B} />
+      <rect x="26" y="98" width="34" height="92" rx="16" {...B} />
+      <rect x="260" y="98" width="34" height="92" rx="16" {...B} />
+      <path d="M160 118 V184" {...seam} />
+      <Mark x="116" y="150" s={0.9} /></>),
     tableBasse: (<>{shadow}
-      <ellipse cx="110" cy="152" rx="40" ry="12" {...box} />
-      <rect x="98" y="104" width="24" height="50" rx="8" {...box} />
-      <ellipse cx="110" cy="100" rx="66" ry="20" {...top} /></>),
+      <ellipse cx="160" cy="170" rx="58" ry="15" {...B} />
+      <rect x="138" y="98" width="44" height="74" rx="14" {...B} />
+      <ellipse cx="160" cy="96" rx="92" ry="26" {...T} />
+      <ellipse cx="160" cy="96" rx="92" ry="26" {...seam} /></>),
     tableHaute: (<>{shadow}
-      <ellipse cx="110" cy="162" rx="36" ry="11" {...box} />
-      <rect x="100" y="78" width="20" height="86" rx="8" {...box} />
-      <ellipse cx="110" cy="74" rx="48" ry="15" {...top} /></>),
+      <ellipse cx="160" cy="194" rx="52" ry="14" {...B} />
+      <rect x="146" y="74" width="28" height="120" rx="12" {...B} />
+      <ellipse cx="160" cy="72" rx="72" ry="21" {...T} />
+      <ellipse cx="160" cy="72" rx="72" ry="21" {...seam} /></>),
     bar: (<>{shadow}
-      <rect x="52" y="90" width="116" height="78" rx="14" {...box} />
-      <rect x="44" y="82" width="132" height="20" rx="9" {...top} />
-      <path d="M78 112 V162 M110 112 V162 M142 112 V162" {...seam} /></>),
+      <rect x="52" y="86" width="216" height="22" rx="10" {...T} />
+      <rect x="62" y="104" width="196" height="92" rx="16" {...B} />
+      <path d="M127 110 V190 M193 110 V190" {...seam} />
+      <Mark x="118" y="150" s={0.95} /></>),
     pompe: (<>{shadow}
-      <rect x="92" y="88" width="36" height="80" rx="12" {...box} />
-      <rect x="84" y="74" width="52" height="16" rx="8" {...top} />
-      <rect x="106" y="56" width="8" height="22" rx="4" fill={S} />
-      <path d="M128 150 q42 0 42 -30" fill="none" stroke={S} strokeWidth={sw} strokeLinecap="round" />
-      <circle cx="170" cy="116" r="6" fill={S} /></>),
+      <rect x="122" y="98" width="76" height="80" rx="14" {...B} />
+      <rect x="114" y="84" width="92" height="18" rx="9" {...T} />
+      <rect x="152" y="60" width="10" height="26" rx="5" fill="#1f4fa0" />
+      <path d="M198 150 q44 0 44 -34" fill="none" stroke="#1f4fa0" strokeWidth="6" strokeLinecap="round" />
+      <circle cx="242" cy="112" r="7" fill="#1f4fa0" />
+      <text x="160" y="148" textAnchor="middle" fontFamily="'Schibsted Grotesk',sans-serif" fontWeight="800" fontSize="15" fill="#06245f">220V</text></>),
   };
   return (
-    <svg viewBox="0 0 220 200" width="100%" style={{ maxWidth: 360, display: 'block' }} aria-hidden>
-      {SHAPES[kind] || SHAPES.pouf}
+    <svg viewBox="0 0 320 250" width="100%" style={{ maxWidth: 380, display: 'block' }} aria-hidden>
+      <defs>
+        <linearGradient id="fbody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ffffff" /><stop offset="1" stopColor="#e8f1fc" /></linearGradient>
+        <linearGradient id="ftop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ffffff" /><stop offset="1" stopColor="#eef5fd" /></linearGradient>
+      </defs>
+      {SHAPES[kind] || SHAPES.chaise}
     </svg>
   );
 }
@@ -278,7 +308,7 @@ export default function Mobilier() {
                       exit={{ opacity: 0, scale: 0.94, y: -10 }}
                       transition={{ duration: 0.3, ease: EASE }}
                     >
-                      <FurnitureArt kind={activeKind} />
+                      <FurnitureRender kind={activeKind} />
                     </motion.div>
                   </AnimatePresence>
                 </motion.div>
