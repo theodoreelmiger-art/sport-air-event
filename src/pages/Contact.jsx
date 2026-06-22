@@ -24,6 +24,7 @@ import {
 import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 import { useT } from '../lib/i18n.jsx';
+import { WEB3FORMS_KEY } from '../lib/forms.js';
 
 const makeReviews = (t) => [
   {
@@ -268,7 +269,7 @@ export default function Contact() {
 
   // To send silently in-page (no mail client), get a free key at https://web3forms.com
   // (enter contact@sport-air-event.com, they email you a key) and paste it below.
-  const WEB3FORMS_ACCESS_KEY = '';
+  const WEB3FORMS_ACCESS_KEY = WEB3FORMS_KEY;
   const [sending, setSending] = useState(false);
 
   const buildMailto = () => {

@@ -7,6 +7,7 @@ import {
 import { Reveal, RevealStagger, Magnetic, staggerChild, motion } from '../lib/motion.jsx';
 import SectionHeader from './SectionHeader.jsx';
 import { useT } from '../lib/i18n.jsx';
+import { sendViaWeb3Forms } from '../lib/forms.js';
 
 /* Shared "sur-mesure" page. No dimension inputs, no option checkboxes — a custom
    project is quote-only: the visitor sends a personalised request (date + the usual
@@ -35,9 +36,21 @@ export default function SurMesure({ product }) {
     return `mailto:contact@sport-air-event.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    window.location.href = buildMailto();
+    // Envoi réel via Web3Forms (→ contact@sport-air-event.com) si une clé est
+    // configurée ; sinon on ouvre le mail pré-rempli du visiteur.
+    const ok = await sendViaWeb3Forms({
+      subject: `Demande de devis sur mesure – ${name}`,
+      from_name: form.nom || 'Site Sport Air Event',
+      produit: name,
+      nom: form.nom,
+      email: form.email,
+      telephone: form.telephone,
+      date_souhaitee: form.date,
+      message: form.message,
+    });
+    if (!ok) window.location.href = buildMailto();
     setSent(true);
   };
 
