@@ -24,7 +24,7 @@ import {
 import { Reveal, RevealStagger, Magnetic, staggerChild } from '../lib/motion.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 import { useT } from '../lib/i18n.jsx';
-import { WEB3FORMS_KEY } from '../lib/forms.js';
+import { WEB3FORMS_KEY, sendViaWeb3Forms } from '../lib/forms.js';
 
 const makeReviews = (t) => [
   {
@@ -289,34 +289,21 @@ export default function Contact() {
   };
 
   const handleSubmit = async () => {
-    if (WEB3FORMS_ACCESS_KEY) {
-      try {
-        setSending(true);
-        await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({
-            access_key: WEB3FORMS_ACCESS_KEY,
-            subject: `${t('Demande de devis', 'Quote request')}${form.entreprise ? ' – ' + form.entreprise : ''}`,
-            from_name: form.nom || t('Site Sport Air Event', 'Sport Air Event Website'),
-            entreprise: form.entreprise,
-            nom: form.nom,
-            email: form.email,
-            telephone: form.telephone,
-            structure: form.structure,
-            dimensions: form.dimensions,
-            message: form.message,
-          }),
-        });
-      } catch (e) {
-        /* fall through to success UI regardless */
-      } finally {
-        setSending(false);
-      }
-    } else {
-      // No backend configured: open the visitor's mail client, pre-filled and addressed.
-      window.location.href = buildMailto();
-    }
+    setSending(true);
+    // Envoi réel via Web3Forms (FormData → contact@sport-air-event.com) ; sinon mailto.
+    const ok = await sendViaWeb3Forms({
+      subject: `${t('Demande de devis', 'Quote request')}${form.entreprise ? ' – ' + form.entreprise : ''}`,
+      from_name: form.nom || t('Site Sport Air Event', 'Sport Air Event Website'),
+      entreprise: form.entreprise,
+      nom: form.nom,
+      email: form.email,
+      telephone: form.telephone,
+      structure: form.structure,
+      dimensions: form.dimensions,
+      message: form.message,
+    });
+    setSending(false);
+    if (!ok) window.location.href = buildMailto();
     setSubmitted(true);
   };
 

@@ -12,18 +12,18 @@
  * Tant qu'aucune clé n'est configurée, les formulaires basculent automatiquement
  * sur un mailto pré-rempli (ouverture du logiciel mail du visiteur).
  */
-export const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || '';
+export const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || '9bb37168-b79f-4ae3-b320-ad43ff2cfd6f';
 
 /* Envoie via Web3Forms si une clé existe. Renvoie true si l'envoi a abouti,
  * false sinon (le caller bascule alors sur le mailto). */
 export async function sendViaWeb3Forms(fields) {
   if (!WEB3FORMS_KEY) return false;
   try {
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ access_key: WEB3FORMS_KEY, ...fields }),
-    });
+    // FormData (méthode officielle Web3Forms) → requête "simple", pas de preflight CORS.
+    const fd = new FormData();
+    fd.append('access_key', WEB3FORMS_KEY);
+    Object.entries(fields).forEach(([k, v]) => fd.append(k, v == null ? '' : v));
+    const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
     const data = await res.json().catch(() => ({}));
     return res.ok && data.success !== false;
   } catch {
