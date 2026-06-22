@@ -297,7 +297,7 @@ export default function Mobilier() {
           <div>
             <div className="lg:sticky lg:top-24">
               <motion.div
-                className="relative rounded-[28px] bg-gradient-to-br from-white to-[var(--blue-mist)] border border-[var(--line)] overflow-hidden flex items-center justify-center p-8 md:p-10"
+                className="relative rounded-[28px] bg-gradient-to-br from-[var(--blue-mist)] to-[var(--blue-soft)] border border-[var(--line)] overflow-hidden flex items-center justify-center p-8 md:p-10"
                 style={{ aspectRatio: '1 / 1' }}
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
