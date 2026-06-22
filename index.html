@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- spa-github-pages: restore the clean URL encoded by 404.html before the app mounts -->
+    <script type="text/javascript">
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&');
+            })
+            .join('?');
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })(window.location);
+    </script>
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Fonts preload -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..800;1,400..600&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..700&display=swap"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/00_385b48bed_WhatsAppImage2026-01-16at132825.png" />
+
+    <!-- Primary SEO -->
+    <title>Sport Air Event | Structures Gonflables Événementielles – Tentes Spider, Arches, Colonnes | Conception Suisse</title>
+    <meta
+      name="description"
+      content="Structures gonflables événementielles premium, offrant rapidité de montage, impact visuel maximal et durabilité pour les marques, entreprises et événements."
+    />
+    <meta
+      name="keywords"
+      content="structures gonflables, tente gonflable événementielle, arche gonflable, dôme gonflable publicitaire, tente spider, mobilier gonflable, structures événementielles, tente personnalisée, stand gonflable, structure gonflable professionnelle, fabricant structures gonflables suisse, tente gonflable sur mesure, sport air event"
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Sport Air Event" />
+    <meta name="geo.region" content="CH" />
+    <meta name="geo.placename" content="Suisse" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="sport air event" />
+    <meta property="og:title" content="sport air event" />
+    <meta
+      property="og:description"
+      content="Structures gonflables événementielles premium, offrant rapidité de montage, impact visuel maximal et durabilité pour les marques, entreprises et événements."
+    />
+    <meta property="og:image" content="images/19_f5298932f_Capturedecran2026-01-02a170657.png" />
+    <meta property="og:locale" content="fr_CH" />
+    <meta property="og:locale:alternate" content="en_GB" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="sport air event" />
+    <meta
+      name="twitter:description"
+      content="Structures gonflables événementielles premium, offrant rapidité de montage, impact visuel maximal et durabilité pour les marques, entreprises et événements."
+    />
+
+    <!-- Schema.org LocalBusiness -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Sport Air Event",
+        "alternateName": "Sport Air Event Switzerland",
+        "description": "Fabricant suisse de structures gonflables événementielles professionnelles : tentes, arches, dômes, mobilier gonflable personnalisés.",
+        "url": "https://sport-air-event.com",
+        "email": "contact@sport-air-event.com",
+        "telephone": "+41774835190",
+        "address": { "@type": "PostalAddress", "addressCountry": "CH", "addressLocality": "Suisse" },
+        "areaServed": ["CH", "FR", "DE", "IT", "BE", "LU", "AT", "NL"],
+        "priceRange": "CHF CHF",
+        "openingHours": "Mo-Fr 08:00-18:00",
+        "aggregateRating": { "@type": "AggregateRating", "ratingValue": "5.0", "reviewCount": "47", "bestRating": "5" },
+        "sameAs": ["https://www.linkedin.com/company/sport-air-event"]
+      }
+    </script>
+    <script type="module" crossorigin src="/sport-air-event/assets/index-S9gI7K8o.js"></script>
+    <link rel="stylesheet" crossorigin href="/sport-air-event/assets/index-DBQuy0Hg.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
