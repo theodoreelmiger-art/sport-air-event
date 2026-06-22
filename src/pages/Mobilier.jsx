@@ -55,7 +55,15 @@ const FURNITURE_KIND = {
 /* The Pouf is the only real base44 render (a real photo). Every other piece uses a
    matching white-inflatable render (volume gradient + SPORT AIR EVENT wordmark + soft
    contact shadow) so each furniture shows its OWN visual when selected. */
-const FURNITURE_PHOTO = { pouf: 'images/mobilier/pouf.jpg' };
+const FURNITURE_PHOTO = {
+  pouf: 'images/mobilier/pouf.png',
+  chaise: 'images/mobilier/chaise.png',
+  sofa1: 'images/mobilier/sofa1.png',
+  sofa2: 'images/mobilier/sofa2.png',
+  tableBasse: 'images/mobilier/table-basse.png',
+  tableHaute: 'images/mobilier/table-haute.png',
+  bar: 'images/mobilier/bar.png',
+};
 
 /* Small SPORT AIR EVENT wordmark, faithful to the real logo (navy + red + swoosh). */
 function Mark({ x, y, s = 1 }) {
@@ -289,7 +297,7 @@ export default function Mobilier() {
           <div>
             <div className="lg:sticky lg:top-24">
               <motion.div
-                className="relative rounded-[28px] bg-gradient-to-br from-[var(--blue-mist)] to-[var(--blue-soft)] border border-[var(--line)] overflow-hidden flex items-center justify-center p-10 md:p-12"
+                className="relative rounded-[28px] bg-gradient-to-br from-white to-[var(--blue-mist)] border border-[var(--line)] overflow-hidden flex items-center justify-center p-8 md:p-10"
                 style={{ aspectRatio: '1 / 1' }}
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
