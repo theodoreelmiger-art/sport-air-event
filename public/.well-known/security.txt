@@ -2,7 +2,7 @@ Contact: mailto:contact@sport-air-event.com
 Contact: tel:+41774835190
 Expires: 2027-06-22T00:00:00.000Z
 Preferred-Languages: fr, en
-Canonical: https://sport-air-event.com/.well-known/security.txt
+Canonical: https://sportairevent.ch/.well-known/security.txt
 
 # Sport Air Event — Fabricant suisse de structures gonflables événementielles
 # Merci de signaler toute vulnérabilité de manière responsable à l'adresse ci-dessus.

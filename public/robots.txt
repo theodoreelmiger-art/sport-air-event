@@ -76,11 +76,11 @@ User-agent: Bytespider
 Allow: /
 
 # Pointeur vers le résumé pour LLM
-# Llms: https://sport-air-event.com/llms.txt
+# Llms: https://sportairevent.ch/llms.txt
 
 # --- Tous les autres robots ---
 User-agent: *
 Allow: /
 
-Sitemap: https://sport-air-event.com/sitemap.xml
-Llms: https://sport-air-event.com/llms.txt
+Sitemap: https://sportairevent.ch/sitemap.xml
+Llms: https://sportairevent.ch/llms.txt
