@@ -192,7 +192,7 @@ export default function SpiderTent() {
 
               <Reveal as="div" delay={0.24} className="mt-9 flex flex-col sm:flex-row gap-3">
                 <Magnetic>
-                  <Link to="/Calculator" className="cta-iridescent inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
+                  <Link to="/Tente" className="cta-iridescent inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[15px] font-semibold">
                     {t('Calculer mon prix', 'Calculate my price')} <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Magnetic>
@@ -319,7 +319,7 @@ export default function SpiderTent() {
                   </div>
                   <div className="mt-auto pt-6 border-t border-[var(--line)]">
                     <div className="font-display text-3xl font-bold text-ink mb-5">{size.prix}</div>
-                    <Link to="/Calculator" onClick={(e) => e.stopPropagation()} className="block">
+                    <Link to="/Tente" onClick={(e) => e.stopPropagation()} className="block">
                       <button
                         className={`w-full py-3 text-[15px] font-semibold rounded-full transition-colors ${
                           isSelected
@@ -375,7 +375,7 @@ export default function SpiderTent() {
           </p>
           <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
             <Magnetic>
-              <Link to="/Calculator" className="inline-flex items-center justify-center gap-2 bg-white text-ink font-semibold rounded-full px-7 py-3.5 text-[15px] hover:bg-white/90 transition-colors">
+              <Link to="/Tente" className="inline-flex items-center justify-center gap-2 bg-white text-ink font-semibold rounded-full px-7 py-3.5 text-[15px] hover:bg-white/90 transition-colors">
                 {t('Calculer mon prix', 'Calculate my price')} <ArrowRight className="w-4 h-4" />
               </Link>
             </Magnetic>

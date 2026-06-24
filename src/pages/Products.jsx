@@ -213,7 +213,7 @@ export default function Products() {
             <Reveal as="div" delay={0.15} className="lg:col-span-5 flex flex-col sm:flex-row lg:justify-end gap-3 lg:pb-2">
               <Magnetic>
                 <Link
-                  to="/Calculator"
+                  to="/Contact"
                   className="inline-flex items-center justify-center gap-2 bg-white text-ink font-semibold rounded-full px-7 py-3.5 text-[15px] hover:bg-white/90 transition-colors"
                 >
                   {t('Calculer mon devis', 'Calculate my quote')} <ArrowRight className="w-4 h-4" />
