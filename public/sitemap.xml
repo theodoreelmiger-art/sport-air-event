@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://sportairevent.ch/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://sportairevent.ch/Tente</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://sportairevent.ch/TenteSurMesure</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sportairevent.ch/ArchesGonflables</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://sportairevent.ch/ArchesSurMesure</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sportairevent.ch/ColonnesGonflables</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://sportairevent.ch/ColonnesSurMesure</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sportairevent.ch/Mobilier</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://sportairevent.ch/About</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://sportairevent.ch/Contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://sportairevent.ch/guide-structures-gonflables</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://sportairevent.ch/cgv</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://sport-air-event.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://sport-air-event.com/Tente</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sport-air-event.com/TenteSurMesure</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sport-air-event.com/ArchesGonflables</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sport-air-event.com/ArchesSurMesure</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sport-air-event.com/ColonnesGonflables</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sport-air-event.com/ColonnesSurMesure</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sport-air-event.com/Mobilier</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://sport-air-event.com/About</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://sport-air-event.com/Contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://sport-air-event.com/guide-structures-gonflables</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://sport-air-event.com/cgv</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
